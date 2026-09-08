@@ -1,0 +1,27 @@
+NAME: 'Premium Discount Zones'    # strategy name
+MODULE: 'premium_discount'        # strategy module (strategies/premium_discount.py)
+CLASS: 'PremiumDiscountZones'     # strategy class
+INTERVAL: '1h'                    # strategy timeframe
+PARAMETERS:                       # strategy parameters
+  swing_n: 4                      # moving average period used to detect swings
+  lookback_candles: 300           # number of candles fetched on each update
+
+  # Trend filter
+  ema_period: 200
+  use_trend_filter: True
+
+  # Premium/discount zone definition
+  # If use_ote is True, entries are restricted to the 61.8%-79% pocket of
+  # each half of the range, instead of the whole half.
+  use_ote: True
+  ote_low: 0.618
+  ote_high: 0.79
+
+  # Exit level parameters
+  RR: 2.0                         # reward:risk ratio for the take profit
+  sl_buffer_pc: 0.001             # stop loss buffer beyond the swing, as a fraction of price
+
+  risk_pc: 1                      # percentage of account balance to risk per trade
+  sizing: 'risk'
+
+WATCHLIST: ['EUR_USD']            # instruments to trade using this strategy
