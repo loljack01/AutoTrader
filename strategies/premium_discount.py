@@ -9,22 +9,44 @@ class PremiumDiscountZones(Strategy):
 
     Rules
     -----
-    1. Define the current trading range from the most recent swing high and
-       swing low (`indicators.find_swings`). The midpoint of this range is
-       the "equilibrium".
-    2. The lower half of the range is the "discount" zone (price is cheap
-       relative to the range); the upper half is the "premium" zone (price
-       is expensive). When `use_ote` is enabled, entries are further
-       restricted to the 61.8%-79% ("optimal trade entry") pocket of each
-       half, rather than the whole half.
-    3. Only look for longs in the discount zone, and shorts in the premium
-       zone - buying cheap and selling expensive.
-    4. Require a bullish/bearish engulfing candle as the entry trigger, to
+    1. Define the current trading range from the most recent CONFIRMED swing
+       high (H) and swing low (L) (`indicators.find_swings`). The midpoint
+       of this range is the "equilibrium": EQ = (H + L) / 2.
+    2. [L, EQ] is the "discount" zone (price is cheap relative to the
+       range) - longs only. [EQ, H] is the "premium" zone (price is
+       expensive) - shorts only. When `use_ote` is enabled, entries are
+       further restricted to the classic 61.8%-79% Fibonacci retracement
+       pocket of the H->L leg (for the discount zone) and the L->H leg
+       (for the premium zone), rather than the whole half.
+    3. Require a bullish/bearish engulfing candle as the entry trigger, to
        avoid re-entering on every bar spent inside a zone.
-    5. Optionally require the entry to agree with the prevailing trend, as
+    4. Optionally require the entry to agree with the prevailing trend, as
        per an EMA filter (longs only above the EMA, shorts only below it).
-    6. Stop loss is placed beyond the swing which defines the range; take
-       profit is a multiple (`RR`) of the resulting risk.
+    5. Unless `one_trade_per_range` is disabled, only one entry is taken
+       per (H, L) range; a new entry requires a new swing to have
+       confirmed and redefined the range.
+    6. Stop loss is placed beyond the swing which defines the range, offset
+       by a buffer (a fixed percentage, or a multiple of ATR - see
+       `sl_buffer_mode`) so that a liquidity sweep of the swing does not
+       trivially stop the trade out. Take profit is a multiple (`RR`) of
+       the resulting risk.
+
+    Notes on look-ahead bias
+    ------------------------
+    `find_swings` is causal: it is built from a standard recursive
+    (backward-looking) EMA, and the swing extreme recorded at bar i is the
+    max/min of the trailing `swing_n`-bar window ending at i - it never
+    reads bars after i. Because `generate_signal` re-fetches data through
+    `self.broker.get_candles(...)` (which, when backtesting, is clipped by
+    AutoTrader's virtual broker to bars strictly before the current time -
+    see `Broker.get_candles` in `autotrader/brokers/virtual.py`) and
+    recomputes the swing/zone features from scratch on that slice, no bar
+    beyond `dt` can influence the signal generated at `dt`. What IS
+    inherent to this method (and to any swing-based tool) is confirmation
+    lag: a swing at bar k is only recognised once price reverses for
+    `swing_n` bars, i.e. at some bar i > k. That lag is real and
+    unavoidable in live trading too, and is not the same thing as
+    look-ahead bias.
     """
 
     def __init__(
@@ -38,6 +60,7 @@ class PremiumDiscountZones(Strategy):
         self.logger_kwargs = logger_kwargs
 
         self.indicators = {}
+        self._last_entry_range = None
 
     def generate_features(self, data):
         """Computes the swing range, premium/discount zones and entry
@@ -47,7 +70,9 @@ class PremiumDiscountZones(Strategy):
         # Trend filter
         self.ema = TA.EMA(data, self.params["ema_period"])
 
-        # Range-defining swing structure
+        # Range-defining swing structure. Highs/Lows are forward-filled so
+        # that, at any bar, they hold the most recently CONFIRMED swing
+        # extreme (0 before any swing has been confirmed).
         self.swings = indicators.find_swings(data, n=self.params["swing_n"])
         swing_high = self.swings.Highs.replace(0, np.nan).ffill()
         swing_low = self.swings.Lows.replace(0, np.nan).ffill()
@@ -60,13 +85,17 @@ class PremiumDiscountZones(Strategy):
         if self.params["use_ote"]:
             ote_low = self.params["ote_low"]
             ote_high = self.params["ote_high"]
+            # Discount OTE = 61.8%-79% retracement of the H->L leg, ie.
+            # measured back DOWN from the swing high - lands just above L.
             self.discount_zone = (
-                swing_low + ote_low * range_size,
-                swing_low + ote_high * range_size,
-            )
-            self.premium_zone = (
                 swing_high - ote_high * range_size,
                 swing_high - ote_low * range_size,
+            )
+            # Premium OTE = 61.8%-79% retracement of the L->H leg, ie.
+            # measured back UP from the swing low - lands just below H.
+            self.premium_zone = (
+                swing_low + ote_low * range_size,
+                swing_low + ote_high * range_size,
             )
         else:
             self.discount_zone = (swing_low, self.equilibrium)
@@ -97,6 +126,14 @@ class PremiumDiscountZones(Strategy):
             # Not enough swing history yet to define a range
             return Order()
 
+        current_range = (swing_high, swing_low)
+        if (
+            self.params["one_trade_per_range"]
+            and current_range == self._last_entry_range
+        ):
+            # Already traded this range; wait for a new confirmed swing
+            return Order()
+
         close = self.data.Close.iloc[-1]
         in_discount = (
             self.discount_zone[0].iloc[-1] <= close <= self.discount_zone[1].iloc[-1]
@@ -111,10 +148,12 @@ class PremiumDiscountZones(Strategy):
 
         if in_discount and self.bullish_trigger[-1] and (not trend_filter or uptrend):
             stop, take = self.generate_exit_levels(direction=1)
+            self._last_entry_range = current_range
             return Order(direction=1, stop_loss=stop, take_profit=take)
 
         if in_premium and self.bearish_trigger[-1] and (not trend_filter or downtrend):
             stop, take = self.generate_exit_levels(direction=-1)
+            self._last_entry_range = current_range
             return Order(direction=-1, stop_loss=stop, take_profit=take)
 
         return Order()
@@ -123,14 +162,19 @@ class PremiumDiscountZones(Strategy):
         """Determines the stop loss and take profit prices for a new
         entry, based on the swing defining the current range."""
         RR = self.params["RR"]
-        buffer = self.params["sl_buffer_pc"]
         close = self.data.Close.iloc[-1]
 
+        if self.params["sl_buffer_mode"] == "atr":
+            atr = indicators.atr(self.data, self.params["atr_period"]).iloc[-1]
+            buffer_amount = self.params["sl_atr_mult"] * atr
+        else:
+            buffer_amount = self.params["sl_buffer_pc"] * close
+
         if direction == 1:
-            stop = self.swing_low.iloc[-1] * (1 - buffer)
+            stop = self.swing_low.iloc[-1] - buffer_amount
             take = close + RR * (close - stop)
         else:
-            stop = self.swing_high.iloc[-1] * (1 + buffer)
+            stop = self.swing_high.iloc[-1] + buffer_amount
             take = close - RR * (stop - close)
 
         return stop, take

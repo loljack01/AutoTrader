@@ -6,20 +6,40 @@ PARAMETERS:                       # strategy parameters
   swing_n: 4                      # moving average period used to detect swings
   lookback_candles: 300           # number of candles fetched on each update
 
-  # Trend filter
-  ema_period: 200
+  # Trend filter. Keep this EMA period fixed while you evaluate the base
+  # system; only compare EMA 13 (fast) vs EMA 50 (directional) once you
+  # start tuning - avoid grid-searching many periods (7/9/13/20/21/50/200)
+  # and picking the best in-sample result, which is a classic overfitting
+  # trap.
+  ema_period: 50
   use_trend_filter: True
 
-  # Premium/discount zone definition
-  # If use_ote is True, entries are restricted to the 61.8%-79% pocket of
-  # each half of the range, instead of the whole half.
+  # Premium/discount zone definition.
+  # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the
+  # premium zone, where EQ = (H + L) / 2.
+  # If use_ote is True, entries are instead restricted to the classic
+  # 61.8%-79% Fibonacci retracement pocket: the discount zone becomes the
+  # retracement of the H->L leg (just above L), and the premium zone
+  # becomes the retracement of the L->H leg (just below H).
   use_ote: True
   ote_low: 0.618
   ote_high: 0.79
 
+  # Only take one entry per (swing_high, swing_low) range; a new entry
+  # requires a new confirmed swing to redefine the range first.
+  one_trade_per_range: True
+
   # Exit level parameters
   RR: 2.0                         # reward:risk ratio for the take profit
-  sl_buffer_pc: 0.001             # stop loss buffer beyond the swing, as a fraction of price
+
+  # Stop loss buffer beyond the swing, so a liquidity sweep of the swing
+  # does not trivially stop the trade out. 'atr' scales the buffer with
+  # recent volatility (sl_atr_mult * ATR); 'pct' uses a fixed fraction of
+  # the entry price (sl_buffer_pc) instead.
+  sl_buffer_mode: 'atr'
+  atr_period: 14
+  sl_atr_mult: 0.25
+  sl_buffer_pc: 0.001
 
   risk_pc: 1                      # percentage of account balance to risk per trade
   sizing: 'risk'

@@ -17,8 +17,12 @@ DEFAULT_PARAMS = dict(
     use_ote=False,
     ote_low=0.618,
     ote_high=0.79,
+    one_trade_per_range=True,
     RR=2.0,
+    sl_buffer_mode="pct",
     sl_buffer_pc=0.001,
+    atr_period=14,
+    sl_atr_mult=0.25,
 )
 
 
@@ -95,7 +99,10 @@ def test_long_signal_in_discount_zone():
     assert order.direction == 1
     assert stop_loss < data.Close.iloc[-1] < take_profit
     # Stop is just beyond the swing low that defines the range
-    assert stop_loss == pytest.approx(strat.swing_low.iloc[-1] * 0.999)
+    expected_stop = strat.swing_low.iloc[-1] - DEFAULT_PARAMS["sl_buffer_pc"] * float(
+        data.Close.iloc[-1]
+    )
+    assert stop_loss == pytest.approx(expected_stop)
 
 
 def test_short_signal_in_premium_zone():
@@ -106,7 +113,10 @@ def test_short_signal_in_premium_zone():
 
     assert order.direction == -1
     assert take_profit < data.Close.iloc[-1] < stop_loss
-    assert stop_loss == pytest.approx(strat.swing_high.iloc[-1] * 1.001)
+    expected_stop = strat.swing_high.iloc[-1] + DEFAULT_PARAMS["sl_buffer_pc"] * float(
+        data.Close.iloc[-1]
+    )
+    assert stop_loss == pytest.approx(expected_stop)
 
 
 def test_trend_filter_blocks_counter_trend_signal():
@@ -158,3 +168,90 @@ def test_zones_are_ordered_and_bracket_equilibrium():
     assert premium_lower < premium_upper
     assert discount_lower == pytest.approx(strat.swing_low.iloc[-1])
     assert premium_upper == pytest.approx(strat.swing_high.iloc[-1])
+
+
+def test_ote_zone_sits_near_the_correct_swing():
+    # Discount OTE (retracement of the H->L leg) must sit just above L, in
+    # the lower half of the range; premium OTE (retracement of the L->H
+    # leg) must sit just below H, in the upper half. Getting this backwards
+    # would place "buy" entries near the top of the range and vice versa.
+    data = _build_long_setup()
+    strat = _make_strategy(data, use_ote=True)
+    strat.generate_features(data)
+
+    swing_low = strat.swing_low.iloc[-1]
+    swing_high = strat.swing_high.iloc[-1]
+    equilibrium = strat.equilibrium.iloc[-1]
+    discount_lower, discount_upper = (
+        strat.discount_zone[0].iloc[-1],
+        strat.discount_zone[1].iloc[-1],
+    )
+    premium_lower, premium_upper = (
+        strat.premium_zone[0].iloc[-1],
+        strat.premium_zone[1].iloc[-1],
+    )
+
+    assert swing_low < discount_lower < discount_upper < equilibrium
+    assert equilibrium < premium_lower < premium_upper < swing_high
+
+
+def test_one_trade_per_range_blocks_reentry():
+    data = _build_long_setup()
+    strat = _make_strategy(data)
+
+    first = strat.generate_signal(data.index[-1])
+    assert first.direction == 1
+
+    # Same data/range/trigger - a second call must not re-enter.
+    second = strat.generate_signal(data.index[-1])
+    assert second.direction is None
+
+
+def test_one_trade_per_range_can_be_disabled():
+    data = _build_long_setup()
+    strat = _make_strategy(data, one_trade_per_range=False)
+
+    first = strat.generate_signal(data.index[-1])
+    second = strat.generate_signal(data.index[-1])
+
+    assert first.direction == 1
+    assert second.direction == 1
+
+
+def test_atr_stop_buffer_widens_with_volatility():
+    data = _build_long_setup()
+    calm = _make_strategy(data, sl_buffer_mode="atr", sl_atr_mult=0.25)
+    order_calm = calm.generate_signal(data.index[-1])
+
+    volatile_data = data.copy()
+    volatile_data["High"] = volatile_data["High"] + 5
+    volatile_data["Low"] = volatile_data["Low"] - 5
+    volatile = _make_strategy(volatile_data, sl_buffer_mode="atr", sl_atr_mult=0.25)
+    order_volatile = volatile.generate_signal(volatile_data.index[-1])
+
+    calm_risk = float(data.Close.iloc[-1]) - float(order_calm.stop_loss)
+    volatile_risk = float(volatile_data.Close.iloc[-1]) - float(
+        order_volatile.stop_loss
+    )
+    assert volatile_risk > calm_risk
+
+
+def test_find_swings_does_not_repaint_past_values():
+    # Regression test for look-ahead bias: appending future bars must never
+    # change swing values already reported for earlier bars.
+    from autotrader import indicators
+
+    rng = np.random.default_rng(7)
+    close = 100 + np.cumsum(rng.normal(0, 1, 80))
+    high = close + rng.random(80)
+    low = close - rng.random(80)
+    open_ = close + rng.normal(0, 0.1, 80)
+    idx = pd.date_range("2024-01-01", periods=80, freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+
+    full = indicators.find_swings(data, n=3)
+    partial = indicators.find_swings(data.iloc[:60], n=3)
+
+    pd.testing.assert_frame_equal(full.iloc[:60], partial)
