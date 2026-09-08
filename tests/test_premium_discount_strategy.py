@@ -18,6 +18,7 @@ DEFAULT_PARAMS = dict(
     ote_low=0.618,
     ote_high=0.79,
     one_trade_per_range=True,
+    allow_pyramiding=False,
     RR=2.0,
     sl_buffer_mode="pct",
     sl_buffer_pc=0.001,
@@ -27,16 +28,21 @@ DEFAULT_PARAMS = dict(
 
 
 class FakeBroker:
-    """Minimal stand-in for AutoTrader's broker `get_candles` interface."""
+    """Minimal stand-in for AutoTrader's broker `get_candles`/`get_positions`
+    interface."""
 
-    def __init__(self, data: pd.DataFrame):
+    def __init__(self, data: pd.DataFrame, open_position: bool = False):
         self.data = data
+        self.open_position = open_position
 
     def get_candles(
         self, instrument, granularity=None, count=None, end_time=None, **kwargs
     ):
         window = self.data.loc[:end_time] if end_time is not None else self.data
         return window.iloc[-count:] if count else window
+
+    def get_positions(self, instrument=None, **kwargs):
+        return {instrument: object()} if self.open_position else {}
 
 
 def _set_candle(data, i, open_, close):
@@ -85,9 +91,10 @@ def _build_short_setup():
     return data
 
 
-def _make_strategy(data, **param_overrides):
+def _make_strategy(data, broker=None, **param_overrides):
     params = dict(DEFAULT_PARAMS, **param_overrides)
-    return PremiumDiscountZones(params, "TEST", FakeBroker(data), None, {})
+    broker = broker if broker is not None else FakeBroker(data)
+    return PremiumDiscountZones(params, "TEST", broker, None, {})
 
 
 def test_long_signal_in_discount_zone():
@@ -255,3 +262,43 @@ def test_find_swings_does_not_repaint_past_values():
     partial = indicators.find_swings(data.iloc[:60], n=3)
 
     pd.testing.assert_frame_equal(full.iloc[:60], partial)
+
+
+def test_open_position_blocks_new_entry():
+    # Even with one_trade_per_range disabled, a second entry must not be
+    # taken while a position is already open on the instrument - this is
+    # what protects a restarted strategy (whose _last_entry_range memory
+    # was just wiped) from pyramiding into an existing position.
+    data = _build_long_setup()
+    broker = FakeBroker(data, open_position=True)
+    strat = _make_strategy(data, broker=broker, one_trade_per_range=False)
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction is None
+
+
+def test_allow_pyramiding_overrides_open_position_guard():
+    data = _build_long_setup()
+    broker = FakeBroker(data, open_position=True)
+    strat = _make_strategy(data, broker=broker, allow_pyramiding=True)
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction == 1
+
+
+def test_atr_mode_with_insufficient_history_returns_blank_order():
+    # atr_period exceeds ema_period/swing warmup here; before min_bars
+    # accounted for atr_period this could slip through generate_signal's
+    # data-length gate and later compute a NaN ATR, producing an order
+    # with a NaN stop loss instead of failing safe.
+    data = _build_long_setup().iloc[:12]
+    strat = _make_strategy(
+        data,
+        ema_period=5,
+        swing_n=3,
+        sl_buffer_mode="atr",
+        atr_period=14,
+    )
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction is None

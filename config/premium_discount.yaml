@@ -29,6 +29,12 @@ PARAMETERS:                       # strategy parameters
   # requires a new confirmed swing to redefine the range first.
   one_trade_per_range: True
 
+  # Never open a second position on top of one already open on this
+  # instrument (checked against the broker, not just this strategy's
+  # in-memory state - this also stops a restarted strategy from
+  # re-entering a position that survived the restart).
+  allow_pyramiding: False
+
   # Exit level parameters
   RR: 2.0                         # reward:risk ratio for the take profit
 

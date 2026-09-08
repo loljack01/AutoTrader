@@ -24,7 +24,12 @@ class PremiumDiscountZones(Strategy):
        per an EMA filter (longs only above the EMA, shorts only below it).
     5. Unless `one_trade_per_range` is disabled, only one entry is taken
        per (H, L) range; a new entry requires a new swing to have
-       confirmed and redefined the range.
+       confirmed and redefined the range. Independently of that, unless
+       `allow_pyramiding` is enabled, no new entry is taken while a
+       position is already open on the instrument (checked against the
+       broker directly, not just in-memory state - this also stops a
+       restarted strategy from re-entering a position that survived the
+       restart).
     6. Stop loss is placed beyond the swing which defines the range, offset
        by a buffer (a fixed percentage, or a multiple of ATR - see
        `sl_buffer_mode`) so that a liquidity sweep of the swing does not
@@ -108,7 +113,12 @@ class PremiumDiscountZones(Strategy):
     def generate_signal(self, dt):
         """Fetches the latest data and checks for a premium/discount zone
         entry signal."""
-        min_bars = max(self.params["ema_period"], 2 * self.params["swing_n"]) + 2
+        atr_warmup = (
+            self.params["atr_period"] if self.params["sl_buffer_mode"] == "atr" else 0
+        )
+        min_bars = (
+            max(self.params["ema_period"], 2 * self.params["swing_n"], atr_warmup) + 2
+        )
         data = self.broker.get_candles(
             self.instrument,
             granularity=self.params["granularity"],
@@ -116,6 +126,15 @@ class PremiumDiscountZones(Strategy):
             end_time=dt,
         )
         if len(data) < min_bars:
+            return Order()
+
+        if not self.params["allow_pyramiding"] and self.broker.get_positions(
+            self.instrument
+        ):
+            # Don't open a second position on top of one already open. This
+            # also protects against a strategy restart re-entering a
+            # position that is still open from before the restart, since
+            # `_last_entry_range` only lives in memory.
             return Order()
 
         self.generate_features(data)
@@ -148,11 +167,15 @@ class PremiumDiscountZones(Strategy):
 
         if in_discount and self.bullish_trigger[-1] and (not trend_filter or uptrend):
             stop, take = self.generate_exit_levels(direction=1)
+            if np.isnan(stop) or np.isnan(take):
+                return Order()
             self._last_entry_range = current_range
             return Order(direction=1, stop_loss=stop, take_profit=take)
 
         if in_premium and self.bearish_trigger[-1] and (not trend_filter or downtrend):
             stop, take = self.generate_exit_levels(direction=-1)
+            if np.isnan(stop) or np.isnan(take):
+                return Order()
             self._last_entry_range = current_range
             return Order(direction=-1, stop_loss=stop, take_profit=take)
 
