@@ -75,6 +75,54 @@ def compute_market_structure(
     return pd.Series(trend, index=index), pd.Series(event, index=index)
 
 
+def compute_liquidity_sweeps(
+    data: pd.DataFrame, swing_high: pd.Series, swing_low: pd.Series
+):
+    """Detects liquidity sweeps (stop hunts) of the previously-established
+    swing high/low.
+
+    A bullish sweep is a bar whose **wick** trades below the prior swing
+    low (taking out the resting sell-side liquidity/stops just beyond it)
+    but whose **close** comes back above it - a rejection of the break,
+    rather than a genuine continuation. The symmetric bearish sweep wicks
+    above the prior swing high and closes back below it.
+
+    This is a different, complementary signal to `bullish_engulfing` /
+    `bearish_engulfing`: an engulfing candle only looks at two candles'
+    bodies, with no reference to any specific level, whereas a sweep is
+    specifically about a level being probed and rejected within a single
+    bar. A bar can be both, one, or neither.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        OHLC data.
+
+    swing_high, swing_low : pd.Series
+        The forward-filled last-confirmed swing high/low series (same
+        index as `data`), as produced by
+        `PremiumDiscountZones.generate_features`.
+
+    Returns
+    -------
+    bullish_sweep, bearish_sweep : pd.Series[bool]
+
+    Notes
+    -----
+    Causal by construction: compared against `swing_high.shift(1)` /
+    `swing_low.shift(1)` - the level as it stood at the close of the
+    PREVIOUS bar - so a bar can never sweep a level only established by
+    itself.
+    """
+    ref_high = swing_high.shift(1)
+    ref_low = swing_low.shift(1)
+
+    bullish_sweep = (data["Low"] < ref_low) & (data["Close"] > ref_low)
+    bearish_sweep = (data["High"] > ref_high) & (data["Close"] < ref_high)
+
+    return bullish_sweep.fillna(False), bearish_sweep.fillna(False)
+
+
 class PremiumDiscountZones(Strategy):
     """Premium/Discount Zone Strategy.
 
@@ -90,7 +138,12 @@ class PremiumDiscountZones(Strategy):
        pocket of the H->L leg (for the discount zone) and the L->H leg
        (for the premium zone), rather than the whole half.
     3. Require a bullish/bearish engulfing candle as the entry trigger, to
-       avoid re-entering on every bar spent inside a zone.
+       avoid re-entering on every bar spent inside a zone. If
+       `use_liquidity_sweep` is enabled, a liquidity sweep of the swing
+       (see `compute_liquidity_sweeps`) is also accepted as a trigger in
+       its own right - a wick through the swing that gets rejected back
+       inside is often a cleaner, earlier confirmation than waiting for a
+       full engulfing candle to print.
     4. Optionally require the entry to agree with the prevailing trend, as
        per an EMA filter (longs only above the EMA, shorts only below it)
        and/or a market structure filter (`use_structure_filter`): longs
@@ -184,6 +237,9 @@ class PremiumDiscountZones(Strategy):
         # Entry triggers
         self.bullish_trigger = indicators.bullish_engulfing(data)
         self.bearish_trigger = indicators.bearish_engulfing(data)
+        self.bullish_sweep, self.bearish_sweep = compute_liquidity_sweeps(
+            data, swing_high, swing_low
+        )
 
         # Market structure (BOS/CHoCH), built on the same swing levels
         self.structure_trend, self.structure_event = compute_market_structure(
@@ -250,15 +306,23 @@ class PremiumDiscountZones(Strategy):
         bullish_structure = current_structure == "bullish"
         bearish_structure = current_structure == "bearish"
 
+        use_sweep = self.params["use_liquidity_sweep"]
+        long_trigger = self.bullish_trigger[-1] or (
+            use_sweep and bool(self.bullish_sweep.iloc[-1])
+        )
+        short_trigger = self.bearish_trigger[-1] or (
+            use_sweep and bool(self.bearish_sweep.iloc[-1])
+        )
+
         long_ok = (
             in_discount
-            and self.bullish_trigger[-1]
+            and long_trigger
             and (not trend_filter or uptrend)
             and (not structure_filter or bullish_structure)
         )
         short_ok = (
             in_premium
-            and self.bearish_trigger[-1]
+            and short_trigger
             and (not trend_filter or downtrend)
             and (not structure_filter or bearish_structure)
         )

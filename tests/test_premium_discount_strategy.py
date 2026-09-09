@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "strategies"))
 from premium_discount import (  # noqa: E402
     PremiumDiscountZones,
     compute_market_structure,
+    compute_liquidity_sweeps,
 )
 
 DEFAULT_PARAMS = dict(
@@ -18,6 +19,7 @@ DEFAULT_PARAMS = dict(
     ema_period=20,
     use_trend_filter=False,
     use_structure_filter=False,
+    use_liquidity_sweep=False,
     use_ote=False,
     ote_low=0.618,
     ote_high=0.79,
@@ -430,3 +432,71 @@ def test_atr_mode_with_insufficient_history_returns_blank_order():
 
     order = strat.generate_signal(data.index[-1])
     assert order.direction is None
+
+
+def _build_sweep_setup():
+    """Same down-up-pullback shape as _build_long_setup, but the final
+    candle is a liquidity sweep of the swing low (wick below it, close
+    back above) rather than a proper engulfing pattern."""
+    down = np.linspace(100, 90, 15)
+    up = np.linspace(90, 150, 40)
+    pull = np.linspace(150, 108, 25)
+    close = np.concatenate([down, up, pull])
+    open_ = np.concatenate([[100], close[:-1]])
+    high = np.maximum(open_, close) + 0.3
+    low = np.minimum(open_, close) - 0.3
+    idx = pd.date_range("2024-01-01", periods=len(close), freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+
+    from autotrader import indicators
+
+    swing_low_before = (
+        indicators.find_swings(data, n=3).Lows.replace(0, np.nan).ffill().iloc[-2]
+    )
+    cols = data.columns
+    data.iloc[-1, cols.get_loc("Open")] = swing_low_before + 0.3
+    data.iloc[-1, cols.get_loc("Close")] = swing_low_before + 0.5
+    data.iloc[-1, cols.get_loc("Low")] = swing_low_before - 1.0
+    data.iloc[-1, cols.get_loc("High")] = swing_low_before + 0.6
+    return data
+
+
+def test_liquidity_sweep_detected_causally():
+    data = _build_sweep_setup()
+    swing_high, swing_low = _swings_for(data)
+    bullish_sweep, bearish_sweep = compute_liquidity_sweeps(data, swing_high, swing_low)
+
+    assert bool(bullish_sweep.iloc[-1]) is True
+    assert bool(bearish_sweep.iloc[-1]) is False
+
+    # Causality: appending future bars must not change past sweep values.
+    swing_high_partial, swing_low_partial = _swings_for(data.iloc[:-5])
+    bullish_partial, _ = compute_liquidity_sweeps(
+        data.iloc[:-5], swing_high_partial, swing_low_partial
+    )
+    pd.testing.assert_series_equal(
+        bullish_sweep.iloc[:-5], bullish_partial, check_names=False
+    )
+
+
+def test_sweep_setup_is_not_a_valid_engulfing():
+    # Sanity check that this fixture actually isolates the sweep trigger:
+    # the crafted candle must NOT also satisfy bullish_engulfing, or the
+    # next test wouldn't prove the sweep path did the work.
+    from autotrader import indicators
+
+    data = _build_sweep_setup()
+    assert bool(indicators.bullish_engulfing(data)[-1]) is False
+
+
+def test_liquidity_sweep_trigger_is_opt_in():
+    data = _build_sweep_setup()
+
+    strat_off = _make_strategy(data, use_liquidity_sweep=False)
+    assert strat_off.generate_signal(data.index[-1]).direction is None
+
+    strat_on = _make_strategy(data, use_liquidity_sweep=True)
+    order_on = strat_on.generate_signal(data.index[-1])
+    assert order_on.direction == 1

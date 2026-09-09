@@ -35,6 +35,13 @@ PARAMETERS:                       # strategy parameters
   ote_low: 0.618
   ote_high: 0.79
 
+  # Accept a liquidity sweep of the swing (wick through it, close back
+  # inside) as an entry trigger, in addition to the engulfing candle. A
+  # sweep is often the earlier, cleaner confirmation - the reversal is
+  # already visible on the same bar the level gets swept, rather than
+  # waiting for a full 2-candle engulfing pattern to print.
+  use_liquidity_sweep: False
+
   # Only take one entry per (swing_high, swing_low) range; a new entry
   # requires a new confirmed swing to redefine the range first.
   one_trade_per_range: True
