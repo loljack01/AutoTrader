@@ -14,6 +14,16 @@ PARAMETERS:                       # strategy parameters
   ema_period: 50
   use_trend_filter: True
 
+  # Market structure filter (BOS/CHoCH): longs only once the last
+  # confirmed break of structure left the market bullish, shorts only
+  # once it left it bearish. See compute_market_structure() in
+  # premium_discount.py for the exact definition. This is conceptually
+  # redundant with use_trend_filter (both are trend-agreement filters,
+  # one EMA-based and one structure-based) - left off by default so you
+  # can measure each one's edge separately before combining them, rather
+  # than stacking confirmations blindly.
+  use_structure_filter: False
+
   # Premium/discount zone definition.
   # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the
   # premium zone, where EQ = (H + L) / 2.

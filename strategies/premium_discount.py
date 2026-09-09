@@ -1,7 +1,78 @@
 import numpy as np
+import pandas as pd
 from finta import TA
 from autotrader import Order, indicators
 from autotrader.strategy import Strategy
+
+
+def compute_market_structure(
+    data: pd.DataFrame, swing_high: pd.Series, swing_low: pd.Series
+):
+    """Classifies each bar into a market structure trend (bullish/bearish)
+    and, where applicable, a BOS or CHoCH event.
+
+    A break of the previously-established swing high/low, by closing price,
+    is a **BOS** (Break of Structure) if it continues the current trend, or
+    a **CHoCH** (Change of Character) if it is the first break against the
+    current trend - the classic first sign of a potential reversal. Before
+    any trend has been established, the first break is labelled a BOS.
+
+    This is intentionally close-based (not wick-based): a break is only
+    counted once price *closes* beyond the reference level, which is less
+    noisy than reacting to a single wick poking through it.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        OHLC data.
+
+    swing_high, swing_low : pd.Series
+        The forward-filled last-confirmed swing high/low series, as
+        produced by `PremiumDiscountZones.generate_features` (same index
+        as `data`). NaN before any swing has been confirmed.
+
+    Returns
+    -------
+    trend : pd.Series
+        "bullish" / "bearish" / None, forward-filled from the last event.
+
+    event : pd.Series
+        "BOS_bullish" / "CHoCH_bullish" / "BOS_bearish" / "CHoCH_bearish"
+        on the bar it occurs, None otherwise.
+
+    Notes
+    -----
+    Causal by construction: only `swing_high.shift(1)` / `swing_low.shift(1)`
+    (the level as it stood at the close of the PREVIOUS bar) is compared
+    against the current close, so a bar can never break a level that was
+    only established by itself.
+    """
+    close = data["Close"].to_numpy()
+    ref_high = swing_high.shift(1).to_numpy()
+    ref_low = swing_low.shift(1).to_numpy()
+
+    trend = [None] * len(data)
+    event = [None] * len(data)
+    current_trend = None
+
+    for i in range(len(data)):
+        broke_up = not np.isnan(ref_high[i]) and close[i] > ref_high[i]
+        broke_down = not np.isnan(ref_low[i]) and close[i] < ref_low[i]
+
+        # If a single bar's close somehow breaks both levels (only possible
+        # with a very small swing_n on a highly volatile bar), the upward
+        # break is resolved first - an arbitrary but deterministic choice.
+        if broke_up:
+            event[i] = "CHoCH_bullish" if current_trend == "bearish" else "BOS_bullish"
+            current_trend = "bullish"
+        elif broke_down:
+            event[i] = "CHoCH_bearish" if current_trend == "bullish" else "BOS_bearish"
+            current_trend = "bearish"
+
+        trend[i] = current_trend
+
+    index = data.index
+    return pd.Series(trend, index=index), pd.Series(event, index=index)
 
 
 class PremiumDiscountZones(Strategy):
@@ -21,7 +92,11 @@ class PremiumDiscountZones(Strategy):
     3. Require a bullish/bearish engulfing candle as the entry trigger, to
        avoid re-entering on every bar spent inside a zone.
     4. Optionally require the entry to agree with the prevailing trend, as
-       per an EMA filter (longs only above the EMA, shorts only below it).
+       per an EMA filter (longs only above the EMA, shorts only below it)
+       and/or a market structure filter (`use_structure_filter`): longs
+       only while the last BOS/CHoCH left structure bullish, shorts only
+       while it left structure bearish. See `compute_market_structure` for
+       exactly how BOS/CHoCH are defined here.
     5. Unless `one_trade_per_range` is disabled, only one entry is taken
        per (H, L) range; a new entry requires a new swing to have
        confirmed and redefined the range. Independently of that, unless
@@ -110,6 +185,11 @@ class PremiumDiscountZones(Strategy):
         self.bullish_trigger = indicators.bullish_engulfing(data)
         self.bearish_trigger = indicators.bearish_engulfing(data)
 
+        # Market structure (BOS/CHoCH), built on the same swing levels
+        self.structure_trend, self.structure_event = compute_market_structure(
+            data, swing_high, swing_low
+        )
+
     def generate_signal(self, dt):
         """Fetches the latest data and checks for a premium/discount zone
         entry signal."""
@@ -165,14 +245,32 @@ class PremiumDiscountZones(Strategy):
         uptrend = close > self.ema.iloc[-1]
         downtrend = close < self.ema.iloc[-1]
 
-        if in_discount and self.bullish_trigger[-1] and (not trend_filter or uptrend):
+        structure_filter = self.params["use_structure_filter"]
+        current_structure = self.structure_trend.iloc[-1]
+        bullish_structure = current_structure == "bullish"
+        bearish_structure = current_structure == "bearish"
+
+        long_ok = (
+            in_discount
+            and self.bullish_trigger[-1]
+            and (not trend_filter or uptrend)
+            and (not structure_filter or bullish_structure)
+        )
+        short_ok = (
+            in_premium
+            and self.bearish_trigger[-1]
+            and (not trend_filter or downtrend)
+            and (not structure_filter or bearish_structure)
+        )
+
+        if long_ok:
             stop, take = self.generate_exit_levels(direction=1)
             if np.isnan(stop) or np.isnan(take):
                 return Order()
             self._last_entry_range = current_range
             return Order(direction=1, stop_loss=stop, take_profit=take)
 
-        if in_premium and self.bearish_trigger[-1] and (not trend_filter or downtrend):
+        if short_ok:
             stop, take = self.generate_exit_levels(direction=-1)
             if np.isnan(stop) or np.isnan(take):
                 return Order()
@@ -223,5 +321,14 @@ class PremiumDiscountZones(Strategy):
                 "upper": self.premium_zone[1],
                 "fill_color": "red",
                 "fill_alpha": 0.15,
+            },
+            # +1 while structure is bullish, -1 while bearish, NaN before
+            # the first BOS/CHoCH. Plotted as a plain line via the 'MA'
+            # type - AutoPlot has no dedicated BOS/CHoCH marker type.
+            "Market structure": {
+                "type": "MA",
+                "data": self.structure_trend.map({"bullish": 1, "bearish": -1}).astype(
+                    float
+                ),
             },
         }

@@ -6,7 +6,10 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "strategies"))
-from premium_discount import PremiumDiscountZones  # noqa: E402
+from premium_discount import (  # noqa: E402
+    PremiumDiscountZones,
+    compute_market_structure,
+)
 
 DEFAULT_PARAMS = dict(
     granularity="1h",
@@ -14,6 +17,7 @@ DEFAULT_PARAMS = dict(
     swing_n=3,
     ema_period=20,
     use_trend_filter=False,
+    use_structure_filter=False,
     use_ote=False,
     ote_low=0.618,
     ote_high=0.79,
@@ -262,6 +266,130 @@ def test_find_swings_does_not_repaint_past_values():
     partial = indicators.find_swings(data.iloc[:60], n=3)
 
     pd.testing.assert_frame_equal(full.iloc[:60], partial)
+
+
+def _swings_for(data, n=3):
+    from autotrader import indicators
+
+    swings = indicators.find_swings(data, n=n)
+    swing_high = swings.Highs.replace(0, np.nan).ffill()
+    swing_low = swings.Lows.replace(0, np.nan).ffill()
+    return swing_high, swing_low
+
+
+def test_market_structure_labels_continuation_as_bos():
+    # A clean up-down-up-down zigzag making a higher low then a higher
+    # high: both later breaks continue the (implicitly bullish, since it's
+    # the first-ever break) structure, so both should be BOS, not CHoCH.
+    down1 = np.linspace(100, 90, 15)
+    up1 = np.linspace(90, 110, 15)
+    down2 = np.linspace(110, 95, 15)  # higher low than 90
+    up2 = np.linspace(95, 120, 15)  # higher high than 110
+    close = np.concatenate([down1, up1, down2, up2])
+    open_ = np.concatenate([[100], close[:-1]])
+    high = np.maximum(open_, close) + 0.3
+    low = np.minimum(open_, close) - 0.3
+    idx = pd.date_range("2024-01-01", periods=len(close), freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+
+    swing_high, swing_low = _swings_for(data)
+    trend, event = compute_market_structure(data, swing_high, swing_low)
+
+    fired = event[event.notna()]
+    assert len(fired) > 0
+    assert set(fired.unique()) == {"BOS_bullish"}
+    assert trend.iloc[-1] == "bullish"
+
+
+def test_market_structure_labels_reversal_as_choch():
+    # Downtrend (LH then LL confirms bearish BOS), then a rally that breaks
+    # back above the last LH - the first break against the established
+    # trend must be labelled a CHoCH, not another BOS.
+    up0 = np.linspace(100, 110, 12)
+    down1 = np.linspace(110, 90, 12)
+    up1 = np.linspace(90, 105, 12)  # lower high (105 < 110)
+    down2 = np.linspace(105, 80, 12)  # lower low (80 < 90) -> BOS_bearish
+    rally = np.linspace(80, 108, 12)  # breaks back above 105 -> CHoCH_bullish
+    close = np.concatenate([up0, down1, up1, down2, rally])
+    open_ = np.concatenate([[100], close[:-1]])
+    high = np.maximum(open_, close) + 0.3
+    low = np.minimum(open_, close) - 0.3
+    idx = pd.date_range("2024-01-01", periods=len(close), freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+
+    swing_high, swing_low = _swings_for(data)
+    trend, event = compute_market_structure(data, swing_high, swing_low)
+
+    fired = event[event.notna()]
+    assert "BOS_bearish" in fired.values
+    assert "CHoCH_bullish" in fired.values
+    # The CHoCH must come after at least one bearish BOS, and structure
+    # must end bullish, not flip back and forth.
+    choch_pos = fired[fired == "CHoCH_bullish"].index[0]
+    bos_positions = fired[fired == "BOS_bearish"].index
+    assert (bos_positions < choch_pos).all()
+    assert trend.iloc[-1] == "bullish"
+
+
+def test_market_structure_does_not_repaint():
+    rng = np.random.default_rng(11)
+    close = 100 + np.cumsum(rng.normal(0, 1, 100))
+    high = close + rng.random(100)
+    low = close - rng.random(100)
+    open_ = close + rng.normal(0, 0.1, 100)
+    idx = pd.date_range("2024-01-01", periods=100, freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+
+    swing_high, swing_low = _swings_for(data)
+    trend_full, event_full = compute_market_structure(data, swing_high, swing_low)
+
+    partial_data = data.iloc[:70]
+    partial_high, partial_low = _swings_for(partial_data)
+    trend_partial, event_partial = compute_market_structure(
+        partial_data, partial_high, partial_low
+    )
+
+    pd.testing.assert_series_equal(trend_full.iloc[:70], trend_partial)
+    pd.testing.assert_series_equal(event_full.iloc[:70], event_partial)
+
+
+def test_structure_filter_blocks_signal_with_no_established_structure():
+    # The long setup's pullback never breaks back below the swing low that
+    # defines its range, so no BOS/CHoCH has fired yet at the entry bar -
+    # with the structure filter on, that must block the trade.
+    data = _build_long_setup()
+    strat = _make_strategy(data, use_structure_filter=True)
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction is None
+
+
+def test_structure_filter_allows_signal_when_structure_agrees(monkeypatch):
+    # Force an already-bullish structure state, to isolate the filter's
+    # wiring in generate_signal from having to hand-construct a full
+    # second leg of price history just to get a real CHoCH/BOS to fire.
+    import premium_discount
+
+    data = _build_long_setup()
+    strat = _make_strategy(data, use_structure_filter=True)
+
+    def fake_market_structure(data, swing_high, swing_low):
+        trend = pd.Series(["bullish"] * len(data), index=data.index)
+        event = pd.Series([None] * len(data), index=data.index)
+        return trend, event
+
+    monkeypatch.setattr(
+        premium_discount, "compute_market_structure", fake_market_structure
+    )
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction == 1
 
 
 def test_open_position_blocks_new_entry():
