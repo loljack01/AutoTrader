@@ -24,6 +24,17 @@ PARAMETERS:                       # strategy parameters
   # than stacking confirmations blindly.
   use_structure_filter: False
 
+  # Higher-timeframe structure veto: longs are only taken while the
+  # market structure on htf_resample is bullish, shorts only while it's
+  # bearish (fails closed - not enough higher-timeframe history yet also
+  # blocks). This is the direct answer to "how do I avoid buying a
+  # discount zone that keeps sliding lower": the local swing low can
+  # look like a reversal on the execution timeframe while the larger
+  # structure is still making lower lows. htf_resample must be coarser
+  # than INTERVAL (eg. '1h' while trading '1m').
+  use_htf_filter: False
+  htf_resample: '1h'
+
   # Premium/discount zone definition.
   # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the
   # premium zone, where EQ = (H + L) / 2.

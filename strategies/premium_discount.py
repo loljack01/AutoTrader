@@ -123,6 +123,33 @@ def compute_liquidity_sweeps(
     return bullish_sweep.fillna(False), bearish_sweep.fillna(False)
 
 
+def resample_ohlc(data: pd.DataFrame, rule: str) -> pd.DataFrame:
+    """Resamples OHLC(V) data to a coarser timeframe, dropping the final
+    bar if it is still in progress (its period hasn't fully elapsed as of
+    the last timestamp in `data`) so a higher-timeframe read never relies
+    on an incomplete candle."""
+    agg = {"Open": "first", "High": "max", "Low": "min", "Close": "last"}
+    if "Volume" in data.columns:
+        agg["Volume"] = "sum"
+    resampled = data.resample(rule).agg(agg).dropna(how="any")
+
+    if len(resampled) == 0:
+        return resampled
+
+    # `data` is indexed by each bar's OPEN time, so its last timestamp
+    # covers price action through (last timestamp + one base-bar period),
+    # not just up to that timestamp itself.
+    base_period = (
+        data.index[1] - data.index[0] if len(data.index) >= 2 else pd.Timedelta(0)
+    )
+    offset = pd.tseries.frequencies.to_offset(rule)
+    last_bin_end = resampled.index[-1] + offset
+    if data.index[-1] + base_period < last_bin_end:
+        resampled = resampled.iloc[:-1]
+
+    return resampled
+
+
 class PremiumDiscountZones(Strategy):
     """Premium/Discount Zone Strategy.
 
@@ -149,7 +176,12 @@ class PremiumDiscountZones(Strategy):
        and/or a market structure filter (`use_structure_filter`): longs
        only while the last BOS/CHoCH left structure bullish, shorts only
        while it left structure bearish. See `compute_market_structure` for
-       exactly how BOS/CHoCH are defined here.
+       exactly how BOS/CHoCH are defined here. `use_htf_filter` applies
+       the same structure check on a higher timeframe (`htf_resample`,
+       eg. '1h' while trading '1m'): this specifically guards against
+       buying a discount zone that keeps redefining itself lower, because
+       the *larger* structure is still bearish even though a local swing
+       low just triggered an entry on the execution timeframe.
     5. Unless `one_trade_per_range` is disabled, only one entry is taken
        per (H, L) range; a new entry requires a new swing to have
        confirmed and redefined the range. Independently of that, unless
@@ -246,6 +278,18 @@ class PremiumDiscountZones(Strategy):
             data, swing_high, swing_low
         )
 
+        # Higher-timeframe structure, used as a veto on top of the above
+        self.htf_trend = None
+        if self.params["use_htf_filter"]:
+            htf_data = resample_ohlc(data, self.params["htf_resample"])
+            if len(htf_data) >= 2 * self.params["swing_n"] + 2:
+                htf_swings = indicators.find_swings(htf_data, n=self.params["swing_n"])
+                htf_swing_high = htf_swings.Highs.replace(0, np.nan).ffill()
+                htf_swing_low = htf_swings.Lows.replace(0, np.nan).ffill()
+                self.htf_trend, _ = compute_market_structure(
+                    htf_data, htf_swing_high, htf_swing_low
+                )
+
     def generate_signal(self, dt):
         """Fetches the latest data and checks for a premium/discount zone
         entry signal."""
@@ -306,6 +350,11 @@ class PremiumDiscountZones(Strategy):
         bullish_structure = current_structure == "bullish"
         bearish_structure = current_structure == "bearish"
 
+        htf_filter = self.params["use_htf_filter"]
+        htf_structure = self.htf_trend.iloc[-1] if self.htf_trend is not None else None
+        htf_bullish = htf_structure == "bullish"
+        htf_bearish = htf_structure == "bearish"
+
         use_sweep = self.params["use_liquidity_sweep"]
         long_trigger = self.bullish_trigger[-1] or (
             use_sweep and bool(self.bullish_sweep.iloc[-1])
@@ -319,12 +368,14 @@ class PremiumDiscountZones(Strategy):
             and long_trigger
             and (not trend_filter or uptrend)
             and (not structure_filter or bullish_structure)
+            and (not htf_filter or htf_bullish)
         )
         short_ok = (
             in_premium
             and short_trigger
             and (not trend_filter or downtrend)
             and (not structure_filter or bearish_structure)
+            and (not htf_filter or htf_bearish)
         )
 
         if long_ok:

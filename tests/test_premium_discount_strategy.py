@@ -10,6 +10,7 @@ from premium_discount import (  # noqa: E402
     PremiumDiscountZones,
     compute_market_structure,
     compute_liquidity_sweeps,
+    resample_ohlc,
 )
 
 DEFAULT_PARAMS = dict(
@@ -20,6 +21,8 @@ DEFAULT_PARAMS = dict(
     use_trend_filter=False,
     use_structure_filter=False,
     use_liquidity_sweep=False,
+    use_htf_filter=False,
+    htf_resample="4h",
     use_ote=False,
     ote_low=0.618,
     ote_high=0.79,
@@ -500,3 +503,96 @@ def test_liquidity_sweep_trigger_is_opt_in():
     strat_on = _make_strategy(data, use_liquidity_sweep=True)
     order_on = strat_on.generate_signal(data.index[-1])
     assert order_on.direction == 1
+
+
+def test_resample_ohlc_aggregates_correctly_and_drops_incomplete_bar():
+    # 170 one-minute bars from 00:00 run through 02:49 (each bar is
+    # indexed by its OPEN time, so this covers price action up to
+    # 02:50) - two complete hours plus a partial third hour, which must
+    # be dropped since it's still 10 minutes short of 03:00.
+    idx = pd.date_range("2024-01-01 00:00", periods=170, freq="1min")
+    rng = np.random.default_rng(1)
+    close = 100 + np.cumsum(rng.normal(0, 0.1, 170))
+    data = pd.DataFrame(
+        {"Open": close, "High": close + 0.2, "Low": close - 0.2, "Close": close},
+        index=idx,
+    )
+
+    resampled = resample_ohlc(data, "1h")
+
+    assert list(resampled.index) == [
+        pd.Timestamp("2024-01-01 00:00"),
+        pd.Timestamp("2024-01-01 01:00"),
+    ]
+    hour0 = data.loc["2024-01-01 00:00":"2024-01-01 00:59"]
+    assert resampled["Open"].iloc[0] == pytest.approx(hour0["Open"].iloc[0])
+    assert resampled["High"].iloc[0] == pytest.approx(hour0["High"].max())
+    assert resampled["Low"].iloc[0] == pytest.approx(hour0["Low"].min())
+    assert resampled["Close"].iloc[0] == pytest.approx(hour0["Close"].iloc[-1])
+
+
+def test_resample_ohlc_keeps_bar_that_just_completed():
+    # 120 minutes exactly spans two complete hours (00:00-00:59,
+    # 01:00-01:59), with the last data point being the final minute of
+    # the second hour - that bar is complete and must be kept.
+    idx = pd.date_range("2024-01-01 00:00", periods=120, freq="1min")
+    close = np.linspace(100, 110, 120)
+    data = pd.DataFrame(
+        {"Open": close, "High": close + 0.2, "Low": close - 0.2, "Close": close},
+        index=idx,
+    )
+    resampled = resample_ohlc(data, "1h")
+    assert list(resampled.index) == [
+        pd.Timestamp("2024-01-01 00:00"),
+        pd.Timestamp("2024-01-01 01:00"),
+    ]
+
+
+def _build_htf_veto_setup():
+    """A long, persistent downtrend (so a 4h resample confirms bearish
+    structure) with a small local bullish-engulfing reversal in the final
+    two hourly bars - a setup that only a higher-timeframe check would
+    catch as still counter-trend."""
+    rng = np.random.default_rng(3)
+
+    def leg(a, b, n, noise=0.5):
+        return np.linspace(a, b, n) + rng.normal(0, noise, n)
+
+    segments = [
+        leg(300, 250, 60),
+        leg(250, 255, 5),
+        leg(255, 200, 60),
+        leg(200, 205, 5),
+        leg(205, 150, 60),
+    ]
+    close = np.concatenate(segments)
+    open_ = np.concatenate([[300], close[:-1]])
+    high = np.maximum(open_, close) + 0.5
+    low = np.minimum(open_, close) - 0.5
+    idx = pd.date_range("2024-01-01", periods=len(close), freq="h")
+    data = pd.DataFrame(
+        {"Open": open_, "High": high, "Low": low, "Close": close}, index=idx
+    )
+    _set_candle(data, -2, 151.0, 150.8)
+    _set_candle(data, -1, 150.5, 155.0)
+    return data
+
+
+def test_htf_filter_vetoes_local_reversal_against_larger_trend():
+    data = _build_htf_veto_setup()
+
+    strat_off = _make_strategy(data, use_htf_filter=False)
+    assert strat_off.generate_signal(data.index[-1]).direction == 1
+
+    strat_on = _make_strategy(data, use_htf_filter=True, htf_resample="4h")
+    order_on = strat_on.generate_signal(data.index[-1])
+    assert order_on.direction is None
+    assert strat_on.htf_trend.iloc[-1] == "bearish"
+
+
+def test_htf_filter_fails_closed_without_enough_higher_timeframe_history():
+    data = _build_long_setup()
+    strat = _make_strategy(data, use_htf_filter=True, htf_resample="4h", swing_n=3)
+
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction is None
