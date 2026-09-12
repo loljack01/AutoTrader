@@ -548,6 +548,47 @@ def test_resample_ohlc_keeps_bar_that_just_completed():
     ]
 
 
+def test_resample_ohlc_rejects_a_rule_not_coarser_than_the_data():
+    # Resampling '1h' data to '1h' (or finer) would silently produce a
+    # no-op "higher timeframe" identical to the base data - this must be
+    # a loud error, not a silently useless filter.
+    idx = pd.date_range("2024-01-01", periods=10, freq="h")
+    close = np.linspace(100, 110, 10)
+    data = pd.DataFrame(
+        {"Open": close, "High": close + 0.2, "Low": close - 0.2, "Close": close},
+        index=idx,
+    )
+    with pytest.raises(ValueError):
+        resample_ohlc(data, "1h")
+    with pytest.raises(ValueError):
+        resample_ohlc(data, "30min")
+
+
+def test_resample_ohlc_base_period_robust_to_session_gap():
+    # An overnight session gap between the first two bars must not be
+    # mistaken for the instrument's actual bar spacing (which would
+    # corrupt the "is the last bar complete" check for every later call).
+    day1 = pd.date_range(
+        "2024-01-01 17:00", periods=2, freq="1min"
+    )  # last 2 min of day 1
+    day2 = pd.date_range(
+        "2024-01-02 08:00", periods=170, freq="1min"
+    )  # day 2, incomplete last hour
+    idx = day1.append(day2)
+    close = np.linspace(100, 110, len(idx))
+    data = pd.DataFrame(
+        {"Open": close, "High": close + 0.2, "Low": close - 0.2, "Close": close},
+        index=idx,
+    )
+
+    resampled = resample_ohlc(data, "1h")
+
+    # Day 2 spans 08:00 to 10:49 (170 minutes) - two complete hours
+    # (08:00, 09:00) plus a partial third (10:00-10:49), which must be
+    # dropped despite the ~15-hour overnight gap earlier in the series.
+    assert resampled.index[-1] == pd.Timestamp("2024-01-02 09:00")
+
+
 def _build_htf_veto_setup():
     """A long, persistent downtrend (so a 4h resample confirms bearish
     structure) with a small local bullish-engulfing reversal in the final

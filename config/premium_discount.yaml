@@ -30,10 +30,12 @@ PARAMETERS:                       # strategy parameters
   # blocks). This is the direct answer to "how do I avoid buying a
   # discount zone that keeps sliding lower": the local swing low can
   # look like a reversal on the execution timeframe while the larger
-  # structure is still making lower lows. htf_resample must be coarser
-  # than INTERVAL (eg. '1h' while trading '1m').
+  # structure is still making lower lows. htf_resample MUST be coarser
+  # than INTERVAL above (currently '1h') - resample_ohlc() raises if it
+  # isn't, rather than silently becoming a no-op "higher timeframe" that
+  # is really just the same timeframe.
   use_htf_filter: False
-  htf_resample: '1h'
+  htf_resample: '4h'
 
   # Premium/discount zone definition.
   # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the

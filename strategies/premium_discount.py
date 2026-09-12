@@ -123,11 +123,45 @@ def compute_liquidity_sweeps(
     return bullish_sweep.fillna(False), bearish_sweep.fillna(False)
 
 
+def _infer_base_period(data: pd.DataFrame) -> pd.Timedelta:
+    """Infers the underlying bar spacing of `data`, robust to gaps (eg. an
+    overnight session break in a futures instrument that doesn't trade
+    24/7): the smallest gap between consecutive timestamps is used, since
+    any session break produces a LARGER gap than the true bar spacing,
+    never a smaller one."""
+    if len(data.index) < 2:
+        return pd.Timedelta(0)
+    diffs = data.index.to_series().diff().dropna()
+    return diffs.min() if len(diffs) else pd.Timedelta(0)
+
+
 def resample_ohlc(data: pd.DataFrame, rule: str) -> pd.DataFrame:
     """Resamples OHLC(V) data to a coarser timeframe, dropping the final
     bar if it is still in progress (its period hasn't fully elapsed as of
     the last timestamp in `data`) so a higher-timeframe read never relies
-    on an incomplete candle."""
+    on an incomplete candle.
+
+    Raises
+    ------
+    ValueError
+        If `rule` is not coarser than the granularity of `data` itself -
+        resampling to the same (or a finer) timeframe would silently
+        produce a no-op "higher timeframe" that isn't actually higher.
+    """
+    base_period = _infer_base_period(data)
+    try:
+        rule_period = pd.Timedelta(pd.tseries.frequencies.to_offset(rule))
+    except ValueError:
+        rule_period = None  # non-fixed-frequency rule (eg. calendar month)
+
+    if rule_period is not None and base_period > pd.Timedelta(0):
+        if rule_period <= base_period:
+            raise ValueError(
+                f"resample_ohlc: rule '{rule}' ({rule_period}) is not "
+                f"coarser than the data's own granularity ({base_period}); "
+                "htf_resample must be coarser than the strategy's INTERVAL."
+            )
+
     agg = {"Open": "first", "High": "max", "Low": "min", "Close": "last"}
     if "Volume" in data.columns:
         agg["Volume"] = "sum"
@@ -139,9 +173,6 @@ def resample_ohlc(data: pd.DataFrame, rule: str) -> pd.DataFrame:
     # `data` is indexed by each bar's OPEN time, so its last timestamp
     # covers price action through (last timestamp + one base-bar period),
     # not just up to that timestamp itself.
-    base_period = (
-        data.index[1] - data.index[0] if len(data.index) >= 2 else pd.Timedelta(0)
-    )
     offset = pd.tseries.frequencies.to_offset(rule)
     last_bin_end = resampled.index[-1] + offset
     if data.index[-1] + base_period < last_bin_end:
