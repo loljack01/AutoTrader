@@ -1,0 +1,99 @@
+NAME: 'Premium Discount Zones'    # strategy name
+MODULE: 'premium_discount'        # strategy module (strategies/premium_discount.py)
+CLASS: 'PremiumDiscountZones'     # strategy class
+INTERVAL: '1h'                    # strategy timeframe
+PARAMETERS:                       # strategy parameters
+  swing_n: 4                      # moving average period used to detect swings
+  lookback_candles: 300           # number of candles fetched on each update
+
+  # Regime filter: pick ONE, not both (see the class docstring for the
+  # full rationale). Recommended default: structure filter on, EMA
+  # filter off - structure reacts to price directly instead of lagging
+  # behind a smoothed average, and needs no period to tune.
+  #
+  # Market structure filter (BOS/CHoCH): longs only once the last
+  # confirmed break of structure left the market bullish, shorts only
+  # once it left it bearish. See compute_market_structure() in
+  # premium_discount.py for the exact definition.
+  use_structure_filter: True
+
+  # EMA trend filter, OFF by default - conceptually redundant with
+  # use_structure_filter above (both are trend-agreement filters).
+  # Keep this EMA period fixed if you do turn it on to compare against
+  # the structure filter; only compare EMA 13 (fast) vs EMA 50
+  # (directional) once you start tuning - avoid grid-searching many
+  # periods (7/9/13/20/21/50/200) and picking the best in-sample result,
+  # a classic overfitting trap.
+  ema_period: 50
+  use_trend_filter: False
+
+  # Trading session filter: no signal is generated outside this window.
+  # Recommended ON for an index future like CAC 40 - the thin, gap-prone
+  # hours around the open/close and overnight produce erratic wicks that
+  # degrade every other rule (swings, engulfing, sweeps). These are
+  # plain HH:MM strings compared directly to the data feed's own
+  # timestamps - no timezone conversion is attempted, so set them to
+  # whatever timezone your feed actually uses. The example below assumes
+  # a feed in Paris local time and the Euronext cash-market hours, which
+  # is where CAC 40 futures liquidity is deepest; adjust to your feed.
+  use_session_filter: True
+  session_start: '09:00'
+  session_end: '17:30'
+
+  # Higher-timeframe structure veto: longs are only taken while the
+  # market structure on htf_resample is bullish, shorts only while it's
+  # bearish (fails closed - not enough higher-timeframe history yet also
+  # blocks). This is the direct answer to "how do I avoid buying a
+  # discount zone that keeps sliding lower": the local swing low can
+  # look like a reversal on the execution timeframe while the larger
+  # structure is still making lower lows. htf_resample MUST be coarser
+  # than INTERVAL above (currently '1h') - resample_ohlc() raises if it
+  # isn't, rather than silently becoming a no-op "higher timeframe" that
+  # is really just the same timeframe.
+  use_htf_filter: False
+  htf_resample: '4h'
+
+  # Premium/discount zone definition.
+  # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the
+  # premium zone, where EQ = (H + L) / 2.
+  # If use_ote is True, entries are instead restricted to the classic
+  # 61.8%-79% Fibonacci retracement pocket: the discount zone becomes the
+  # retracement of the H->L leg (just above L), and the premium zone
+  # becomes the retracement of the L->H leg (just below H).
+  use_ote: True
+  ote_low: 0.618
+  ote_high: 0.79
+
+  # Accept a liquidity sweep of the swing (wick through it, close back
+  # inside) as an entry trigger, in addition to the engulfing candle. A
+  # sweep is often the earlier, cleaner confirmation - the reversal is
+  # already visible on the same bar the level gets swept, rather than
+  # waiting for a full 2-candle engulfing pattern to print.
+  use_liquidity_sweep: False
+
+  # Only take one entry per (swing_high, swing_low) range; a new entry
+  # requires a new confirmed swing to redefine the range first.
+  one_trade_per_range: True
+
+  # Never open a second position on top of one already open on this
+  # instrument (checked against the broker, not just this strategy's
+  # in-memory state - this also stops a restarted strategy from
+  # re-entering a position that survived the restart).
+  allow_pyramiding: False
+
+  # Exit level parameters
+  RR: 2.0                         # reward:risk ratio for the take profit
+
+  # Stop loss buffer beyond the swing, so a liquidity sweep of the swing
+  # does not trivially stop the trade out. 'atr' scales the buffer with
+  # recent volatility (sl_atr_mult * ATR); 'pct' uses a fixed fraction of
+  # the entry price (sl_buffer_pc) instead.
+  sl_buffer_mode: 'atr'
+  atr_period: 14
+  sl_atr_mult: 0.25
+  sl_buffer_pc: 0.001
+
+  risk_pc: 1                      # percentage of account balance to risk per trade
+  sizing: 'risk'
+
+WATCHLIST: ['EUR_USD']            # instruments to trade using this strategy
