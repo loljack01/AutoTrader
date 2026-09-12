@@ -11,6 +11,7 @@ from premium_discount import (  # noqa: E402
     compute_market_structure,
     compute_liquidity_sweeps,
     resample_ohlc,
+    in_trading_session,
 )
 
 DEFAULT_PARAMS = dict(
@@ -23,6 +24,9 @@ DEFAULT_PARAMS = dict(
     use_liquidity_sweep=False,
     use_htf_filter=False,
     htf_resample="4h",
+    use_session_filter=False,
+    session_start="09:00",
+    session_end="17:30",
     use_ote=False,
     ote_low=0.618,
     ote_high=0.79,
@@ -637,3 +641,43 @@ def test_htf_filter_fails_closed_without_enough_higher_timeframe_history():
 
     order = strat.generate_signal(data.index[-1])
     assert order.direction is None
+
+
+def test_in_trading_session_same_day_window():
+    start, end = "09:00", "17:30"
+    assert in_trading_session(pd.Timestamp("2024-01-01 09:00"), start, end) is True
+    assert in_trading_session(pd.Timestamp("2024-01-01 13:00"), start, end) is True
+    assert in_trading_session(pd.Timestamp("2024-01-01 17:30"), start, end) is True
+    assert in_trading_session(pd.Timestamp("2024-01-01 08:59"), start, end) is False
+    assert in_trading_session(pd.Timestamp("2024-01-01 17:31"), start, end) is False
+
+
+def test_in_trading_session_wraps_past_midnight():
+    # An overnight session (eg. 22:00-06:00) must wrap around midnight
+    # rather than being treated as an always-false empty window.
+    start, end = "22:00", "06:00"
+    assert in_trading_session(pd.Timestamp("2024-01-01 23:00"), start, end) is True
+    assert in_trading_session(pd.Timestamp("2024-01-01 02:00"), start, end) is True
+    assert in_trading_session(pd.Timestamp("2024-01-01 12:00"), start, end) is False
+
+
+def test_session_filter_blocks_signal_outside_window():
+    data = _build_long_setup()
+    # The fixture's timestamps start at 2024-01-01 00:00 hourly, so its
+    # final (signal) bar lands at 2024-01-04 09:00 - well outside a
+    # 13:00-14:00 window.
+    strat = _make_strategy(
+        data, use_session_filter=True, session_start="13:00", session_end="14:00"
+    )
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction is None
+
+
+def test_session_filter_allows_signal_inside_window():
+    data = _build_long_setup()
+    last_time = data.index[-1].strftime("%H:%M")
+    strat = _make_strategy(
+        data, use_session_filter=True, session_start="00:00", session_end=last_time
+    )
+    order = strat.generate_signal(data.index[-1])
+    assert order.direction == 1

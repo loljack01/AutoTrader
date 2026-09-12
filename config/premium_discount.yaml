@@ -6,23 +6,39 @@ PARAMETERS:                       # strategy parameters
   swing_n: 4                      # moving average period used to detect swings
   lookback_candles: 300           # number of candles fetched on each update
 
-  # Trend filter. Keep this EMA period fixed while you evaluate the base
-  # system; only compare EMA 13 (fast) vs EMA 50 (directional) once you
-  # start tuning - avoid grid-searching many periods (7/9/13/20/21/50/200)
-  # and picking the best in-sample result, which is a classic overfitting
-  # trap.
-  ema_period: 50
-  use_trend_filter: True
-
+  # Regime filter: pick ONE, not both (see the class docstring for the
+  # full rationale). Recommended default: structure filter on, EMA
+  # filter off - structure reacts to price directly instead of lagging
+  # behind a smoothed average, and needs no period to tune.
+  #
   # Market structure filter (BOS/CHoCH): longs only once the last
   # confirmed break of structure left the market bullish, shorts only
   # once it left it bearish. See compute_market_structure() in
-  # premium_discount.py for the exact definition. This is conceptually
-  # redundant with use_trend_filter (both are trend-agreement filters,
-  # one EMA-based and one structure-based) - left off by default so you
-  # can measure each one's edge separately before combining them, rather
-  # than stacking confirmations blindly.
-  use_structure_filter: False
+  # premium_discount.py for the exact definition.
+  use_structure_filter: True
+
+  # EMA trend filter, OFF by default - conceptually redundant with
+  # use_structure_filter above (both are trend-agreement filters).
+  # Keep this EMA period fixed if you do turn it on to compare against
+  # the structure filter; only compare EMA 13 (fast) vs EMA 50
+  # (directional) once you start tuning - avoid grid-searching many
+  # periods (7/9/13/20/21/50/200) and picking the best in-sample result,
+  # a classic overfitting trap.
+  ema_period: 50
+  use_trend_filter: False
+
+  # Trading session filter: no signal is generated outside this window.
+  # Recommended ON for an index future like CAC 40 - the thin, gap-prone
+  # hours around the open/close and overnight produce erratic wicks that
+  # degrade every other rule (swings, engulfing, sweeps). These are
+  # plain HH:MM strings compared directly to the data feed's own
+  # timestamps - no timezone conversion is attempted, so set them to
+  # whatever timezone your feed actually uses. The example below assumes
+  # a feed in Paris local time and the Euronext cash-market hours, which
+  # is where CAC 40 futures liquidity is deepest; adjust to your feed.
+  use_session_filter: True
+  session_start: '09:00'
+  session_end: '17:30'
 
   # Higher-timeframe structure veto: longs are only taken while the
   # market structure on htf_resample is bullish, shorts only while it's

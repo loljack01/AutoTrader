@@ -1,8 +1,26 @@
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
 from finta import TA
 from autotrader import Order, indicators
 from autotrader.strategy import Strategy
+
+
+def in_trading_session(dt, session_start: str, session_end: str) -> bool:
+    """Checks whether `dt` falls within a daily HH:MM-HH:MM session
+    window, wrapping past midnight if `session_end` < `session_start`.
+
+    `dt`'s timezone/offset must already match whatever the data feed
+    uses - this does no timezone conversion of its own, since guessing
+    at one would be worse than requiring the caller to align them.
+    """
+    start = datetime.strptime(session_start, "%H:%M").time()
+    end = datetime.strptime(session_end, "%H:%M").time()
+    t = dt.time()
+    if start <= end:
+        return start <= t <= end
+    return t >= start or t <= end
 
 
 def compute_market_structure(
@@ -184,36 +202,21 @@ def resample_ohlc(data: pd.DataFrame, rule: str) -> pd.DataFrame:
 class PremiumDiscountZones(Strategy):
     """Premium/Discount Zone Strategy.
 
-    Rules
-    -----
+    Core rules (always active)
+    ---------------------------
     1. Define the current trading range from the most recent CONFIRMED swing
        high (H) and swing low (L) (`indicators.find_swings`). The midpoint
        of this range is the "equilibrium": EQ = (H + L) / 2.
     2. [L, EQ] is the "discount" zone (price is cheap relative to the
        range) - longs only. [EQ, H] is the "premium" zone (price is
-       expensive) - shorts only. When `use_ote` is enabled, entries are
-       further restricted to the classic 61.8%-79% Fibonacci retracement
-       pocket of the H->L leg (for the discount zone) and the L->H leg
-       (for the premium zone), rather than the whole half.
+       expensive) - shorts only. When `use_ote` is enabled (recommended -
+       see below), entries are further restricted to the classic
+       61.8%-79% Fibonacci retracement pocket of the H->L leg (for the
+       discount zone) and the L->H leg (for the premium zone), rather
+       than the whole half.
     3. Require a bullish/bearish engulfing candle as the entry trigger, to
-       avoid re-entering on every bar spent inside a zone. If
-       `use_liquidity_sweep` is enabled, a liquidity sweep of the swing
-       (see `compute_liquidity_sweeps`) is also accepted as a trigger in
-       its own right - a wick through the swing that gets rejected back
-       inside is often a cleaner, earlier confirmation than waiting for a
-       full engulfing candle to print.
-    4. Optionally require the entry to agree with the prevailing trend, as
-       per an EMA filter (longs only above the EMA, shorts only below it)
-       and/or a market structure filter (`use_structure_filter`): longs
-       only while the last BOS/CHoCH left structure bullish, shorts only
-       while it left structure bearish. See `compute_market_structure` for
-       exactly how BOS/CHoCH are defined here. `use_htf_filter` applies
-       the same structure check on a higher timeframe (`htf_resample`,
-       eg. '1h' while trading '1m'): this specifically guards against
-       buying a discount zone that keeps redefining itself lower, because
-       the *larger* structure is still bearish even though a local swing
-       low just triggered an entry on the execution timeframe.
-    5. Unless `one_trade_per_range` is disabled, only one entry is taken
+       avoid re-entering on every bar spent inside a zone.
+    4. Unless `one_trade_per_range` is disabled, only one entry is taken
        per (H, L) range; a new entry requires a new swing to have
        confirmed and redefined the range. Independently of that, unless
        `allow_pyramiding` is enabled, no new entry is taken while a
@@ -221,11 +224,70 @@ class PremiumDiscountZones(Strategy):
        broker directly, not just in-memory state - this also stops a
        restarted strategy from re-entering a position that survived the
        restart).
-    6. Stop loss is placed beyond the swing which defines the range, offset
+    5. Stop loss is placed beyond the swing which defines the range, offset
        by a buffer (a fixed percentage, or a multiple of ATR - see
        `sl_buffer_mode`) so that a liquidity sweep of the swing does not
        trivially stop the trade out. Take profit is a multiple (`RR`) of
        the resulting risk.
+    6. If `use_session_filter` is enabled (recommended for an index future
+       like a CAC 40 contract), no signal is generated outside
+       `session_start`-`session_end`: the thin, gap-prone hours around a
+       session's open/close and overnight produce erratic wicks that
+       degrade every other rule here (swing detection, engulfing,
+       sweeps), for no compensating benefit. `session_start`/`session_end`
+       are plain HH:MM strings compared directly against the data feed's
+       own timestamps - no timezone conversion is attempted, so they must
+       already be expressed in whatever timezone the feed uses.
+
+    Optional regime filters - pick ONE, not all of them
+    -----------------------------------------------------
+    Two conceptually overlapping ways exist to require the entry to agree
+    with the prevailing trend: an EMA filter (`use_trend_filter`: longs
+    only above the EMA, shorts only below it) and a market structure
+    filter (`use_structure_filter`: longs only while the last BOS/CHoCH
+    left structure bullish, shorts only while it left structure bearish -
+    see `compute_market_structure`). **Recommended: `use_structure_filter`
+    on, `use_trend_filter` off** - structure reacts to actual price action
+    rather than lagging behind a smoothed average, and doesn't need an
+    arbitrary period choice. Turning both on stacks two closely-related
+    conditions rather than adding independent information, and empirically
+    tends to leave the strategy with very few or no trades.
+
+    `use_htf_filter` applies the same structure check on a higher
+    timeframe (`htf_resample`, which MUST be coarser than the strategy's
+    own `INTERVAL` - `resample_ohlc` raises otherwise): this specifically
+    guards against buying a discount zone that keeps redefining itself
+    lower, because the *larger* structure is still bearish even though a
+    local swing low just triggered an entry on the execution timeframe.
+    Off by default - it compounds with the regime filter above rather
+    than replacing it, and has not been measured against real history
+    yet; turn it on to test it in isolation (structure filter off),
+    not stacked on top of everything else.
+
+    `use_liquidity_sweep` accepts a liquidity sweep of the swing (see
+    `compute_liquidity_sweeps`) as an additional, alternative entry
+    trigger alongside the engulfing candle. Off by default for the same
+    reason as `use_htf_filter`: untested against real history, and best
+    evaluated on its own before combining it with anything else.
+
+    A known gap: no daily loss / max-consecutive-losses circuit breaker
+    --------------------------------------------------------------------
+    This strategy does NOT track realised P&L or stop trading after a bad
+    day, and deliberately does not fake one. AutoTrader's `AbstractBroker`
+    interface exposes open positions (`get_positions`) and raw fills
+    (`get_trades`) but no broker-agnostic "closed trades since <time>"
+    with realised P&L - building a circuit breaker on top of that would
+    mean either reaching into a specific broker's private internals (eg.
+    `VirtualBroker._closed_positions`, which isn't part of the abstract
+    interface and won't exist the same way on every broker) or having the
+    strategy keep its own in-memory ledger of every entry/exit, which
+    would silently reset on every restart, just like `_last_entry_range`
+    already does. A real circuit breaker belongs one layer down, as a
+    `get_closed_trades(since=...)` addition to `AbstractBroker` itself
+    (or as an AutoTraderBot-level daily-loss guard applied across
+    strategies), not bolted onto one strategy with broker-specific
+    workarounds. Until that exists, size positions and set `RR` with the
+    assumption that a losing streak will run its full course uninterrupted.
 
     Notes on look-ahead bias
     ------------------------
@@ -324,6 +386,11 @@ class PremiumDiscountZones(Strategy):
     def generate_signal(self, dt):
         """Fetches the latest data and checks for a premium/discount zone
         entry signal."""
+        if self.params["use_session_filter"] and not in_trading_session(
+            dt, self.params["session_start"], self.params["session_end"]
+        ):
+            return Order()
+
         atr_warmup = (
             self.params["atr_period"] if self.params["sl_buffer_mode"] == "atr" else 0
         )
