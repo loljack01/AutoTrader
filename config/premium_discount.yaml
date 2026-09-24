@@ -7,16 +7,24 @@ PARAMETERS:                       # strategy parameters
   lookback_candles: 300           # number of candles fetched on each update
 
   # Anchor the premium/discount range on a coarser, resampled timeframe
-  # instead of INTERVAL itself. Recommended: on the execution timeframe
-  # alone, the swing high/low (and therefore every zone, sweep and
-  # structure call derived from them) can be redefined several times an
-  # hour on a noisy instrument like a CAC 40 future - a 4h-anchored range
-  # is redefined far less often and is what the range is meant to
-  # represent (the current higher-timeframe trading range), not a
-  # by-product of local execution-timeframe noise. Must be strictly
-  # coarser than INTERVAL above, or resample_ohlc() raises. Set to null to
-  # anchor the range on INTERVAL itself instead (the original behaviour).
-  zone_resample: '4h'
+  # instead of INTERVAL itself. Must be strictly coarser than INTERVAL
+  # above, or resample_ohlc() raises.
+  #
+  # UPDATE: the theoretical case (a 4h range is redefined less often, so
+  # it should be a more stable reference) did NOT hold up when backtested
+  # against the same 2 real CAC 40 datasets used for the EMA comparison.
+  # On the 7-month/15-min dataset - the only one with enough history to
+  # judge it - zone_resample='4h' increased trade count (5 -> 12) but
+  # collapsed win rate (60% -> 33%) and turned a positive result
+  # breakeven-to-negative net of costs. Reason: an OTE pocket built off a
+  # swing confirmed weeks ago goes stale - by the time price revisits it,
+  # it no longer represents real support/resistance, so it just triggers
+  # more, worse-quality entries. Demoted to off (null) until it shows the
+  # same real-data consistency the EMA filter did. See
+  # tests/test_premium_discount_strategy.py and the session's
+  # backtest_corrections.py (not committed - ad hoc, run against
+  # live-fetched data) for the numbers behind this.
+  zone_resample: null
 
   # Regime filter: pick ONE, not both (see the class docstring for the
   # full rationale).

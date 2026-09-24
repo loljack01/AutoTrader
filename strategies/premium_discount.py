@@ -216,6 +216,12 @@ class PremiumDiscountZones(Strategy):
        every zone, sweep and structure call derived from them) can flip
        several times an hour on a noisy instrument like a CAC 40 future.
        Leave unset (None) to keep anchoring the range on INTERVAL itself.
+       UPDATE: backtested against 2 real CAC 40 datasets, this did NOT
+       hold up - a stale higher-timeframe swing goes out of date as
+       support/resistance, so it produced MORE but lower-quality entries
+       (7-month dataset: 5 trades at 60% win rate -> 12 trades at 33%,
+       net result flipping from positive to negative). Demoted to off by
+       default; see config/premium_discount.yaml.
     2. [L, EQ] is the "discount" zone (price is cheap relative to the
        range) - longs only. [EQ, H] is the "premium" zone (price is
        expensive) - shorts only. When `use_ote` is enabled (recommended -
