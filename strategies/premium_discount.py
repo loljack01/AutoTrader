@@ -206,7 +206,16 @@ class PremiumDiscountZones(Strategy):
     ---------------------------
     1. Define the current trading range from the most recent CONFIRMED swing
        high (H) and swing low (L) (`indicators.find_swings`). The midpoint
-       of this range is the "equilibrium": EQ = (H + L) / 2.
+       of this range is the "equilibrium": EQ = (H + L) / 2. If
+       `zone_resample` is set (e.g. '4h'), H/L are instead taken from swings
+       detected on that coarser, resampled timeframe and forward-filled onto
+       the execution timeframe - the range is then only redefined when a new
+       higher-timeframe swing confirms, rather than on every execution-
+       timeframe wiggle. This trades some responsiveness for a materially
+       more stable range: on the execution timeframe alone, H/L (and hence
+       every zone, sweep and structure call derived from them) can flip
+       several times an hour on a noisy instrument like a CAC 40 future.
+       Leave unset (None) to keep anchoring the range on INTERVAL itself.
     2. [L, EQ] is the "discount" zone (price is cheap relative to the
        range) - longs only. [EQ, H] is the "premium" zone (price is
        expensive) - shorts only. When `use_ote` is enabled (recommended -
@@ -345,9 +354,31 @@ class PremiumDiscountZones(Strategy):
         # Range-defining swing structure. Highs/Lows are forward-filled so
         # that, at any bar, they hold the most recently CONFIRMED swing
         # extreme (0 before any swing has been confirmed).
-        self.swings = indicators.find_swings(data, n=self.params["swing_n"])
-        swing_high = self.swings.Highs.replace(0, np.nan).ffill()
-        swing_low = self.swings.Lows.replace(0, np.nan).ffill()
+        #
+        # If `zone_resample` is set, the range comes from a coarser
+        # timeframe (eg. '4h') instead of the execution timeframe: a swing
+        # range that only updates every few hours is a much more stable
+        # reference for "is price cheap or expensive" than one recomputed
+        # on every 1-15 minute bar, which redefines itself constantly and
+        # makes the discount/premium split noisy. The 4h-derived values are
+        # forward-filled onto the execution-timeframe index.
+        zone_resample = self.params["zone_resample"]
+        if zone_resample:
+            htf_data = resample_ohlc(data, zone_resample)
+            if len(htf_data) >= 2 * self.params["swing_n"] + 2:
+                htf_swings = indicators.find_swings(htf_data, n=self.params["swing_n"])
+                htf_high = htf_swings.Highs.replace(0, np.nan).ffill()
+                htf_low = htf_swings.Lows.replace(0, np.nan).ffill()
+                swing_high = htf_high.reindex(data.index, method="ffill")
+                swing_low = htf_low.reindex(data.index, method="ffill")
+            else:
+                swing_high = pd.Series(np.nan, index=data.index)
+                swing_low = pd.Series(np.nan, index=data.index)
+            self.swings = None
+        else:
+            self.swings = indicators.find_swings(data, n=self.params["swing_n"])
+            swing_high = self.swings.Highs.replace(0, np.nan).ffill()
+            swing_low = self.swings.Lows.replace(0, np.nan).ffill()
         range_size = swing_high - swing_low
 
         self.swing_high = swing_high

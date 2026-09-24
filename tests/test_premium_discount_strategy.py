@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "strategies"))
+from autotrader import indicators  # noqa: E402
 from premium_discount import (  # noqa: E402
     PremiumDiscountZones,
     compute_market_structure,
@@ -18,6 +19,7 @@ DEFAULT_PARAMS = dict(
     granularity="1h",
     lookback_candles=300,
     swing_n=3,
+    zone_resample=None,
     ema_period=20,
     use_trend_filter=False,
     use_structure_filter=False,
@@ -641,6 +643,57 @@ def test_htf_filter_fails_closed_without_enough_higher_timeframe_history():
 
     order = strat.generate_signal(data.index[-1])
     assert order.direction is None
+
+
+def test_zone_resample_range_matches_higher_timeframe_swings():
+    # A dataset long enough to hold multiple confirmed 4h swings.
+    data = _build_htf_veto_setup()
+    strat = _make_strategy(data, zone_resample="4h", swing_n=3)
+    strat.generate_signal(data.index[-1])
+
+    assert strat.swings is None
+
+    htf_data = resample_ohlc(data, "4h")
+    htf_swings = indicators.find_swings(htf_data, n=3)
+    expected_high = (
+        htf_swings.Highs.replace(0, np.nan).ffill().reindex(data.index, method="ffill")
+    )
+    expected_low = (
+        htf_swings.Lows.replace(0, np.nan).ffill().reindex(data.index, method="ffill")
+    )
+    pd.testing.assert_series_equal(strat.swing_high, expected_high, check_names=False)
+    pd.testing.assert_series_equal(strat.swing_low, expected_low, check_names=False)
+
+
+def test_zone_resample_fails_closed_without_enough_higher_timeframe_history():
+    # Enough hourly bars to clear generate_signal's own execution-timeframe
+    # warmup, but nowhere near enough 4h bars to confirm a swing, so the
+    # range must stay NaN (never fall back to the execution-timeframe
+    # range) and no signal must be generated.
+    idx = pd.date_range("2024-01-01", periods=25, freq="h")
+    close = np.linspace(100, 90, 25)
+    data = pd.DataFrame(
+        {"Open": close, "High": close + 0.3, "Low": close - 0.3, "Close": close},
+        index=idx,
+    )
+    strat = _make_strategy(data, zone_resample="4h", swing_n=3)
+    order = strat.generate_signal(data.index[-1])
+
+    assert order.direction is None
+    assert strat.swing_high.isna().all()
+    assert strat.swing_low.isna().all()
+
+
+def test_zone_resample_none_keeps_execution_timeframe_range():
+    data = _build_long_setup()
+    strat = _make_strategy(data, zone_resample=None)
+    strat.generate_signal(data.index[-1])
+
+    assert strat.swings is not None
+    expected_high = strat.swings.Highs.replace(0, np.nan).ffill()
+    expected_low = strat.swings.Lows.replace(0, np.nan).ffill()
+    pd.testing.assert_series_equal(strat.swing_high, expected_high, check_names=False)
+    pd.testing.assert_series_equal(strat.swing_low, expected_low, check_names=False)
 
 
 def test_in_trading_session_same_day_window():

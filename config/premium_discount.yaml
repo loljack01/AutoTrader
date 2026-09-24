@@ -6,6 +6,18 @@ PARAMETERS:                       # strategy parameters
   swing_n: 4                      # moving average period used to detect swings
   lookback_candles: 300           # number of candles fetched on each update
 
+  # Anchor the premium/discount range on a coarser, resampled timeframe
+  # instead of INTERVAL itself. Recommended: on the execution timeframe
+  # alone, the swing high/low (and therefore every zone, sweep and
+  # structure call derived from them) can be redefined several times an
+  # hour on a noisy instrument like a CAC 40 future - a 4h-anchored range
+  # is redefined far less often and is what the range is meant to
+  # represent (the current higher-timeframe trading range), not a
+  # by-product of local execution-timeframe noise. Must be strictly
+  # coarser than INTERVAL above, or resample_ohlc() raises. Set to null to
+  # anchor the range on INTERVAL itself instead (the original behaviour).
+  zone_resample: '4h'
+
   # Regime filter: pick ONE, not both (see the class docstring for the
   # full rationale).
   #
