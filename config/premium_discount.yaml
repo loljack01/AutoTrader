@@ -7,25 +7,35 @@ PARAMETERS:                       # strategy parameters
   lookback_candles: 300           # number of candles fetched on each update
 
   # Regime filter: pick ONE, not both (see the class docstring for the
-  # full rationale). Recommended default: structure filter on, EMA
-  # filter off - structure reacts to price directly instead of lagging
-  # behind a smoothed average, and needs no period to tune.
+  # full rationale).
   #
+  # UPDATE: backtested against 2 independent real CAC 40 datasets
+  # (13 days of 1-min bars, 7 months of 15-min bars, via TradingView) -
+  # the theoretical case for structure-over-EMA did NOT hold up. The EMA
+  # filter was the only config positive in every single test (4/4
+  # variants: both datasets, with and without use_ote), while the
+  # structure filter and the unfiltered base flipped sign between the
+  # two datasets. EMA is now the recommended default; use_structure_filter
+  # is demoted until it shows the same consistency. See
+  # tests/test_premium_discount_strategy.py and the session's backtest
+  # scripts (not committed - ad hoc, run against live-fetched data) for
+  # the numbers behind this.
+  #
+  # ema_period: only 13 (fast) vs 50 (directional) were ever compared, as
+  # pre-agreed before looking at any result - 50 won clearly in both
+  # datasets (13d/1m: +5R vs +1R; 7mo/15m: +6R vs -1R, the latter even
+  # negative). Do not extend this to a wider grid search after the fact;
+  # that turns this into exactly the in-sample cherry-picking this
+  # comparison was designed to avoid.
+  ema_period: 50
+  use_trend_filter: True
+
   # Market structure filter (BOS/CHoCH): longs only once the last
   # confirmed break of structure left the market bullish, shorts only
   # once it left it bearish. See compute_market_structure() in
-  # premium_discount.py for the exact definition.
-  use_structure_filter: True
-
-  # EMA trend filter, OFF by default - conceptually redundant with
-  # use_structure_filter above (both are trend-agreement filters).
-  # Keep this EMA period fixed if you do turn it on to compare against
-  # the structure filter; only compare EMA 13 (fast) vs EMA 50
-  # (directional) once you start tuning - avoid grid-searching many
-  # periods (7/9/13/20/21/50/200) and picking the best in-sample result,
-  # a classic overfitting trap.
-  ema_period: 50
-  use_trend_filter: False
+  # premium_discount.py for the exact definition. Demoted to off - see
+  # the note above.
+  use_structure_filter: False
 
   # Trading session filter: no signal is generated outside this window.
   # Recommended ON for an index future like CAC 40 - the thin, gap-prone

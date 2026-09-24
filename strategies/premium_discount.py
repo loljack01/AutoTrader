@@ -246,12 +246,26 @@ class PremiumDiscountZones(Strategy):
     only above the EMA, shorts only below it) and a market structure
     filter (`use_structure_filter`: longs only while the last BOS/CHoCH
     left structure bullish, shorts only while it left structure bearish -
-    see `compute_market_structure`). **Recommended: `use_structure_filter`
-    on, `use_trend_filter` off** - structure reacts to actual price action
-    rather than lagging behind a smoothed average, and doesn't need an
-    arbitrary period choice. Turning both on stacks two closely-related
-    conditions rather than adding independent information, and empirically
-    tends to leave the strategy with very few or no trades.
+    see `compute_market_structure`).
+
+    **Recommended: `use_trend_filter` on (EMA, period 50),
+    `use_structure_filter` off.** This reverses an earlier, purely
+    theoretical recommendation for structure-over-EMA ("structure reacts
+    to price directly, no period to tune"). That reasoning wasn't wrong on
+    its face, but it was never checked - and when it was, against two
+    independent real CAC 40 datasets (13 days of 1-min bars and 7 months
+    of 15-min bars, both walked forward bar-by-bar through this exact
+    strategy), the EMA filter was the only configuration positive in
+    every one of 4 variants tested (both datasets, with and without
+    `use_ote`), while the structure filter and the unfiltered base
+    flipped sign between the two datasets. Turning both filters on stacks
+    two closely-related conditions rather than adding independent
+    information, and empirically tends to leave the strategy with very
+    few or no trades - a large part of why the structure-filter result
+    couldn't be trusted (it rarely cleared single digits in trade count).
+    The EMA period itself: only 13 and 50 were ever compared, decided
+    before looking at either result: 50 won clearly and consistently, not
+    the outcome of a wider search picked after the fact.
 
     `use_htf_filter` applies the same structure check on a higher
     timeframe (`htf_resample`, which MUST be coarser than the strategy's
@@ -259,9 +273,9 @@ class PremiumDiscountZones(Strategy):
     guards against buying a discount zone that keeps redefining itself
     lower, because the *larger* structure is still bearish even though a
     local swing low just triggered an entry on the execution timeframe.
-    Off by default - it compounds with the regime filter above rather
-    than replacing it, and has not been measured against real history
-    yet; turn it on to test it in isolation (structure filter off),
+    Off by default - untested against real history so far, and it
+    compounds with the regime filter above rather than replacing it;
+    turn it on to test it in isolation (both other regime filters off),
     not stacked on top of everything else.
 
     `use_liquidity_sweep` accepts a liquidity sweep of the swing (see
