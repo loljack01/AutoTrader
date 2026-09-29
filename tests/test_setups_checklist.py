@@ -134,6 +134,36 @@ def test_pullback_holds_false_after_closing_back_below():
     assert not holds.iloc[3]  # still tainted even though back above
 
 
+def test_pullback_extreme_tracks_running_low_since_reclaim_long():
+    low = _price_series([50, 98, 96, 97, 95, 99])
+    reclaimed = _bool_series([False, True, False, False, False, False])
+    extreme = checklist.pullback_extreme(low, reclaimed, "buy")
+    assert pd.isna(extreme.iloc[0])  # before any reclaim
+    assert extreme.iloc[1] == 98
+    assert extreme.iloc[2] == 96  # new low since reclaim
+    assert extreme.iloc[3] == 96  # 97 doesn't make a new low
+    assert extreme.iloc[4] == 95  # new low
+    assert extreme.iloc[5] == 95  # 99 doesn't make a new low
+
+
+def test_pullback_extreme_tracks_running_high_since_reclaim_short():
+    high = _price_series([150, 102, 104, 103, 105, 101])
+    reclaimed = _bool_series([False, True, False, False, False, False])
+    extreme = checklist.pullback_extreme(high, reclaimed, "sell")
+    assert pd.isna(extreme.iloc[0])
+    assert extreme.iloc[2] == 104
+    assert extreme.iloc[4] == 105
+
+
+def test_pullback_extreme_resets_on_a_new_reclaim():
+    low = _price_series([98, 90, 99, 85])
+    reclaimed = _bool_series([True, False, True, False])
+    extreme = checklist.pullback_extreme(low, reclaimed, "buy")
+    assert extreme.iloc[1] == 90  # tracking the first reclaim's pullback
+    assert extreme.iloc[2] == 99  # a fresh reclaim resets the running extreme
+    assert extreme.iloc[3] == 85
+
+
 def test_breakout_volume_true_when_volume_spikes_on_event():
     volume = pd.Series([10.0] * 20 + [30.0])
     event = pd.Series([False] * 20 + [True])

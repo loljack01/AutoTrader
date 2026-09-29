@@ -150,6 +150,31 @@ def pullback_holds(close: pd.Series, level: pd.Series, reclaimed: pd.Series, dir
     return out
 
 
+def pullback_extreme(price: pd.Series, reclaimed: pd.Series, direction: str) -> pd.Series:
+    """Returns, at each bar, the running extreme of `price` since the
+    most recent reclaim event (min for a long, using Low; max for a
+    short, using High) - the actual retracement low/high THIS setup
+    pulled back to, for a stop tied to real observed price action
+    instead of an unrelated nearby swing. NaN before any reclaim."""
+    if direction not in ("buy", "sell"):
+        raise ValueError("direction must be 'buy' or 'sell'")
+    n = len(price)
+    out = pd.Series(np.nan, index=price.index)
+    reclaimed_np = reclaimed.to_numpy()
+    price_np = price.to_numpy()
+    last_reclaim = None
+    running = None
+    for i in range(n):
+        if reclaimed_np[i]:
+            last_reclaim = i
+            running = price_np[i]
+        elif last_reclaim is not None:
+            running = min(running, price_np[i]) if direction == "buy" else max(running, price_np[i])
+        if last_reclaim is not None:
+            out.iloc[i] = running
+    return out
+
+
 def breakout_volume(volume: pd.Series, event: pd.Series, window: int = 20, multiplier: float = 1.5) -> pd.Series:
     """True at bar i iff `event[i]` (e.g. a reclaim) is True AND
     volume[i] >= multiplier * the trailing `window`-bar average volume
