@@ -1,7 +1,8 @@
 """Liquidity Sweep + CHoCH, buy side only, rules frozen on 2026-10-07.
 
 Buy rule: an EQL pool is swept (Low < level, Close > level), then a
-bullish CHoCH occurs within 4h; entry at the close of the bar where both
+bullish CHoCH occurs within 4h of clock time (so a sweep never carries
+over the overnight gap); entry at the close of the bar where both
 are true. Stop = max(sweep low - 8pt, 1x ATR(14)) below entry. Target =
 nearest unswept EQH above entry, falling back to the last confirmed swing
 high. Round-trip cost 3pt, minimum net R:R 1.3, Paris session filter, one
@@ -17,7 +18,7 @@ No edge has been demonstrated for this strategy. Everything up to
 2026-10-07 has already been examined; a genuine test only uses bars
 after that date (`--since 2026-10-08`).
 
-Usage: python scripts/backtest_liquidity_sweep_buy.py [5m|15m|1h] [--since YYYY-MM-DD]
+Usage: python scripts/backtest_liquidity_sweep_buy.py [1m|5m|15m|1h] [--since YYYY-MM-DD]
 """
 
 import argparse
@@ -41,10 +42,11 @@ MIN_NET_RR = 1.3
 STOP_MARGIN = 8.0
 SWING_N = 2
 MIN_RISK_ATR_MULT = 1.0
-CHOCH_LOOKBACK = {"1m": 240, "5m": 48, "15m": 16, "1h": 4}  # 4h in bars
+CHOCH_WINDOW = pd.Timedelta(hours=4)
+INTERVALS = ("1m", "5m", "15m", "1h")
 
 
-def backtest(d, lookback, one_trade_per_sweep=True, discount_only=False, since=None):
+def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None):
     n = len(d)
     atr = TA.ATR(d, 14)
     is_hi, is_lo = structure.find_swings(d, n=SWING_N)
@@ -100,7 +102,7 @@ def backtest(d, lookback, one_trade_per_sweep=True, discount_only=False, since=N
         if i < start or open_trade is not None or last_sweep is None:
             continue
         sweep_i, sweep_extreme = last_sweep
-        if i - sweep_i > lookback or (one_trade_per_sweep and sweep_i in used_sweeps):
+        if d.index[i] - d.index[sweep_i] > CHOCH_WINDOW or (one_trade_per_sweep and sweep_i in used_sweeps):
             continue
         if not bull_choch[sweep_i:i + 1].any():
             continue
@@ -141,17 +143,16 @@ def summarize(label, t):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("interval", nargs="?", default="5m", choices=sorted(CHOCH_LOOKBACK))
+    parser.add_argument("interval", nargs="?", default="5m", choices=INTERVALS)
     parser.add_argument("--since", help="only open trades on bars at or after this UTC date")
     args = parser.parse_args()
 
     d = cache.closed_bars(cache.load(SYMBOL, args.interval), args.interval, pd.Timestamp.now(tz="UTC"))
-    lookback = CHOCH_LOOKBACK[args.interval]
     print(f"{SYMBOL} {args.interval}: {d.index[0]} -> {d.index[-1]} ({len(d)} bars)" + (f", trades since {args.since}" if args.since else ""))
     for discount_only in (False, True):
         for one_per_sweep in (False, True):
             label = ("discount" if discount_only else "sans filtre") + (", 1 trade/balayage" if one_per_sweep else ", re-entrees")
-            summarize(label, backtest(d, lookback, one_per_sweep, discount_only, args.since))
+            summarize(label, backtest(d, one_per_sweep, discount_only, args.since))
 
 
 if __name__ == "__main__":
