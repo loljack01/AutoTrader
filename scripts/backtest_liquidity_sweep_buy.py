@@ -122,10 +122,10 @@ def backtest(d, lookback, one_trade_per_sweep=True, discount_only=False, since=N
         if net_rr(close, stop, take, ROUND_TRIP_COST) < MIN_NET_RR:
             continue
 
-        open_trade = {"entry_time": dt, "entry": close, "stop": float(stop), "take": float(take)}
+        open_trade = {"entry_time": dt, "sweep_time": d.index[sweep_i], "entry": close, "stop": float(stop), "take": float(take)}
         used_sweeps.add(sweep_i)
 
-    return pd.DataFrame(trades, columns=["entry_time", "entry", "stop", "take", "exit_time", "result", "net_r"])
+    return pd.DataFrame(trades, columns=["entry_time", "sweep_time", "entry", "stop", "take", "exit_time", "result", "net_r"])
 
 
 def summarize(label, t):
