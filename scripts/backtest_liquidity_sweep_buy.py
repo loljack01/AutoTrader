@@ -41,7 +41,7 @@ MIN_NET_RR = 1.3
 STOP_MARGIN = 8.0
 SWING_N = 2
 MIN_RISK_ATR_MULT = 1.0
-CHOCH_LOOKBACK = {"5m": 48, "15m": 16, "1h": 4}  # 4h in bars
+CHOCH_LOOKBACK = {"1m": 240, "5m": 48, "15m": 16, "1h": 4}  # 4h in bars
 
 
 def backtest(d, lookback, one_trade_per_sweep=True, discount_only=False, since=None):
@@ -125,10 +125,13 @@ def backtest(d, lookback, one_trade_per_sweep=True, discount_only=False, since=N
         open_trade = {"entry_time": dt, "sweep_time": d.index[sweep_i], "entry": close, "stop": float(stop), "take": float(take)}
         used_sweeps.add(sweep_i)
 
+    if open_trade is not None:
+        trades.append({**open_trade, "exit_time": None, "result": "open", "net_r": np.nan})
     return pd.DataFrame(trades, columns=["entry_time", "sweep_time", "entry", "stop", "take", "exit_time", "result", "net_r"])
 
 
 def summarize(label, t):
+    t = t[t.result != "open"]
     if t.empty:
         print(f"  {label:34s} 0 trade")
         return
