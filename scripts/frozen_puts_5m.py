@@ -19,9 +19,10 @@ Reference (data up to the 2026-10-09 close, before the freeze): 36 puts,
 16 winners, +8.9R at 1pt cost. If a re-run on that period gives
 something else, the underlying code changed and the freeze is broken.
 
-Usage: python scripts/frozen_puts_5m.py
+Usage: python scripts/frozen_puts_5m.py [--capital 1000] [--since 2026-10-12|debut]
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -50,8 +51,8 @@ def run(d, cost):
     return bt.backtest(d, one_trade_per_sweep=True, discount_only=False, direction="sell")
 
 
-def capital(trades):
-    equity = START_CAPITAL
+def capital(trades, start=START_CAPITAL):
+    equity = start
     stakes, events = {}, []
     for k, t in trades.iterrows():
         events += [(t.entry_time, 0, k), (t.exit_time, 1, k)]
@@ -64,6 +65,11 @@ def capital(trades):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--capital", type=float, default=START_CAPITAL)
+    parser.add_argument("--since", default=FREEZE_START)
+    args = parser.parse_args()
+    since = None if args.since == "debut" else args.since
     d = bt.cache.closed_bars(bt.cache.load(bt.SYMBOL, INTERVAL), INTERVAL, pd.Timestamp.now(tz="UTC"))
     paris = lambda ts: ts.tz_convert("Europe/Paris").strftime("%d/%m %H:%M")
     print(f"FCE1! {INTERVAL} jusqu'au {paris(d.index[-1])} (Paris)")
@@ -75,16 +81,18 @@ def main():
 
     for cost in (1.0, 3.0):
         t = run(d, cost)
-        t = t[t.entry_time >= FREEZE_START].reset_index(drop=True)
+        if since:
+            t = t[t.entry_time >= since].reset_index(drop=True)
         closed = t[t.result != "open"]
         opened = t[t.result == "open"]
         wins = (closed.result == "take").sum()
-        print(f"\n=== Depuis le {FREEZE_START}, cout {cost:.0f}pt: {len(closed)} puts clos, {wins} gagnants, net {closed.net_r.sum():+.2f}R, "
-              f"capital {capital(closed):.0f} EUR (depart {START_CAPITAL:.0f}, risque {RISK_PCT:.0%}) ===")
+        label = f"Depuis le {since}" if since else "Depuis le debut"
+        print(f"\n=== {label}, cout {cost:.0f}pt: {len(closed)} puts clos, {wins} gagnants, net {closed.net_r.sum():+.2f}R, "
+              f"capital {capital(closed, args.capital):,.0f} EUR (depart {args.capital:,.0f}, risque {RISK_PCT:.0%}) ===")
         for _, r in t.iterrows():
             exit_txt = "OUVERT" if r.result == "open" else f"{r.result} {paris(r.exit_time)} {r.net_r:+.2f}R"
             print(f"  {paris(r.entry_time)}  put entree {r.entry:.1f}  stop {r.stop:.1f}  cible {r['take']:.1f}  -> {exit_txt}")
-        if cost == 1.0:
+        if cost == 1.0 and since == FREEZE_START:
             OUT.parent.mkdir(parents=True, exist_ok=True)
             t.to_csv(OUT, index=False)
         if len(opened) == 0 and len(t) == 0:
