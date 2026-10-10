@@ -46,7 +46,9 @@ CHOCH_WINDOW = pd.Timedelta(hours=4)
 INTERVALS = ("1m", "5m", "15m", "1h")
 
 
-def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None):
+def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None):
+    """`entry_mask`: optional bool array aligned with `d`; entries are only
+    allowed on bars where it is True (e.g. a higher-timeframe trend filter)."""
     n = len(d)
     atr = TA.ATR(d, 14)
     is_hi, is_lo = structure.find_swings(d, n=SWING_N)
@@ -111,6 +113,8 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None):
             continue
         close = float(d.Close.iloc[i])
         if discount_only and not (close < equilibrium[i]):
+            continue
+        if entry_mask is not None and not entry_mask[i]:
             continue
 
         atr_val = atr.iloc[i]
