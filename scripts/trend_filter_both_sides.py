@@ -11,9 +11,10 @@ Baseline: random entries in the trend direction vs against it (every
 session-allowed bar, stop 1.5x ATR, target 3x ATR, same cost), to see how
 much of any gain is the filter riding market drift.
 
-Usage: python scripts/trend_filter_both_sides.py
+Usage: python scripts/trend_filter_both_sides.py [--interval 5m|15m] [--atr 2.0] [--filters aucun,1D,4h,1h]
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -28,17 +29,16 @@ from indicator_combo_search import outcomes
 from setups import session
 
 TREND_TFS = {"1D": pd.Timedelta(days=1), "4h": pd.Timedelta(hours=4), "1h": pd.Timedelta(hours=1)}
-BAR = pd.Timedelta(minutes=5)
 START = 1000.0
 RISK = 0.01
 
 
-def trend_up(d, tf):
+def trend_up(d, tf, bar):
     tb = bt.cache.load("FCE1!", tf)
     tb.index = pd.to_datetime(tb.index, utc=True)
     up = (tb.Close > tb.Close.rolling(20).mean()).to_numpy()
     done_at = (tb.index + TREND_TFS[tf]).to_numpy()
-    pos = np.searchsorted(done_at, (d.index + BAR).to_numpy(), side="right") - 1
+    pos = np.searchsorted(done_at, (d.index + bar).to_numpy(), side="right") - 1
     return np.where(pos >= 0, up[np.clip(pos, 0, None)], False).astype(bool)
 
 
@@ -57,14 +57,22 @@ def capital(trades):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--interval", default="5m")
+    parser.add_argument("--atr", type=float, default=2.0)
+    parser.add_argument("--filters", default="aucun,1D,4h,1h")
+    args = parser.parse_args()
     now = pd.Timestamp.now(tz="UTC")
-    d = bt.cache.closed_bars(bt.cache.load("FCE1!", "5m"), "5m", now)
+    d = bt.cache.closed_bars(bt.cache.load("FCE1!", args.interval), args.interval, now)
+    bar = pd.Timedelta(args.interval.replace("m", "min"))
     allowed = np.array([session.entry_allowed(session.session_window(t)) for t in d.index.tz_convert("Europe/Paris")])
     half = d.index[len(d) // 2]
-    print(f"FCE1! 5m {d.index[0].date()} -> {d.index[-1].date()}, marche {d.Close.iloc[0]:.0f} -> {d.Close.iloc[-1]:.0f}, stop min 2xATR")
-    bt.MIN_RISK_ATR_MULT = 2.0
+    print(f"FCE1! {args.interval} {d.index[0].date()} -> {d.index[-1].date()}, marche {d.Close.iloc[0]:.0f} -> {d.Close.iloc[-1]:.0f}, stop min {args.atr}xATR")
+    bt.MIN_RISK_ATR_MULT = args.atr
 
-    filters = {"aucun": np.ones(len(d), dtype=bool)} | {tf: trend_up(d, tf) for tf in TREND_TFS}
+    wanted = args.filters.split(",")
+    filters = {"aucun": np.ones(len(d), dtype=bool)} | {tf: trend_up(d, tf, bar) for tf in TREND_TFS}
+    filters = {k: v for k, v in filters.items() if k in wanted}
     for name, up in filters.items():
         share = up.mean() if name != "aucun" else float("nan")
         flips = int((np.diff(up.astype(int)) != 0).sum())
