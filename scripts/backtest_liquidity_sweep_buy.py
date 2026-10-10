@@ -46,16 +46,23 @@ CHOCH_WINDOW = pd.Timedelta(hours=4)
 INTERVALS = ("1m", "5m", "15m", "1h")
 
 
-def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None):
+def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy"):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
-    allowed on bars where it is True (e.g. a higher-timeframe trend filter)."""
+    allowed on bars where it is True (e.g. a higher-timeframe trend filter).
+    `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
+    stop above the sweep high, target the nearest unswept EQL below,
+    location filter = premium (above equilibrium)."""
+    if direction not in ("buy", "sell"):
+        raise ValueError("direction must be 'buy' or 'sell'")
+    side = 1 if direction == "buy" else -1
     n = len(d)
     atr = TA.ATR(d, 14)
     is_hi, is_lo = structure.find_swings(d, n=SWING_N)
     sh = structure.confirmed_level(is_hi, d.High, SWING_N)
     sl = structure.confirmed_level(is_lo, d.Low, SWING_N)
     bull_bos, bear_bos = structure.bos_events(d.Close, sh, sl)
-    bull_choch = (structure.choch_events(bull_bos, bear_bos) & bull_bos).to_numpy()
+    choch = structure.choch_events(bull_bos, bear_bos)
+    trigger_choch = (choch & (bull_bos if side == 1 else bear_bos)).to_numpy()
     equilibrium = ((sh + sl) / 2).to_numpy()
 
     hi_marks = structure.confirmed_marks(is_hi, d.High, SWING_N)
@@ -63,22 +70,27 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     eqh = liquidity.find_sweeps(liquidity.find_pools(hi_marks, atr), d, "high")
     eql = liquidity.find_sweeps(liquidity.find_pools(lo_marks, atr), d, "low")
     pos = {ts: i for i, ts in enumerate(d.index)}
-    swing_high_conf = hi_marks.ffill()
+    swept_pools, target_pools = (eql, eqh) if side == 1 else (eqh, eql)
+    fallback_target = (hi_marks if side == 1 else lo_marks).ffill()
+    extreme = d.Low if side == 1 else d.High
 
-    sweep_low = {}
-    for p in eql:
+    sweeps = {}
+    for p in swept_pools:
         if p["swept_at"] is not None:
             i = pos[p["swept_at"]]
-            sweep_low[i] = min(sweep_low.get(i, np.inf), d.Low.iloc[i])
+            v = extreme.iloc[i]
+            sweeps[i] = min(sweeps.get(i, np.inf), v) if side == 1 else max(sweeps.get(i, -np.inf), v)
 
-    def nearest_unswept_eqh(i, entry):
+    def nearest_unswept_target(i, entry):
         levels = [
-            p["level"] for p in eqh
+            p["level"] for p in target_pools
             if pos[p["members"][1][0]] <= i
             and not (p["swept_at"] is not None and p["swept_at"] <= d.index[i])
-            and p["level"] > entry
+            and (p["level"] - entry) * side > 0
         ]
-        return min(levels) if levels else None
+        if not levels:
+            return None
+        return min(levels) if side == 1 else max(levels)
 
     start = d.index.searchsorted(pd.Timestamp(since, tz="UTC")) if since else 0
     trades = []
@@ -87,16 +99,19 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     used_sweeps = set()
 
     for i in range(n):
-        if i in sweep_low:
-            last_sweep = (i, sweep_low[i])
+        if i in sweeps:
+            last_sweep = (i, sweeps[i])
 
         if open_trade is not None:
             bar = d.iloc[i]
-            hit = "stop" if bar.Low <= open_trade["stop"] else ("take" if bar.High >= open_trade["take"] else None)
+            if side == 1:
+                hit = "stop" if bar.Low <= open_trade["stop"] else ("take" if bar.High >= open_trade["take"] else None)
+            else:
+                hit = "stop" if bar.High >= open_trade["stop"] else ("take" if bar.Low <= open_trade["take"] else None)
             if hit:
-                risk = open_trade["entry"] - open_trade["stop"]
+                risk = abs(open_trade["entry"] - open_trade["stop"])
                 cost_r = ROUND_TRIP_COST / risk
-                gross = (open_trade["take"] - open_trade["entry"]) / risk if hit == "take" else -1.0
+                gross = abs(open_trade["take"] - open_trade["entry"]) / risk if hit == "take" else -1.0
                 net = gross - cost_r if hit == "take" else -(1.0 + cost_r)
                 trades.append({**open_trade, "exit_time": d.index[i], "result": hit, "net_r": net})
                 open_trade = None
@@ -106,24 +121,24 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
         sweep_i, sweep_extreme = last_sweep
         if d.index[i] - d.index[sweep_i] > CHOCH_WINDOW or (one_trade_per_sweep and sweep_i in used_sweeps):
             continue
-        if not bull_choch[sweep_i:i + 1].any():
+        if not trigger_choch[sweep_i:i + 1].any():
             continue
         dt = d.index[i]
         if not session.entry_allowed(session.session_window(dt.tz_convert("Europe/Paris"))):
             continue
         close = float(d.Close.iloc[i])
-        if discount_only and not (close < equilibrium[i]):
+        if discount_only and not ((equilibrium[i] - close) * side > 0):
             continue
         if entry_mask is not None and not entry_mask[i]:
             continue
 
         atr_val = atr.iloc[i]
-        risk = max(close - (sweep_extreme - STOP_MARGIN), MIN_RISK_ATR_MULT * atr_val if not np.isnan(atr_val) else 0.0)
-        stop = close - risk
-        take = nearest_unswept_eqh(i, close)
+        risk = max((close - (sweep_extreme - side * STOP_MARGIN)) * side, MIN_RISK_ATR_MULT * atr_val if not np.isnan(atr_val) else 0.0)
+        stop = close - side * risk
+        take = nearest_unswept_target(i, close)
         if take is None:
-            take = swing_high_conf.iloc[i]
-        if take is None or np.isnan(take) or take <= close:
+            take = fallback_target.iloc[i]
+        if take is None or np.isnan(take) or (take - close) * side <= 0:
             continue
         if net_rr(close, stop, take, ROUND_TRIP_COST) < MIN_NET_RR:
             continue
