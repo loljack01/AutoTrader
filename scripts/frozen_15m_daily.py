@@ -5,6 +5,8 @@ versions are tracked side by side and neither may be changed:
     sma20  (main)      calls only if the previous session's daily close is
                        above its 20-day SMA, puts only if below
     ema20  (candidate) same with a 20-day EMA instead of the SMA
+    none   (comparison, added 2026-10-13) calls and puts with no trend
+                       filter, to check on new bars whether the filter helps
 
 Everything else is the frozen sweep rule set of
 scripts/backtest_liquidity_sweep_buy.py (stop = max(sweep extreme +/- 8pt,
@@ -17,7 +19,7 @@ Scorecard: only trades entered on or after FREEZE_START count, unless
 per trade.
 
 Reference (data before 2026-10-10, 1pt): sma20 20 trades +10.0R,
-ema20 18 trades +12.0R. A different result on that period means the
+ema20 18 trades +12.0R, none 41 trades +2.5R. A different result on that period means the
 underlying code changed and the freeze is broken.
 
 Usage: python scripts/frozen_15m_daily.py [--capital 1000] [--since 2026-10-12|debut]
@@ -37,7 +39,8 @@ import backtest_liquidity_sweep_buy as bt
 
 FREEZE_START = "2026-10-12"
 REFERENCE_END = "2026-10-10"
-REFERENCE = {"sma20": (20, 10.0), "ema20": (18, 12.0)}
+REFERENCE = {"sma20": (20, 10.0), "ema20": (18, 12.0), "none": (41, 2.5)}
+LABELS = {"sma20": "(principal)", "ema20": "(candidate)", "none": "(sans filtre, comparaison)"}
 INTERVAL = "15m"
 BAR = pd.Timedelta(minutes=15)
 RISK_PCT = 0.01
@@ -62,9 +65,13 @@ def run(d, kind, cost):
     bt.SWING_N = 2
     bt.MIN_NET_RR = 1.3
     bt.CHOCH_WINDOW = pd.Timedelta(hours=4)
-    up = trend_up(d, kind)
+    if kind == "none":
+        masks = (("buy", None), ("sell", None))
+    else:
+        up = trend_up(d, kind)
+        masks = (("buy", up), ("sell", ~up))
     parts = []
-    for direction, mask in (("buy", up), ("sell", ~up)):
+    for direction, mask in masks:
         t = bt.backtest(d, one_trade_per_sweep=True, discount_only=False, entry_mask=mask, direction=direction)
         t["side"] = "call" if direction == "buy" else "put"
         parts.append(t)
@@ -115,7 +122,7 @@ def main():
             wins = (closed.result == "take").sum()
             c, p = closed[closed.side == "call"], closed[closed.side == "put"]
             label = "depuis le debut" if not since else f"depuis le {since}"
-            print(f"\n=== {kind} {'(principal)' if kind == 'sma20' else '(candidate)'}, {label}, cout {cost:.0f}pt: {len(closed)} trades clos "
+            print(f"\n=== {kind} {LABELS[kind]}, {label}, cout {cost:.0f}pt: {len(closed)} trades clos "
                   f"({len(c)} calls {c.net_r.sum():+.1f}R, {len(p)} puts {p.net_r.sum():+.1f}R), {wins} gagnants, net {closed.net_r.sum():+.2f}R | "
                   f"capital {args.capital:,.0f} -> {eq:,.0f} EUR ({eq / args.capital - 1:+.1%}), plus bas {low:,.0f}, baisse max {dd:.0%} ===")
             if cost == 1.0:
