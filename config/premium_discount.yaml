@@ -1,0 +1,129 @@
+NAME: 'Premium Discount Zones'    # strategy name
+MODULE: 'premium_discount'        # strategy module (strategies/premium_discount.py)
+CLASS: 'PremiumDiscountZones'     # strategy class
+INTERVAL: '1h'                    # strategy timeframe
+PARAMETERS:                       # strategy parameters
+  swing_n: 4                      # moving average period used to detect swings
+  lookback_candles: 300           # number of candles fetched on each update
+
+  # Anchor the premium/discount range on a coarser, resampled timeframe
+  # instead of INTERVAL itself. Must be strictly coarser than INTERVAL
+  # above, or resample_ohlc() raises.
+  #
+  # UPDATE: the theoretical case (a 4h range is redefined less often, so
+  # it should be a more stable reference) did NOT hold up when backtested
+  # against the same 2 real CAC 40 datasets used for the EMA comparison.
+  # On the 7-month/15-min dataset - the only one with enough history to
+  # judge it - zone_resample='4h' increased trade count (5 -> 12) but
+  # collapsed win rate (60% -> 33%) and turned a positive result
+  # breakeven-to-negative net of costs. Reason: an OTE pocket built off a
+  # swing confirmed weeks ago goes stale - by the time price revisits it,
+  # it no longer represents real support/resistance, so it just triggers
+  # more, worse-quality entries. Demoted to off (null) until it shows the
+  # same real-data consistency the EMA filter did. See
+  # tests/test_premium_discount_strategy.py and the session's
+  # backtest_corrections.py (not committed - ad hoc, run against
+  # live-fetched data) for the numbers behind this.
+  zone_resample: null
+
+  # Regime filter: pick ONE, not both (see the class docstring for the
+  # full rationale).
+  #
+  # UPDATE: backtested against 2 independent real CAC 40 datasets
+  # (13 days of 1-min bars, 7 months of 15-min bars, via TradingView) -
+  # the theoretical case for structure-over-EMA did NOT hold up. The EMA
+  # filter was the only config positive in every single test (4/4
+  # variants: both datasets, with and without use_ote), while the
+  # structure filter and the unfiltered base flipped sign between the
+  # two datasets. EMA is now the recommended default; use_structure_filter
+  # is demoted until it shows the same consistency. See
+  # tests/test_premium_discount_strategy.py and the session's backtest
+  # scripts (not committed - ad hoc, run against live-fetched data) for
+  # the numbers behind this.
+  #
+  # ema_period: only 13 (fast) vs 50 (directional) were ever compared, as
+  # pre-agreed before looking at any result - 50 won clearly in both
+  # datasets (13d/1m: +5R vs +1R; 7mo/15m: +6R vs -1R, the latter even
+  # negative). Do not extend this to a wider grid search after the fact;
+  # that turns this into exactly the in-sample cherry-picking this
+  # comparison was designed to avoid.
+  ema_period: 50
+  use_trend_filter: True
+
+  # Market structure filter (BOS/CHoCH): longs only once the last
+  # confirmed break of structure left the market bullish, shorts only
+  # once it left it bearish. See compute_market_structure() in
+  # premium_discount.py for the exact definition. Demoted to off - see
+  # the note above.
+  use_structure_filter: False
+
+  # Trading session filter: no signal is generated outside this window.
+  # Recommended ON for an index future like CAC 40 - the thin, gap-prone
+  # hours around the open/close and overnight produce erratic wicks that
+  # degrade every other rule (swings, engulfing, sweeps). These are
+  # plain HH:MM strings compared directly to the data feed's own
+  # timestamps - no timezone conversion is attempted, so set them to
+  # whatever timezone your feed actually uses. The example below assumes
+  # a feed in Paris local time and the Euronext cash-market hours, which
+  # is where CAC 40 futures liquidity is deepest; adjust to your feed.
+  use_session_filter: True
+  session_start: '09:00'
+  session_end: '17:30'
+
+  # Higher-timeframe structure veto: longs are only taken while the
+  # market structure on htf_resample is bullish, shorts only while it's
+  # bearish (fails closed - not enough higher-timeframe history yet also
+  # blocks). This is the direct answer to "how do I avoid buying a
+  # discount zone that keeps sliding lower": the local swing low can
+  # look like a reversal on the execution timeframe while the larger
+  # structure is still making lower lows. htf_resample MUST be coarser
+  # than INTERVAL above (currently '1h') - resample_ohlc() raises if it
+  # isn't, rather than silently becoming a no-op "higher timeframe" that
+  # is really just the same timeframe.
+  use_htf_filter: False
+  htf_resample: '4h'
+
+  # Premium/discount zone definition.
+  # If use_ote is False, [L, EQ] is the discount zone and [EQ, H] is the
+  # premium zone, where EQ = (H + L) / 2.
+  # If use_ote is True, entries are instead restricted to the classic
+  # 61.8%-79% Fibonacci retracement pocket: the discount zone becomes the
+  # retracement of the H->L leg (just above L), and the premium zone
+  # becomes the retracement of the L->H leg (just below H).
+  use_ote: True
+  ote_low: 0.618
+  ote_high: 0.79
+
+  # Accept a liquidity sweep of the swing (wick through it, close back
+  # inside) as an entry trigger, in addition to the engulfing candle. A
+  # sweep is often the earlier, cleaner confirmation - the reversal is
+  # already visible on the same bar the level gets swept, rather than
+  # waiting for a full 2-candle engulfing pattern to print.
+  use_liquidity_sweep: False
+
+  # Only take one entry per (swing_high, swing_low) range; a new entry
+  # requires a new confirmed swing to redefine the range first.
+  one_trade_per_range: True
+
+  # Never open a second position on top of one already open on this
+  # instrument (checked against the broker, not just this strategy's
+  # in-memory state - this also stops a restarted strategy from
+  # re-entering a position that survived the restart).
+  allow_pyramiding: False
+
+  # Exit level parameters
+  RR: 2.0                         # reward:risk ratio for the take profit
+
+  # Stop loss buffer beyond the swing, so a liquidity sweep of the swing
+  # does not trivially stop the trade out. 'atr' scales the buffer with
+  # recent volatility (sl_atr_mult * ATR); 'pct' uses a fixed fraction of
+  # the entry price (sl_buffer_pc) instead.
+  sl_buffer_mode: 'atr'
+  atr_period: 14
+  sl_atr_mult: 0.25
+  sl_buffer_pc: 0.001
+
+  risk_pc: 1                      # percentage of account balance to risk per trade
+  sizing: 'risk'
+
+WATCHLIST: ['EUR_USD']            # instruments to trade using this strategy

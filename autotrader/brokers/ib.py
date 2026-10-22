@@ -358,6 +358,57 @@ class Broker(Broker):
 
         return open_positions
 
+    # Maps a bar size in seconds to IB's own barSizeSetting string. IB only
+    # accepts this fixed set of sizes for reqHistoricalData - anything else
+    # must be resampled from one of these after fetching.
+    _IB_BAR_SIZES = {
+        1: "1 secs",
+        5: "5 secs",
+        10: "10 secs",
+        15: "15 secs",
+        30: "30 secs",
+        60: "1 min",
+        120: "2 mins",
+        180: "3 mins",
+        300: "5 mins",
+        600: "10 mins",
+        900: "15 mins",
+        1200: "20 mins",
+        1800: "30 mins",
+        3600: "1 hour",
+        7200: "2 hours",
+        10800: "3 hours",
+        14400: "4 hours",
+        28800: "8 hours",
+        86400: "1 day",
+        604800: "1 week",
+    }
+
+    @classmethod
+    def _granularity_to_ib_bar_size(cls, granularity: str) -> str:
+        """Converts an AutoTrader granularity string (parseable by
+        `pandas.Timedelta`, eg. '1m', '5min', '4h', '1D' - the same
+        convention used by the OANDA broker) to IB's own barSizeSetting
+        string (eg. '1 min', '4 hours', '1 day')."""
+        seconds = int(pd.Timedelta(granularity).total_seconds())
+        if seconds not in cls._IB_BAR_SIZES:
+            raise ValueError(
+                f"Unsupported granularity for IB: '{granularity}' ({seconds}s). "
+                f"Supported bar sizes (seconds): {sorted(cls._IB_BAR_SIZES)}"
+            )
+        return cls._IB_BAR_SIZES[seconds]
+
+    @staticmethod
+    def _seconds_to_ib_duration(total_seconds: int) -> str:
+        """Converts a duration in seconds to an IB durationStr. IB requires
+        durations under a day to be expressed in seconds; longer ones are
+        expressed in whole days here (valid for any length, if not the most
+        idiomatic unit IB would pick for very large windows)."""
+        total_seconds = max(int(total_seconds), 1)
+        if total_seconds < 86400:
+            return f"{total_seconds} S"
+        return f"{-(-total_seconds // 86400)} D"
+
     def get_candles(
         self,
         instrument: str,
@@ -368,10 +419,105 @@ class Broker(Broker):
         *args,
         **kwargs,
     ) -> pd.DataFrame:
-        """Get the historical OHLCV candles for an instrument."""
-        raise NotImplementedError(
-            "Historical market data from IB is not yet supported."
+        """Get the historical OHLCV candles for an instrument, via IB's
+        `reqHistoricalData`.
+
+        Parameters
+        ----------
+        instrument : str
+            The contract's IB symbol (eg. 'FCE' for the CAC 40 future -
+            verify the exact symbol against TWS's own contract search,
+            AutoTrader cannot validate it for you).
+
+        granularity : str, optional
+            Bar size, as a `pandas.Timedelta`-parseable string (eg. '1m',
+            '5min', '1h', '1D') - the same convention used elsewhere in
+            AutoTrader (see the OANDA broker). Only the bar sizes IB
+            itself supports are accepted; see `_IB_BAR_SIZES`.
+
+        count : int, optional
+            Number of bars to request, ending at `end_time` (or now).
+            Ignored if `start_time` is given.
+
+        start_time, end_time : datetime, optional
+            If both given, requests exactly that window instead of the
+            last `count` bars.
+
+        secType, exchange, currency, contract_month, localSymbol : via
+            kwargs, contract details in the same shape `build_contract`
+            expects from an Order (eg. secType='Future',
+            exchange='MONEP', contract_month='202512' for a CAC 40
+            future - again, verify against TWS's contract search).
+
+        Notes
+        -----
+        This has not been exercised against a live IB connection from
+        this environment (no TWS/Gateway reachable here) - treat it as a
+        first draft to validate against your own account, not a
+        guaranteed-correct implementation. IB also paces and caps
+        historical data requests (limits depend on bar size and how much
+        history you ask for in one call); a very large `count` may need
+        to be split into several requests, which this does not do.
+        """
+        self._check_connection()
+
+        contract_order = Order(
+            instrument=instrument,
+            secType=kwargs.get("secType", "Stock"),
+            exchange=kwargs.get("exchange"),
+            currency=kwargs.get("currency"),
+            contract_month=kwargs.get("contract_month"),
+            localSymbol=kwargs.get("localSymbol"),
         )
+        contract = self.build_contract(contract_order)
+        self.ib.qualifyContracts(contract)
+
+        bar_size = self._granularity_to_ib_bar_size(granularity or "1min")
+
+        if start_time is not None and end_time is not None:
+            duration = self._seconds_to_ib_duration(
+                (end_time - start_time).total_seconds()
+            )
+            end_datetime = end_time
+        else:
+            bar_seconds = pd.Timedelta(granularity or "1min").total_seconds()
+            duration = self._seconds_to_ib_duration((count or 1) * bar_seconds)
+            end_datetime = end_time if end_time is not None else ""
+
+        bars = self.ib.reqHistoricalData(
+            contract,
+            endDateTime=end_datetime,
+            durationStr=duration,
+            barSizeSetting=bar_size,
+            whatToShow=kwargs.get("whatToShow", "TRADES"),
+            useRTH=kwargs.get("useRTH", False),
+            formatDate=2,
+        )
+
+        columns = ["Open", "High", "Low", "Close", "Volume"]
+        if not bars:
+            return pd.DataFrame(columns=columns)
+
+        df = ib_insync.util.df(bars)
+        df = df.rename(
+            columns={
+                "open": "Open",
+                "high": "High",
+                "low": "Low",
+                "close": "Close",
+                "volume": "Volume",
+            }
+        )
+        df["date"] = pd.to_datetime(df["date"])
+        df = df.set_index("date")
+        df.index.name = None
+
+        if start_time is not None:
+            df = df.loc[df.index >= start_time]
+        if count is not None:
+            df = df.iloc[-count:]
+
+        return df[columns]
 
     def get_orderbook(self, instrument: str, *args, **kwargs):
         """Get the orderbook for an instrument."""
