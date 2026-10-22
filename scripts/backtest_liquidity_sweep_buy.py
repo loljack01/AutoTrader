@@ -47,7 +47,8 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 
 
 def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy",
-             gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False):
+             gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False,
+             sweep_mask=None):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
     allowed on bars where it is True (e.g. a higher-timeframe trend filter).
     `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
@@ -60,7 +61,9 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     session_exit    close any open trade at the last bar of each Paris day
     entry_hours     (start, end) Paris hours, e.g. (9.25, 17.5); entries outside are skipped
     consumed_pools  a pool closed through before being swept is consumed:
-                    it can no longer be swept nor used as a target"""
+                    it can no longer be swept nor used as a target
+    sweep_mask      optional bool array aligned with `d`: a sweep on a bar where it
+                    is False is ignored (it can never trigger a trade)"""
     if direction not in ("buy", "sell"):
         raise ValueError("direction must be 'buy' or 'sell'")
     side = 1 if direction == "buy" else -1
@@ -105,6 +108,8 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     for p in swept_pools:
         if p["swept_at"] is not None:
             i = pos[p["swept_at"]]
+            if sweep_mask is not None and not sweep_mask[i]:
+                continue
             v = extreme.iloc[i]
             sweeps[i] = min(sweeps.get(i, np.inf), v) if side == 1 else max(sweeps.get(i, -np.inf), v)
 
