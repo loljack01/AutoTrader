@@ -1,5 +1,5 @@
-"""Live watch for new sweep + CHoCH signals on FCE1!, calls and puts, 5m and
-15m, no trend filter, frozen rule set (2x ATR stop floor, 8pt margin, 4h
+"""Live watch for new sweep + CHoCH signals on FCE1!, calls and puts, 1m, 5m
+and 15m (1m on its last 3000 bars only), no trend filter, frozen rule set (2x ATR stop floor, 8pt margin, 4h
 window, net R:R >= 1.3, Paris session filter). Alerts only: the frozen
 scorecards are not affected.
 
@@ -23,7 +23,8 @@ import pandas as pd
 
 import backtest_liquidity_sweep_buy as bt
 
-INTERVALS = {"5m": pd.Timedelta(minutes=5), "15m": pd.Timedelta(minutes=15)}
+INTERVALS = {"1m": pd.Timedelta(minutes=1), "5m": pd.Timedelta(minutes=5), "15m": pd.Timedelta(minutes=15)}
+KEEP = {"1m": 3000}  # recent bars only on 1m, to keep each check fast
 
 
 def set_rules():
@@ -55,6 +56,8 @@ def main():
     found = []
     for iv, bar in INTERVALS.items():
         d = bt.cache.closed_bars(bt.cache.load(bt.SYMBOL, iv), iv, now)
+        if iv in KEEP:
+            d = d.iloc[-KEEP[iv]:]
         for direction in ("buy", "sell"):
             key = f"{iv}-{direction}"
             last = pd.Timestamp(state["checked"].get(key, (start - bar).isoformat()))
