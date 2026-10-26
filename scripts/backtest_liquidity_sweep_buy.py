@@ -48,7 +48,7 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 
 def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy",
              gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False,
-             sweep_mask=None):
+             sweep_mask=None, take_frac=None):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
     allowed on bars where it is True (e.g. a higher-timeframe trend filter).
     `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
@@ -63,7 +63,9 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     consumed_pools  a pool closed through before being swept is consumed:
                     it can no longer be swept nor used as a target
     sweep_mask      optional bool array aligned with `d`: a sweep on a bar where it
-                    is False is ignored (it can never trigger a trade)"""
+                    is False is ignored (it can never trigger a trade)
+    take_frac       exit at this fraction of the way to the target (e.g. 0.8); entries
+                    are still selected with the full target"""
     if direction not in ("buy", "sell"):
         raise ValueError("direction must be 'buy' or 'sell'")
     side = 1 if direction == "buy" else -1
@@ -206,6 +208,8 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
             continue
         if net_rr(close, stop, take, ROUND_TRIP_COST) < MIN_NET_RR:
             continue
+        if take_frac is not None:
+            take = close + take_frac * (take - close)
 
         open_trade = {"entry_time": dt, "sweep_time": d.index[sweep_i], "entry": close, "stop": float(stop),
                       "initial_stop": float(stop), "take": float(take)}
