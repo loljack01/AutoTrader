@@ -4,7 +4,8 @@ window, net R:R >= 1.3, Paris session filter). Alerts only: the frozen
 scorecards are not affected.
 
 Each run ingests the given TradingView tool-result files into the cache,
-then checks every closed bar not checked yet (from the watch start): a bar
+then checks every closed bar not checked yet (from the last bar of each
+interval already closed at the watch start): a bar
 is a signal if the engine, started on that bar, opens a trade on it, and
 no earlier bar already triggered on the same sweep (one trade per sweep).
 
@@ -60,8 +61,10 @@ def main():
             d = d.iloc[-KEEP[iv]:]
         for direction in ("buy", "sell"):
             key = f"{iv}-{direction}"
-            last = pd.Timestamp(state["checked"].get(key, (start - bar).isoformat()))
-            for ts in d.index[(d.index > last) & (d.index >= start - bar)]:
+            # from the last bar already closed at the watch start, so a signal closing just before it is not missed
+            first_ts = start - 2 * bar
+            last = pd.Timestamp(state["checked"].get(key, (first_ts - bar).isoformat()))
+            for ts in d.index[(d.index > last) & (d.index >= first_ts)]:
                 t = bt.backtest(d, True, False, since=ts.tz_convert(None), direction=direction)
                 t = t[t.entry_time == ts]
                 for _, r in t.iterrows():
