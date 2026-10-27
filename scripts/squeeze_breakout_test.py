@@ -80,7 +80,7 @@ def exit_trade(d, p, i, side, stop):
 
 def real_entries(d, p):
     c, up, lo, vw = d.Close.to_numpy(), p.up.to_numpy(), p.lo.to_numpy(), p.vwap.to_numpy()
-    mid, atr, sq, ok = p.mid.to_numpy(), p.atr.to_numpy(), p.squeeze.to_numpy(), p.in_hours.to_numpy()
+    mid, atr, sq, ok = p.mid.to_numpy(), p.atr.to_numpy(), p["squeeze"].to_numpy(), p.in_hours.to_numpy()
     out = []
     for i in range(1, len(d)):
         if not (ok[i] and sq[i]) or np.isnan(atr[i]) or np.isnan(up[i - 1]):
