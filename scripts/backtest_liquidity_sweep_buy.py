@@ -48,7 +48,7 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 
 def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy",
              gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False,
-             sweep_mask=None, take_frac=None):
+             sweep_mask=None, take_frac=None, choch_max_age=None, choch_invalidation=False):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
     allowed on bars where it is True (e.g. a higher-timeframe trend filter).
     `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
@@ -65,7 +65,10 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     sweep_mask      optional bool array aligned with `d`: a sweep on a bar where it
                     is False is ignored (it can never trigger a trade)
     take_frac       exit at this fraction of the way to the target (e.g. 0.8); entries
-                    are still selected with the full target"""
+                    are still selected with the full target
+    choch_max_age   entry only on the most recent CHoCH bar or at most this many bars after it
+    choch_invalidation  no entry once a close has gone back beyond the level the most
+                    recent CHoCH broke (above it for puts, below it for calls)"""
     if direction not in ("buy", "sell"):
         raise ValueError("direction must be 'buy' or 'sell'")
     side = 1 if direction == "buy" else -1
@@ -77,6 +80,8 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     bull_bos, bear_bos = structure.bos_events(d.Close, sh, sl)
     choch = structure.choch_events(bull_bos, bear_bos)
     trigger_choch = (choch & (bull_bos if side == 1 else bear_bos)).to_numpy()
+    last_trig = np.maximum.accumulate(np.where(trigger_choch, np.arange(n), -1))
+    choch_level = (sh if side == 1 else sl).to_numpy()
     equilibrium = ((sh + sl) / 2).to_numpy()
 
     hi_marks = structure.confirmed_marks(is_hi, d.High, SWING_N)
@@ -184,6 +189,11 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
         if d.index[i] - d.index[sweep_i] > CHOCH_WINDOW or (one_trade_per_sweep and sweep_i in used_sweeps):
             continue
         if not trigger_choch[sweep_i:i + 1].any():
+            continue
+        c = last_trig[i]
+        if choch_max_age is not None and i - c > choch_max_age:
+            continue
+        if choch_invalidation and ((close_np[c + 1:i + 1] - choch_level[c]) * side < 0).any():
             continue
         dt = d.index[i]
         if not session.entry_allowed(session.session_window(dt.tz_convert("Europe/Paris"))):
