@@ -1,2 +1,4 @@
 marche,version,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
+CAC 40,sma20,call,28/10 09:15,7903.0,7876.57,7947.5,,open,
+CAC 40,sma10,call,28/10 09:15,7903.0,7876.57,7947.5,,open,
 Euro Stoxx 50,sma10,call,28/10 08:00,6177.0,6155.6,6241.0,,open,

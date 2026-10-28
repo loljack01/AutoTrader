@@ -18,6 +18,14 @@ CAC-equivalent, 3pt shown as a pessimistic check.
 Scorecard: only trades entered on or after FREEZE_START count. Reference
 (bars before 2026-10-27, 1pt-eq) checked each run.
 
+Promoted on 2026-10-28 to MAIN strategy (scripts/robustness_check.py: the
+only family still positive without its 3 best trades, with gains capped at
++5R and with trades cut at 48h). Rules unchanged. Go-live rule, fixed on
+2026-10-28 before any live trade: once the sma20 version has at least 100
+closed live trades on the 10 markets, it may move to real turbos (small
+size) only if its pooled net R is > 0 at 3pt-equivalent cost AND > 0 with
+every gain capped at +5R (1pt). Otherwise it is not traded.
+
 Usage: python scripts/frozen_15m_calls_trend.py [tool_result.json ...]
 """
 
@@ -41,6 +49,7 @@ MARKETS = {"FCE1!": ("CAC 40", 1.0), "FDAX1!": ("DAX", 3.2397), "FESX1!": ("Euro
            "FSMI1!": ("SMI", 1.7999), "YM1!": ("Dow Jones", 6.6697), "RTY1!": ("Russell 2000", 0.3678),
            "FIB1!": ("FTSE MIB", 6.5848)}
 VERSIONS = {"sma20": 20, "sma10": 10}
+GO_LIVE_TRADES = 100
 REFERENCE = {("FCE1!", "sma20"): (29, 15.0), ("FCE1!", "sma10"): (30, 14.0),
              ("FDAX1!", "sma20"): (29, 2.6), ("FDAX1!", "sma10"): (34, -0.1),
              ("FESX1!", "sma20"): (26, 11.2), ("FESX1!", "sma10"): (28, 12.3),
@@ -74,7 +83,7 @@ def main():
         ingest(f)
     now = pd.Timestamp.now(tz="UTC")
     paris = lambda ts: ts.tz_convert("Europe/Paris").strftime("%d/%m %H:%M")
-    rows, totals = [], {v: [] for v in VERSIONS}
+    rows, totals, totals3 = [], {v: [] for v in VERSIONS}, {v: [] for v in VERSIONS}
     for symbol, (name, _) in MARKETS.items():
         d = bt.cache.closed_bars(bt.cache.load(symbol, "15m"), "15m", now)
         print(f"\n######## {name} ({symbol}) 15m jusqu'au {paris(d.index[-1] + pd.Timedelta(minutes=15))} (Paris)")
@@ -90,6 +99,7 @@ def main():
             totals[version].append(r)
             t3 = run(symbol, d, n, 3.0)
             r3 = t3[(t3.entry_time >= FREEZE_START) & (t3.result != "open")].net_r.to_numpy()
+            totals3[version].append(r3)
             print(f"  {version} controle reference {got[0]} trades {got[1]:+.1f}R -> {status} | depuis le {FREEZE_START}: "
                   f"{len(r)} trades clos, {(r > 0).sum()} gagnants, net {r.sum():+.2f}R (3pt-eq {r3.sum():+.2f}R)")
             for x in live.itertuples():
@@ -103,7 +113,15 @@ def main():
     print(f"\n######## Les 10 marches ensemble, cout 1pt-eq, depuis le {FREEZE_START}")
     for version, parts in totals.items():
         r = np.concatenate(parts)
-        print(f"  {version}: {len(r)} trades clos, {(r > 0).sum()} gagnants, net {r.sum():+.2f}R")
+        r3, cap = np.concatenate(totals3[version]), np.minimum(r, 5.0).sum()
+        print(f"  {version}: {len(r)} trades clos, {(r > 0).sum()} gagnants, net {r.sum():+.2f}R "
+              f"(3pt-eq {r3.sum():+.2f}R, gains plafonnes a 5R {cap:+.2f}R)")
+        if version == "sma20":
+            if len(r) >= GO_LIVE_TRADES:
+                ok = r3.sum() > 0 and cap > 0
+                print(f"  Passage en reel (regle du 28/10): {'OUI, petite taille' if ok else 'NON'}")
+            else:
+                print(f"  Passage en reel: verdict a {GO_LIVE_TRADES} trades clos (encore {GO_LIVE_TRADES - len(r)})")
     pd.DataFrame(rows, columns=["marche", "version", "sens", "entree_paris", "entree", "stop", "cible",
                                 "sortie_paris", "resultat", "net_r"]).to_csv(OUT, index=False)
 
