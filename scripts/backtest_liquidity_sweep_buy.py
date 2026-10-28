@@ -48,7 +48,8 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 
 def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy",
              gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False,
-             sweep_mask=None, take_frac=None, choch_max_age=None, choch_invalidation=False):
+             sweep_mask=None, take_frac=None, choch_max_age=None, choch_invalidation=False,
+             limit_frac=None, limit_bars=4):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
     allowed on bars where it is True (e.g. a higher-timeframe trend filter).
     `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
@@ -68,7 +69,14 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
                     are still selected with the full target
     choch_max_age   entry only on the most recent CHoCH bar or at most this many bars after it
     choch_invalidation  no entry once a close has gone back beyond the level the most
-                    recent CHoCH broke (above it for puts, below it for calls)"""
+                    recent CHoCH broke (above it for puts, below it for calls)
+    limit_frac      instead of entering at the signal close, place a limit order this
+                    fraction of the way from the close to the stop (e.g. 0.5), valid
+                    `limit_bars` bars; same stop and target. Filled at the limit when a
+                    bar touches it (a fill bar that also touches the stop is a stop; the
+                    fill bar never counts as reaching the target). Cancelled ("missed")
+                    if the target is touched first or the order expires. The sweep is
+                    used either way."""
     if direction not in ("buy", "sell"):
         raise ValueError("direction must be 'buy' or 'sell'")
     side = 1 if direction == "buy" else -1
@@ -156,11 +164,27 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
         rec["stop"] = open_trade["initial_stop"]
         trades.append({**rec, "exit_time": d.index[i], "result": result, "net_r": net})
 
+    pending = None
     for i in range(n):
         if i in sweeps:
             last_sweep = (i, sweeps[i])
 
-        if open_trade is not None:
+        just_filled = False
+        if pending is not None:
+            bar = d.iloc[i]
+            lim, stop_lvl, take_lvl = pending["entry"], pending["stop"], pending["take"]
+            if (side == 1 and bar.Low <= lim) or (side == -1 and bar.High >= lim):
+                open_trade, pending = {**pending, "entry_time": d.index[i]}, None
+                just_filled = True
+                if (side == 1 and bar.Low <= stop_lvl) or (side == -1 and bar.High >= stop_lvl):
+                    close_trade(i, stop_lvl, "stop")
+                    open_trade = None
+            elif (side == 1 and bar.High >= take_lvl) or (side == -1 and bar.Low <= take_lvl) or i >= pending["expires"]:
+                trades.append({**pending, "stop": pending["initial_stop"], "exit_time": d.index[i],
+                               "result": "missed", "net_r": np.nan})
+                pending = None
+
+        if open_trade is not None and not just_filled:
             bar = d.iloc[i]
             stop_lvl, take_lvl = open_trade["stop"], open_trade["take"]
             if side == 1:
@@ -183,7 +207,7 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
                     close_trade(i, close_np[i], "eod")
                     open_trade = None
 
-        if i < start or open_trade is not None or last_sweep is None:
+        if i < start or open_trade is not None or pending is not None or last_sweep is None:
             continue
         sweep_i, sweep_extreme = last_sweep
         if d.index[i] - d.index[sweep_i] > CHOCH_WINDOW or (one_trade_per_sweep and sweep_i in used_sweeps):
@@ -223,12 +247,18 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
 
         open_trade = {"entry_time": dt, "sweep_time": d.index[sweep_i], "entry": close, "stop": float(stop),
                       "initial_stop": float(stop), "take": float(take)}
+        if limit_frac is not None:
+            open_trade["entry"] = float(close + limit_frac * (stop - close))
+            open_trade["expires"] = i + limit_bars
+            pending, open_trade = open_trade, None
         used_sweeps.add(sweep_i)
 
     if open_trade is not None:
         rec = {k: v for k, v in open_trade.items() if k != "initial_stop"}
         rec["stop"] = open_trade["initial_stop"]
         trades.append({**rec, "exit_time": None, "result": "open", "net_r": np.nan})
+    if pending is not None:
+        trades.append({**pending, "stop": pending["initial_stop"], "exit_time": None, "result": "pending", "net_r": np.nan})
     return pd.DataFrame(trades, columns=["entry_time", "sweep_time", "entry", "stop", "take", "exit_time", "result", "net_r"])
 
 
