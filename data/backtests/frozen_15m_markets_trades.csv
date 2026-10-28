@@ -1,1 +1,3 @@
 marche,version,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
+Euro Stoxx 50,none,put,28/10 11:00,6156.0,6180.29,6072.0,28/10 13:30,stop,-1.033
+Euro Stoxx 50,sma20,put,28/10 11:00,6156.0,6180.29,6072.0,28/10 13:30,stop,-1.033
