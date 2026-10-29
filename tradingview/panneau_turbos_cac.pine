@@ -22,9 +22,11 @@ side       = input.string("Put", "Sens", options = ["Call", "Put"], group = "Tra
 entryIn    = input.float(0, "Entrée (0 = dernier cours)", group = "Trade")
 stopIn     = input.float(0, "Stop (niveau CAC)", group = "Trade")
 targetIn   = input.float(0, "Cible (niveau CAC, 0 = non saisie)", group = "Trade")
-spreadPts  = input.float(1, "Spread (points CAC)", minval = 0, group = "Trade")
+spreadEur  = input.float(0.01, "Écart achat/vente du turbo (€)", minval = 0, step = 0.01, group = "Trade",
+     tooltip = "Écart affiché sur Boursorama entre l'achat et la vente du turbo (souvent 0,01 €)")
 parity     = input.float(0.01, "Parité (€ par point CAC)", minval = 0.0001, group = "Trade",
      tooltip = "Turbo de parité 1/100 : 0,01 € par point. Vérifier sur la fiche du turbo")
+spreadPts  = spreadEur / parity
 barrier    = input.float(0, "Barrière du turbo (0 = non saisie)", group = "Trade")
 inTrade    = input.bool(false, "Position ouverte", group = "Trade")
 entryTime  = input.time(timestamp("30 Oct 2026 09:15 +0100"), "Heure d'entrée", group = "Trade")
@@ -112,7 +114,7 @@ if barstate.islast
     row(3, "Reste avant -" + str.tostring(dayLimitR) + "R jour", fmt(dayLeft) + " €", dayLeft <= oneR ? red : white)
     row(4, "Reste avant -" + str.tostring(weekLimitR) + "R semaine", fmt(weekLeft) + " € (" + str.tostring(weekR, "0.0") + "R)", weekLeft <= oneR ? red : white)
     row(5, "Tendance (veille vs SMA20 j)", (trendUp ? "haussière : calls OK" : "baissière : puts seuls") + " · SMA " + fmt0(dSma), trendUp ? green : amber)
-    row(6, "Stop", na(stopDist) ? "à saisir" : fmt(stopDist) + " pts + " + fmt(spreadPts) + " spread", white)
+    row(6, "Stop", na(stopDist) ? "à saisir" : fmt(stopDist) + " pts + écart " + fmt(spreadPts) + " pts (" + str.tostring(spreadEur, "0.00") + " €)", white)
     row(7, "Perte par turbo si stop", na(eurPer) ? "—" : fmt(eurPer) + " €", white)
     row(8, "Turbos (1R)", na(nTurbos) ? "—" : fmt0(nTurbos), white)
     row(9, "Turbos permis par les limites", na(nAllowed) ? "—" : fmt0(nAllowed), not na(nAllowed) and nAllowed < nTurbos ? amber : white)
