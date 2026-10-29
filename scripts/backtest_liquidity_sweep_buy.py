@@ -49,7 +49,7 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry_mask=None, direction="buy",
              gap_fill=False, breakeven_r=None, session_exit=False, entry_hours=None, consumed_pools=False,
              sweep_mask=None, take_frac=None, choch_max_age=None, choch_invalidation=False,
-             limit_frac=None, limit_bars=4):
+             limit_frac=None, limit_bars=4, single_swing_sweeps=False):
     """`entry_mask`: optional bool array aligned with `d`; entries are only
     allowed on bars where it is True (e.g. a higher-timeframe trend filter).
     `direction="sell"` runs the exact mirror: EQH sweep, bearish CHoCH,
@@ -76,7 +76,9 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
                     bar touches it (a fill bar that also touches the stop is a stop; the
                     fill bar never counts as reaching the target). Cancelled ("missed")
                     if the target is touched first or the order expires. The sweep is
-                    used either way."""
+                    used either way.
+    single_swing_sweeps  a sweep of ANY single confirmed swing low (calls) / swing high
+                    (puts) triggers, not only of an EQL/EQH pool; targets unchanged"""
     if direction not in ("buy", "sell"):
         raise ValueError("direction must be 'buy' or 'sell'")
     side = 1 if direction == "buy" else -1
@@ -116,6 +118,10 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
                 p["swept_at"] = None
 
     swept_pools, target_pools = (eql, eqh) if side == 1 else (eqh, eql)
+    if single_swing_sweeps:
+        marks = lo_marks if side == 1 else hi_marks
+        singles = [{"level": v, "members": [(ts, v), (ts, v)]} for ts, v in marks.dropna().items()]
+        swept_pools = liquidity.find_sweeps(singles, d, "low" if side == 1 else "high")
     fallback_target = (hi_marks if side == 1 else lo_marks).ffill()
     extreme = d.Low if side == 1 else d.High
 
