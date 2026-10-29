@@ -1,2 +1,5 @@
 marche,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
-SMI,vente,28/10 09:00,14522,14603.0,14441.0,28/10 12:00,time,-0.01
+CAC 40,achat,29/10 09:00,7955.5,7902.5,8008.5,,open,
+FTSE 100,achat,29/10 09:00,10749.0,10717.0,10781.0,,open,
+SMI,vente,28/10 09:00,14522.0,14603.0,14441.0,28/10 12:00,time,-0.01
+SMI,achat,29/10 09:00,14678.0,14576.0,14780.0,,open,
