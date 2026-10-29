@@ -1,4 +1,8 @@
 marche,version,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
+DAX,none,call,29/10 05:30,25840.0,25783.08,26190.0,,open,
+DAX,sma20,call,29/10 05:30,25840.0,25783.08,26190.0,,open,
 Euro Stoxx 50,none,put,28/10 11:00,6156.0,6180.29,6072.0,28/10 13:30,stop,-1.033
 Euro Stoxx 50,sma20,put,28/10 11:00,6156.0,6180.29,6072.0,28/10 13:30,stop,-1.033
+S&P 500,none,call,29/10 01:15,7760.5,7732.57,7886.5,,open,
+S&P 500,sma20,call,29/10 01:15,7760.5,7732.57,7886.5,,open,
 Nasdaq 100,none,call,28/10 18:15,29817.75,29723.0,29976.25,28/10 19:30,take,1.633

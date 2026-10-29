@@ -1,4 +1,7 @@
 marche,version,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
+DAX,fix,call,29/10 05:30,25840.0,25783.08,26190.0,,open,
 Euro Stoxx 50,fix,put,28/10 11:00,6156.0,6180.29,6072.0,28/10 13:30,stop,-1.033
+S&P 500,fix,call,29/10 01:15,7760.5,7732.57,7886.5,,open,
 Russell 2000,fix,put,28/10 11:00,2822.3,2830.34,2790.1,28/10 13:15,stop,-1.046
 Russell 2000,fix,call,28/10 21:00,2843.3,2814.76,2915.3,,open,
+Russell 2000,fix,put,29/10 04:15,2847.9,2857.74,2817.7,29/10 06:00,stop,-1.037
