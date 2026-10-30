@@ -1,0 +1,63 @@
+date,country,title,importance
+2026-09-15T09:00:00.000Z,DE,ZEW Economic Sentiment Index,1
+2026-09-16T12:30:00.000Z,US,Retail Sales MoM,1
+2026-09-16T18:00:00.000Z,US,FOMC Economic Projections,1
+2026-09-16T18:00:00.000Z,US,Fed Interest Rate Decision,1
+2026-09-16T18:30:00.000Z,US,Fed Press Conference,1
+2026-09-17T12:30:00.000Z,US,Building Permits Prel,1
+2026-09-17T12:30:00.000Z,US,Housing Starts,1
+2026-09-23T07:30:00.000Z,DE,S&P Global Manufacturing PMI Flash,1
+2026-09-24T00:00:00.000Z,US,President Trump and President Xi Summit,1
+2026-09-24T08:00:00.000Z,DE,Ifo Business Climate,1
+2026-09-25T06:00:00.000Z,DE,GfK Consumer Confidence,1
+2026-09-25T12:30:00.000Z,US,Durable Goods Orders MoM,1
+2026-09-29T14:00:00.000Z,US,JOLTs Job Openings,1
+2026-09-30T06:45:00.000Z,FR,Inflation Rate YoY Prel,1
+2026-09-30T12:00:00.000Z,DE,Inflation Rate YoY Prel,1
+2026-09-30T12:30:00.000Z,US,Personal Income MoM,1
+2026-09-30T12:30:00.000Z,US,Personal Spending MoM,1
+2026-09-30T12:30:00.000Z,US,GDP Growth Rate QoQ Final,1
+2026-09-30T12:30:00.000Z,US,Core PCE Price Index MoM,1
+2026-10-01T14:00:00.000Z,US,ISM Manufacturing PMI,1
+2026-10-02T09:00:00.000Z,EU,Inflation Rate YoY Flash,1
+2026-10-02T12:30:00.000Z,US,Non Farm Payrolls,1
+2026-10-02T12:30:00.000Z,US,Unemployment Rate,1
+2026-10-05T14:00:00.000Z,US,ISM Services PMI,1
+2026-10-07T18:00:00.000Z,US,FOMC Minutes,1
+2026-10-08T06:00:00.000Z,DE,Balance of Trade,1
+2026-10-09T14:00:00.000Z,US,Michigan Consumer Sentiment Prel,1
+2026-10-13T14:00:00.000Z,US,Existing Home Sales,1
+2026-10-14T02:10:00.000Z,EU,ECB President Lagarde Speech,1
+2026-10-14T08:30:00.000Z,EU,ECB President Lagarde Speech,1
+2026-10-14T12:30:00.000Z,US,Inflation Rate YoY,1
+2026-10-14T12:30:00.000Z,US,Inflation Rate MoM,1
+2026-10-14T12:30:00.000Z,US,Core Inflation Rate MoM,1
+2026-10-14T12:30:00.000Z,US,Core Inflation Rate YoY,1
+2026-10-15T12:30:00.000Z,US,Retail Sales MoM,1
+2026-10-15T12:30:00.000Z,US,PPI MoM,1
+2026-10-16T03:30:00.000Z,US,Fed Chair Warsh Speech,1
+2026-10-20T09:00:00.000Z,DE,ZEW Economic Sentiment Index,1
+2026-10-20T12:30:00.000Z,US,Housing Starts,1
+2026-10-20T12:30:00.000Z,US,Building Permits Prel,1
+2026-10-23T07:30:00.000Z,DE,S&P Global Manufacturing PMI Flash,1
+2026-10-26T09:00:00.000Z,DE,Ifo Business Climate,1
+2026-10-27T12:30:00.000Z,US,Durable Goods Orders MoM,1
+2026-10-28T07:00:00.000Z,DE,GfK Consumer Confidence,1
+2026-10-28T18:00:00.000Z,US,Fed Interest Rate Decision,1
+2026-10-28T18:00:00.000Z,US,FOMC Statement,1
+2026-10-28T18:30:00.000Z,US,Fed Press Conference,1
+2026-10-29T12:30:00.000Z,US,Core PCE Price Index MoM,1
+2026-10-29T12:30:00.000Z,US,GDP Growth Rate QoQ Adv,1
+2026-10-29T12:30:00.000Z,US,Personal Income MoM,1
+2026-10-29T12:30:00.000Z,US,Personal Spending MoM,1
+2026-10-29T13:15:00.000Z,EU,ECB Interest Rate Decision,1
+2026-10-29T13:15:00.000Z,EU,Deposit Facility Rate,1
+2026-10-29T13:45:00.000Z,EU,ECB Press Conference,1
+2026-10-30T06:30:00.000Z,FR,GDP Growth Rate YoY Prel,1
+2026-10-30T06:30:00.000Z,FR,GDP Growth Rate QoQ Prel,1
+2026-10-30T07:45:00.000Z,FR,Inflation Rate YoY Prel,1
+2026-10-30T09:00:00.000Z,DE,GDP Growth Rate QoQ Flash,1
+2026-10-30T09:00:00.000Z,DE,GDP Growth Rate YoY Flash,1
+2026-10-30T10:00:00.000Z,EU,GDP Growth Rate YoY Flash,1
+2026-10-30T10:00:00.000Z,EU,GDP Growth Rate QoQ Flash,1
+2026-10-30T13:00:00.000Z,DE,Inflation Rate YoY Prel,1
