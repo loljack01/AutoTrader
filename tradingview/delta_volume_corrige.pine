@@ -1,0 +1,137 @@
+//@version=6
+// Version corrigée de « Premium & Discount Delta Volume [BigBeluga] »
+// (© BigBeluga, licence Creative Commons BY-NC-SA 4.0 : usage personnel non
+// commercial, modifications partagées sous la même licence).
+// Corrections après l'audit du 30/10/2026 :
+//  1. Delta symétrique : (volume vert - volume rouge) / (vert + rouge), au lieu
+//     de (vert - rouge) / vert qui grossissait les lectures vendeuses.
+//  2. Recalculé de zéro sur chaque bougie à partir de sommes glissantes : plus
+//     de tableaux jamais remis à zéro, donc plus de dérive pendant la séance.
+//     La valeur est la même graphique ouvert ou rechargé, et son historique est
+//     lisible dans la fenêtre de données.
+//  3. Fenêtres en heures de cotation, converties en nombre de bougies selon
+//     l'unité de temps : 1 minute, 15 minutes et 1 heure lisent la même période.
+//  4. Zones recalculées à chaque bougie : haut et bas de la fenêtre, plus une
+//     marge, et milieu (équilibre) au centre du range.
+//  5. Étiquettes honnêtes : les volumes affichés sont ceux de toute la fenêtre,
+//     pas ceux échangés dans les zones.
+//  6. Message clair quand l'instrument n'a pas de volume (indice cash PX1).
+// Limite qui reste : ce « delta » classe tout le volume d'une bougie selon sa
+// couleur. Ce n'est PAS le flux d'ordres (achats agressifs - ventes agressives).
+// Outil de lecture, AUCUN signal : il n'a pas été testé sur l'historique.
+indicator("Delta Volume corrigé (d'après BigBeluga)", overlay = true, max_boxes_count = 10, max_lines_count = 5, max_bars_back = 5000)
+
+// ---------- Réglages ----------
+zoneHours  = input.float(7, "Fenêtre des zones (heures de cotation)", minval = 0.25, step = 0.25,
+     tooltip = "7 h environ une séance du CAC. Même période quelle que soit l'unité de temps")
+macroHours = input.float(70, "Fenêtre macro (heures de cotation)", minval = 1, step = 1,
+     tooltip = "70 h environ 5 séances du contrat à terme CAC (14 h par jour)")
+pad        = input.float(0.8, "Marge des zones (x ATR 200)", minval = 0, step = 0.1)
+showHalves = input.bool(true, "Colorer les moitiés premium et discount")
+upColor    = input.color(#79c1f1, "Discount / acheteurs", group = "Couleurs")
+downColor  = input.color(#f19579, "Premium / vendeurs", group = "Couleurs")
+
+// ---------- Fenêtres en bougies ----------
+tfSec = timeframe.in_seconds()
+barsFor(float hours) =>
+    math.max(1, math.min(4900, int(math.round(hours * 3600.0 / tfSec))))
+nZone  = math.min(barsFor(zoneHours), bar_index + 1)
+nMacro = math.min(barsFor(macroHours), bar_index + 1)
+
+// ---------- Volumes par couleur de bougie, sommes glissantes ----------
+vol     = nz(volume)
+buyVol  = close > open ? vol : 0.0
+sellVol = close < open ? vol : 0.0
+doji    = close == open ? 1.0 : 0.0
+cumBuy  = ta.cum(buyVol)
+cumSell = ta.cum(sellVol)
+cumDoji = ta.cum(doji)
+
+windowSum(float c, int n) =>
+    c - nz(c[n])
+
+delta(float b, float s) =>
+    b + s > 0 ? (b - s) / (b + s) * 100 : na
+
+buyMacro  = windowSum(cumBuy, nMacro)
+sellMacro = windowSum(cumSell, nMacro)
+buyZone   = windowSum(cumBuy, nZone)
+sellZone  = windowSum(cumSell, nZone)
+deltaMacro = delta(buyMacro, sellMacro)
+deltaZone  = delta(buyZone, sellZone)
+dojiShare  = windowSum(cumDoji, nMacro) / nMacro * 100
+noVolume   = buyMacro + sellMacro == 0
+
+// Historique consultable (fenêtre de données), sans tracé sur le prix
+plot(deltaMacro, "Delta macro (%)", color = deltaMacro >= 0 ? upColor : downColor, display = display.data_window)
+plot(deltaZone, "Delta zones (%)", color = deltaZone >= 0 ? upColor : downColor, display = display.data_window)
+
+// ---------- Zones ----------
+atrPad = ta.atr(200) * pad
+var box topBox  = na
+var box botBox  = na
+var box premBox = na
+var box discBox = na
+var line midLine = na
+
+fmtVol(float v) => str.tostring(v, format.volume)
+fmtPct(float x) => na(x) ? "—" : (x > 0 ? "+" : "") + str.tostring(x, "0.0") + " %"
+
+if barstate.islast
+    float hiZ = high
+    float loZ = low
+    for i = 0 to nZone - 1
+        hiZ := math.max(hiZ, high[i])
+        loZ := math.min(loZ, low[i])
+    float mid = (hiZ + loZ) / 2
+    int left  = bar_index - nZone + 1
+    int right = bar_index + 20
+    string padTxt = nz(atrPad) > 0 ? "" : " (marge indisponible)"
+    if na(topBox)
+        topBox  := box.new(left, hiZ + nz(atrPad), right, hiZ, border_color = downColor, bgcolor = color.new(downColor, 70),
+             text_size = size.small, text_color = chart.fg_color, text_halign = text.align_right)
+        botBox  := box.new(left, loZ, right, loZ - nz(atrPad), border_color = upColor, bgcolor = color.new(upColor, 70),
+             text_size = size.small, text_color = chart.fg_color, text_halign = text.align_right)
+        premBox := box.new(left, hiZ, right, mid, border_color = na, bgcolor = na)
+        discBox := box.new(left, mid, right, loZ, border_color = na, bgcolor = na)
+        midLine := line.new(left, mid, right, mid, color = chart.fg_color, style = line.style_dashed)
+    box.set_lefttop(topBox, left, hiZ + nz(atrPad))
+    box.set_rightbottom(topBox, right, hiZ)
+    box.set_text(topBox, "Haut du range " + str.tostring(hiZ, format.mintick) + padTxt)
+    box.set_lefttop(botBox, left, loZ)
+    box.set_rightbottom(botBox, right, loZ - nz(atrPad))
+    box.set_text(botBox, "Bas du range " + str.tostring(loZ, format.mintick) + padTxt)
+    box.set_lefttop(premBox, left, hiZ)
+    box.set_rightbottom(premBox, right, mid)
+    box.set_bgcolor(premBox, showHalves ? color.new(downColor, 93) : na)
+    box.set_lefttop(discBox, left, mid)
+    box.set_rightbottom(discBox, right, loZ)
+    box.set_bgcolor(discBox, showHalves ? color.new(upColor, 93) : na)
+    line.set_xy1(midLine, left, mid)
+    line.set_xy2(midLine, right, mid)
+
+// ---------- Tableau ----------
+var table t = table.new(position.top_right, 2, 6, bgcolor = color.new(#131722, 10), border_width = 1,
+     border_color = color.new(#2a2e39, 0), frame_color = color.new(#2a2e39, 0), frame_width = 1)
+
+row(int r, string label, string value, color col) =>
+    table.cell(t, 0, r, label, text_color = color.new(#d1d4dc, 0), text_size = size.small, text_halign = text.align_left)
+    table.cell(t, 1, r, value, text_color = col, text_size = size.small, text_halign = text.align_right)
+
+if barstate.islast
+    white = color.new(#d1d4dc, 0)
+    if noVolume
+        table.cell(t, 0, 0, "Pas de volume sur cet instrument (indice cash ?) : utiliser le contrat à terme, par exemple FCE1!",
+             text_color = color.new(#f5a623, 0), text_size = size.small)
+        table.merge_cells(t, 0, 0, 1, 0)
+    else
+        row(0, "Delta macro (" + str.tostring(macroHours) + " h, " + str.tostring(nMacro) + " bougies)", fmtPct(deltaMacro),
+             deltaMacro >= 0 ? upColor : downColor)
+        row(1, "Delta zones (" + str.tostring(zoneHours) + " h, " + str.tostring(nZone) + " bougies)", fmtPct(deltaZone),
+             deltaZone >= 0 ? upColor : downColor)
+        row(2, "Volume vert / rouge (macro)", fmtVol(buyMacro) + " / " + fmtVol(sellMacro), white)
+        row(3, "Bougies neutres ignorées", str.tostring(dojiShare, "0") + " %", white)
+        row(4, "Fenêtre macro tronquée", nMacro < barsFor(macroHours) ? "oui, historique trop court" : "non", white)
+        table.cell(t, 0, 5, "Couleur des bougies, pas flux d'ordres. Lecture seulement, aucun signal testé.",
+             text_color = color.new(#787b86, 0), text_size = size.tiny)
+        table.merge_cells(t, 0, 5, 1, 5)
