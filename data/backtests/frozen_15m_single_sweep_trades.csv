@@ -1,1 +1,4 @@
 marche,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
+Euro Stoxx 50,call,30/10 05:15,6193.0,6171.6,6257.0,,open,
+Dow Jones,put,30/10 02:00,52420.0,52627.36,52049.0,,open,
+Dow Jones,call,30/10 06:15,52424.0,52311.64,52586.0,,open,
