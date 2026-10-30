@@ -53,6 +53,11 @@ session) only if ALL of:
 Otherwise REJETEE, no re-tuning (no other margin, third, window or level
 list is tried).
 
+Result (run on 2026-10-30, 16/09 -> 29/10): REJETEE. N+A+C 150 trades,
+29% winners, -9.2R at 1pt, -40.2R at 3pt, capped -17.8R, halves -3.3R /
+-5.8R, random 95th percentile +21.4R. Alone (information): N -26.5R, A
+-15.8R, C +1.0R at 1pt but -23.8R at 3pt; unfiltered -14.9R.
+
 Usage: python scripts/test_1m_context.py
 """
 
