@@ -1,4 +1,5 @@
 marche,sens,entree_paris,entree,stop,cible,sortie_paris,resultat,net_r
 Petrole WTI,call,30/10 03:00,104.15,102.34,106.75,,open,
-Petrole WTI,put,30/10 04:30,103.25,104.73,99.79,,open,
+Petrole WTI,put,30/10 04:30,103.25,104.73,99.79,30/10 17:45,stop,-1.008
 Petrole Brent,call,30/10 03:15,112.54,111.5,114.07,30/10 07:15,stop,-1.012
+Petrole Brent,put,30/10 21:00,112.3,114.27,102.33,,open,
