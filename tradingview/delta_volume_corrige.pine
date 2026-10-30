@@ -97,10 +97,10 @@ if barstate.islast
     int right = bar_index + 20
     if off == 1
         if close > hiZ
-            posTxt := "clôture au-dessus du haut (+" + str.tostring(close - hiZ, format.mintick) + ") : cassure si elle tient"
+            posTxt := "prix au-dessus du haut (+" + str.tostring(close - hiZ, format.mintick) + ") : cassure si la bougie clôture ainsi"
             posCol := upColor
         else if close < loZ
-            posTxt := "clôture sous le bas (-" + str.tostring(loZ - close, format.mintick) + ") : cassure si elle tient"
+            posTxt := "prix sous le bas (-" + str.tostring(loZ - close, format.mintick) + ") : cassure si la bougie clôture ainsi"
             posCol := downColor
         else if high > hiZ
             posTxt := "mèche au-dessus du haut, prix revenu dedans : balayage possible"
