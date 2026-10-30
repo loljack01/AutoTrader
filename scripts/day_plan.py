@@ -17,7 +17,11 @@ Les niveaux a moins de 2 points l'un de l'autre sont regroupes.
 Seuils de "l'ecart continue" (cloture de la bougie 9h00-9h15) et etat du
 filtre de tendance (cloture de la veille vs SMA20 journaliere).
 
-Usage: python scripts/day_plan.py [fichier_15m.json fichier_1D.json ...]
+Pour le petrole (suivi sans argent depuis le 30/10) : --symbol NYMEX:CL1! ou
+--symbol ICEEUR:BRN1! (memes niveaux, chiffres ronds tous les 1 $, marge de
+stop 8 pts CAC x facteur fixe, pas de seuils "ecart continue").
+
+Usage: python scripts/day_plan.py [--symbol SYM] [fichier_15m.json fichier_1D.json ...]
   (fichiers tool-results TradingView de FCE1!, fusionnes en memoire avec le
   cache sans l'ecrire)
 """
@@ -37,6 +41,9 @@ from data import cache
 from levels import liquidity, structure
 
 SYMBOL = "FCE1!"
+FACTOR = {"FCE1!": 1.0, "NYMEX:CL1!": 0.0115, "ICEEUR:BRN1!": 0.0125}
+NAME = {"FCE1!": "CAC 40", "NYMEX:CL1!": "Petrole WTI", "ICEEUR:BRN1!": "Petrole Brent"}
+OIL_TRADES = Path(__file__).resolve().parent.parent / "data" / "backtests" / "frozen_15m_oil_trades.csv"
 TZ = "Europe/Paris"
 WINDOW_ATR = 1.2  # niveaux affiches a +/- 1.2 ATR journalier du dernier cours
 TRADES = Path(__file__).resolve().parent.parent / "data" / "backtests" / "frozen_15m_calls_trend_trades.csv"
@@ -69,12 +76,21 @@ def intact(pools, d, kind):
 
 
 def main():
+    global SYMBOL
+    args = sys.argv[1:]
+    if "--symbol" in args:
+        i = args.index("--symbol")
+        SYMBOL = args[i + 1]
+        args = args[:i] + args[i + 2:]
+    k = FACTOR[SYMBOL]
+    cac = SYMBOL == "FCE1!"
+    nd = 1 if cac else 2
     now = pd.Timestamp.now(tz="UTC")
-    d15, daily = load(sys.argv[1:])
+    d15, daily = load(args)
     d15 = cache.closed_bars(d15, "15m", now)
     today = now.tz_convert(TZ).date()
     daily.index = pd.to_datetime(daily.index, utc=True)
-    done = daily[daily.index.tz_convert(TZ).date < today]
+    done = cache.closed_bars(daily, "1D", now)
     prev = done.iloc[-1]
     tr = pd.concat([done.High - done.Low, (done.High - done.Close.shift()).abs(),
                     (done.Low - done.Close.shift()).abs()], axis=1).max(axis=1)
@@ -102,7 +118,7 @@ def main():
     levels = [(prev.Close, "cloture veille (reglement)"), (prev.High, "plus haut veille"), (prev.Low, "plus bas veille")]
     if len(week) > 1:
         levels += [(week.High.max(), "plus haut semaine"), (week.Low.min(), "plus bas semaine")]
-    if len(pre):
+    if len(pre) and cac:
         levels += [(pre.High.max(), "plus haut depuis 8h"), (pre.Low.min(), "plus bas depuis 8h")]
     levels += [(p["level"], f"double sommet {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M} (liquidite)") for p in eqh]
     levels += [(p["level"], f"double creux {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M} (liquidite)") for p in eql]
@@ -111,12 +127,13 @@ def main():
     singles_l = [p for p in singles_l if p["members"][0][0] >= since]
     levels += [(p["level"], f"sommet isole {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M}") for p in singles_h]
     levels += [(p["level"], f"creux isole {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M}") for p in singles_l]
-    base = np.floor(last / 50) * 50
-    levels += [(base + k * 50, "chiffre rond") for k in (-2, -1, 0, 1, 2, 3)]
+    step = 50 if cac else 1.0
+    base = np.floor(last / step) * step
+    levels += [(base + j * step, "chiffre rond") for j in (-2, -1, 0, 1, 2, 3)]
     lo, hi = last - WINDOW_ATR * atr, last + WINDOW_ATR * atr
     merged = []
-    for v, lab in sorted(((round(v, 1), lab) for v, lab in levels if lo <= v <= hi), reverse=True):
-        if merged and merged[-1][0] - v <= 2.0:
+    for v, lab in sorted(((round(v, nd), lab) for v, lab in levels if lo <= v <= hi), reverse=True):
+        if merged and merged[-1][0] - v <= 2.0 * k:
             if lab not in merged[-1][1]:
                 merged[-1] = (merged[-1][0], merged[-1][1] + " + " + lab)
         else:
@@ -124,45 +141,54 @@ def main():
     levels = merged
 
     up = prev.Close > sma20
-    print(f"PLAN DE JOURNEE FCE1! — {today:%d/%m/%Y}, dernier cours {last:.1f} (bougie close {last_t} Paris)")
-    print(f"Veille : cloture {prev.Close:.1f}, haut {prev.High:.1f}, bas {prev.Low:.1f} | ATR journalier {atr:.1f} pts")
-    print(f"Tendance : cloture veille {prev.Close:.1f} {'>' if up else '<'} SMA20 {sma20:.1f} -> "
+    f = lambda x: f"{x:.{nd}f}"
+    margin = f"{8 * k:.{nd}f}"
+    print(f"PLAN DE JOURNEE {NAME[SYMBOL]} ({SYMBOL}) — {today:%d/%m/%Y}, dernier cours {f(last)} (bougie close {last_t} Paris)")
+    print(f"Veille : cloture {f(prev.Close)}, haut {f(prev.High)}, bas {f(prev.Low)} | ATR journalier {f(atr)}")
+    print(f"Tendance : cloture veille {f(prev.Close)} {'>' if up else '<'} SMA20 {f(sma20)} -> "
           f"{'calls ET puts autorises' if up else 'PUTS seulement (calls interdits)'}")
-    if len(pre):
-        print(f"Depuis 8h00 : haut {pre.High.max():.1f}, bas {pre.Low.min():.1f} (provisoire, la bougie 8h45 n'est pas close)")
-    print(f"\nNiveaux a +/- {WINDOW_ATR} ATR ({lo:.0f} - {hi:.0f}), du plus haut au plus bas :")
+    if len(pre) and cac:
+        print(f"Depuis 8h00 : haut {f(pre.High.max())}, bas {f(pre.Low.min())} (provisoire, la bougie 8h45 n'est pas close)")
+    print(f"\nNiveaux a +/- {WINDOW_ATR} ATR ({f(lo)} - {f(hi)}), du plus haut au plus bas :")
     shown = False
     for v, lab in levels:
         if not shown and v < last:
-            print(f"   ---- {last:.1f} dernier cours ----")
+            print(f"   ---- {f(last)} dernier cours ----")
             shown = True
-        print(f"   {v:8.1f}  {lab}")
+        print(f"   {f(v):>9s}  {lab}")
     if not shown:
-        print(f"   ---- {last:.1f} dernier cours ----")
+        print(f"   ---- {f(last)} dernier cours ----")
     above = [x for x in levels if x[0] > last]
     below = [x for x in levels if x[0] < last]
     print("\nScenarios (a valider sur CLOTURE 5m, jamais au contact) :")
     if below:
         v, lab = below[0]
-        tgt = f"{above[-1][0]:.1f} ({above[-1][1]})" if above else "niveau suivant"
-        print(f"  CALL{'' if up else ' (interdit : tendance baissiere)'} : balayage de {v:.1f} ({lab}) puis cloture 5m "
-              f"revenue au-dessus -> stop sous la meche - 8 pts, premiere cible {tgt}")
+        tgt = f"{f(above[-1][0])} ({above[-1][1]})" if above else "niveau suivant"
+        print(f"  CALL{'' if up else ' (interdit : tendance baissiere)'} : balayage de {f(v)} ({lab}) puis cloture 5m "
+              f"revenue au-dessus -> stop sous la meche - {margin}, premiere cible {tgt}")
     if above:
         v, lab = above[-1]
-        tgt = f"{below[0][0]:.1f} ({below[0][1]})" if below else "niveau suivant"
-        print(f"  PUT : depassement de {v:.1f} ({lab}) puis cloture 5m revenue en dessous -> stop au-dessus de la "
-              f"meche + 8 pts, premiere cible {tgt}")
-    c, g1, g2 = prev.Close, 0.25 * atr, 1.0 * atr
-    print(f"  Ecart continue (bougie 9h00-9h15, version fragile suivie sans argent) : achat si cloture entre "
-          f"{c + g1:.1f} et {c + g2:.1f}, vente si entre {c - g2:.1f} et {c - g1:.1f}, et la bougie ne touche pas {c:.1f} ; "
-          f"stop {c:.1f}, cible 1:1, sortie 12h00")
-    if TRADES.exists():
-        t = pd.read_csv(TRADES)
-        o = t[(t.marche == "CAC 40") & (t.version == "sma20") & (t.resultat == "open")]
+        tgt = f"{f(below[0][0])} ({below[0][1]})" if below else "niveau suivant"
+        print(f"  PUT : depassement de {f(v)} ({lab}) puis cloture 5m revenue en dessous -> stop au-dessus de la "
+              f"meche + {margin}, premiere cible {tgt}")
+    if cac:
+        c, g1, g2 = prev.Close, 0.25 * atr, 1.0 * atr
+        print(f"  Ecart continue (bougie 9h00-9h15, version fragile suivie sans argent) : achat si cloture entre "
+              f"{c + g1:.1f} et {c + g2:.1f}, vente si entre {c - g2:.1f} et {c - g1:.1f}, et la bougie ne touche pas {c:.1f} ; "
+              f"stop {c:.1f}, cible 1:1, sortie 12h00")
+    src, mk = (TRADES, "CAC 40") if cac else (OIL_TRADES, NAME[SYMBOL])
+    if src.exists():
+        t = pd.read_csv(src)
+        o = t[(t.marche == mk) & (t.resultat == "open")]
+        if "version" in t.columns:
+            o = o[o.version == "sma20"]
         for x in o.itertuples():
-            print(f"  Position ouverte de la principale (CAC) : {x.sens} {x.entree_paris} entree {x.entree} stop {x.stop} cible {x.cible}")
-    print("\nRappels : rien entre 9h00 et 9h15 ni dans les 15 min autour d'une annonce ; la strategie principale (15m) "
-          "reste la seule candidate au reel ; les trades de reaction se notent au journal, sans argent.")
+            print(f"  Position ouverte ({mk}) : {x.sens} {x.entree_paris} entree {x.entree} stop {x.stop} cible {x.cible}")
+    if cac:
+        print("\nRappels : rien entre 9h00 et 9h15 ni dans les 15 min autour d'une annonce ; la strategie principale (15m) "
+              "reste la seule candidate au reel ; les trades de reaction se notent au journal, sans argent.")
+    else:
+        print("\nRappel : le petrole est suivi sans argent ; la principale n'a pas tenu sur son historique (test du 30/10).")
 
 
 if __name__ == "__main__":
