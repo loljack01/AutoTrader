@@ -40,6 +40,12 @@ strategy, which does not change) only if ALL of:
 Otherwise REJETEE, no re-tuning (no other window, partner rule or market
 set is tried). Trades the filter removes are shown for information.
 
+Result (run on 2026-10-30, 02/07 -> 29/10): REJETE. SMT version 73
+trades, +5.7R at 1pt (+0.08R/trade vs +0.13R unfiltered), -0.7R at 3pt,
+halves -0.3R / +6.0R, random 95th percentile +17.8R. The 19 trades the
+filter removed (partners confirming the sweep) did better: +9.1R
+(+0.48R/trade), the opposite of the idea, on a small sample.
+
 Usage: python scripts/test_smt_divergence.py
 """
 
