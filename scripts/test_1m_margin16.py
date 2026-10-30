@@ -27,6 +27,12 @@ Otherwise REJETEE and the 1-minute timeframe is CLOSED: no further 1m
 variant is tested until at least 6 more months of 1m history have been
 accumulated.
 
+Result (run on 2026-10-30, 16/09 -> 29/10): REJETEE, 1m CLOSED. 94
+trades, 35% winners, +16.4R at 1pt, +3.3R at 3pt, capped +9.0R, halves
++3.7R / +12.8R, above the 8pt version, but BELOW the random 95th
+percentile (+24.4R): not distinguishable from luck. Calls -0.5R (56),
+puts +17.0R (38); median stop 14.1pt; unfiltered with 16pt +7.9R (230).
+
 Usage: python scripts/test_1m_margin16.py
 """
 
