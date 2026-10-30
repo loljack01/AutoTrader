@@ -33,6 +33,11 @@ ALL of:
     something).
 Otherwise REJETEE, no re-tuning.
 
+Result (run on 2026-10-30, 16/09 -> 29/10): REJETEE. 155 trades, 31%
+winners, +5.5R at 1pt (C alone +1.0R, unfiltered -14.9R) but -17.7R at
+3pt, capped -7.4R, halves +20.4R / -14.9R, random 95th percentile +21.4R;
+calls -7.0R (83), puts +12.5R (72).
+
 Usage: python scripts/test_1m_exclusive.py
 """
 
