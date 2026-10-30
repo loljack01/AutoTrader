@@ -27,6 +27,14 @@
 //     l'équilibre (mesuré le 30/10 : zones +11,8 % en 1 minute contre -0,4 %
 //     en 15 minutes sur les mêmes 7 heures). Si TradingView ne fournit pas les
 //     minutes sur toute la fenêtre, le tableau le signale.
+//  8. (version 4) Les deltas sont ancrés sur les SÉANCES et non plus sur un
+//     nombre de bougies : « delta séance » depuis l'ouverture de la séance en
+//     cours, « delta N séances » depuis l'ouverture de la N-ième séance. Les
+//     minutes sans échange n'ont pas de bougie d'une minute : compter des
+//     bougies faisait remonter la fenêtre plus loin en 1 minute qu'en 15
+//     minutes (écart d'environ 1 point le 30/10). Avec des séances, ce sont
+//     exactement les mêmes minutes quelle que soit l'unité de temps.
+//     Le range (zones) reste calculé sur une fenêtre en heures.
 // Limite qui reste : ce « delta » classe le volume de chaque minute selon sa
 // couleur. Ce n'est PAS le flux d'ordres (achats agressifs - ventes agressives).
 // Outil de lecture, AUCUN signal : il n'a pas été testé sur l'historique.
@@ -35,8 +43,8 @@ indicator("Delta Volume corrigé (d'après BigBeluga)", overlay = true, max_boxe
 // ---------- Réglages ----------
 zoneHours  = input.float(7, "Fenêtre des zones (heures de cotation)", minval = 0.25, step = 0.25,
      tooltip = "7 h environ une séance du CAC. Même période quelle que soit l'unité de temps")
-macroHours = input.float(70, "Fenêtre macro (heures de cotation)", minval = 1, step = 1,
-     tooltip = "70 h environ 5 séances du contrat à terme CAC (14 h par jour)")
+nSess      = input.int(5, "Delta long : nombre de séances", minval = 1, maxval = 20,
+     tooltip = "Séance en cours comprise. 5 = environ une semaine")
 pad        = input.float(0.8, "Marge des zones (x ATR 200)", minval = 0, step = 0.1)
 calcSrc    = input.string("Bougies d'une minute", "Calcul du delta", options = ["Bougies d'une minute", "Bougies du graphique"],
      tooltip = "Bougies d'une minute : même valeur quelle que soit l'unité de temps (recommandé)")
@@ -49,7 +57,6 @@ tfSec = timeframe.in_seconds()
 barsFor(float hours) =>
     math.max(1, math.min(4900, int(math.round(hours * 3600.0 / tfSec))))
 nZone  = math.min(barsFor(zoneHours), bar_index + 1)
-nMacro = math.min(barsFor(macroHours), bar_index + 1)
 
 // ---------- Volumes par couleur de bougie, sommes glissantes ----------
 // Bougies d'une minute contenues dans chaque bougie du graphique (sur un
@@ -71,26 +78,57 @@ cumDoji  = ta.cum(doji)
 cumCount = ta.cum(nCandles)
 cumMiss  = ta.cum(missing)
 
-windowSum(float c, int n) =>
-    c - nz(c[n])
+// ---------- Séances : sommes cumulées mémorisées à chaque ouverture ----------
+tD = time("D")
+bool newSess = bar_index > 0 and tD != tD[1]
+var array<float> sBuy  = array.new_float()
+var array<float> sSell = array.new_float()
+var array<float> sDoji = array.new_float()
+var array<float> sCnt  = array.new_float()
+var array<float> sMiss = array.new_float()
+var array<int>   sTime = array.new_int()
+if newSess
+    array.push(sBuy, nz(cumBuy[1]))
+    array.push(sSell, nz(cumSell[1]))
+    array.push(sDoji, nz(cumDoji[1]))
+    array.push(sCnt, nz(cumCount[1]))
+    array.push(sMiss, nz(cumMiss[1]))
+    array.push(sTime, time)
+    if array.size(sBuy) > 21
+        array.shift(sBuy)
+        array.shift(sSell)
+        array.shift(sDoji)
+        array.shift(sCnt)
+        array.shift(sMiss)
+        array.shift(sTime)
+
+// Somme depuis l'ouverture de la `back`-ième séance (1 = séance en cours)
+fromStart(array<float> a, float cum, int back) =>
+    int k = array.size(a)
+    k == 0 ? na : cum - array.get(a, math.max(0, k - back))
+
+startTime(int back) =>
+    int k = array.size(sTime)
+    k == 0 ? na : array.get(sTime, math.max(0, k - back))
 
 delta(float b, float s) =>
     b + s > 0 ? (b - s) / (b + s) * 100 : na
 
-buyMacro  = windowSum(cumBuy, nMacro)
-sellMacro = windowSum(cumSell, nMacro)
-buyZone   = windowSum(cumBuy, nZone)
-sellZone  = windowSum(cumSell, nZone)
-deltaMacro = delta(buyMacro, sellMacro)
-deltaZone  = delta(buyZone, sellZone)
-countMacro = windowSum(cumCount, nMacro)
-dojiShare  = countMacro > 0 ? windowSum(cumDoji, nMacro) / countMacro * 100 : na
-missMacro  = windowSum(cumMiss, nMacro) > 0
-noVolume   = buyMacro + sellMacro == 0
+int nKnown  = array.size(sBuy)
+buySess   = fromStart(sBuy, cumBuy, 1)
+sellSess  = fromStart(sSell, cumSell, 1)
+buyN      = fromStart(sBuy, cumBuy, nSess)
+sellN     = fromStart(sSell, cumSell, nSess)
+deltaSess = delta(buySess, sellSess)
+deltaN    = delta(buyN, sellN)
+countN    = fromStart(sCnt, cumCount, nSess)
+dojiShare = nz(countN) > 0 ? fromStart(sDoji, cumDoji, nSess) / countN * 100 : na
+missN     = nz(fromStart(sMiss, cumMiss, nSess)) > 0
+noVolume  = nKnown > 0 and nz(buyN) + nz(sellN) == 0
 
 // Historique consultable (fenêtre de données), sans tracé sur le prix
-plot(deltaMacro, "Delta macro (%)", color = deltaMacro >= 0 ? upColor : downColor, display = display.data_window)
-plot(deltaZone, "Delta zones (%)", color = deltaZone >= 0 ? upColor : downColor, display = display.data_window)
+plot(deltaSess, "Delta séance (%)", color = deltaSess >= 0 ? upColor : downColor, display = display.data_window)
+plot(deltaN, "Delta N séances (%)", color = deltaN >= 0 ? upColor : downColor, display = display.data_window)
 
 // ---------- Zones ----------
 atrPad = ta.atr(200) * pad
@@ -102,6 +140,7 @@ var line midLine = na
 
 fmtVol(float v) => str.tostring(v, format.volume)
 fmtPct(float x) => na(x) ? "—" : (x > 0 ? "+" : "") + str.tostring(x, "0.0") + " %"
+fmtT(int ts) => na(ts) ? "—" : str.format_time(ts, "dd/MM HH:mm", "Europe/Paris")
 
 string posTxt = "dans le range"
 color posCol = color.new(#d1d4dc, 0)
@@ -172,16 +211,17 @@ if barstate.islast
              text_color = color.new(#f5a623, 0), text_size = size.small)
         table.merge_cells(t, 0, 0, 1, 0)
     else
-        row(0, "Delta macro (" + str.tostring(macroHours) + " h, " + str.tostring(nMacro) + " bougies)", fmtPct(deltaMacro),
-             deltaMacro >= 0 ? upColor : downColor)
-        row(1, "Delta zones (" + str.tostring(zoneHours) + " h, " + str.tostring(nZone) + " bougies)", fmtPct(deltaZone),
-             deltaZone >= 0 ? upColor : downColor)
-        row(2, "Prix (bougie en cours)", posTxt, posCol)
-        row(3, "Volume vert / rouge (macro)", fmtVol(buyMacro) + " / " + fmtVol(sellMacro), white)
+        row(0, "Delta séance (depuis " + fmtT(startTime(1)) + ")", fmtPct(deltaSess), deltaSess >= 0 ? upColor : downColor)
+        row(1, "Delta " + str.tostring(nSess) + " séances (depuis " + fmtT(startTime(nSess)) + ")", fmtPct(deltaN),
+             deltaN >= 0 ? upColor : downColor)
+        row(2, "Prix (bougie en cours, range " + str.tostring(zoneHours) + " h)", posTxt, posCol)
+        row(3, "Volume vert / rouge (" + str.tostring(nSess) + " séances)", na(buyN) ? "—" : fmtVol(buyN) + " / " + fmtVol(sellN), white)
         row(4, useLower ? "Minutes neutres ignorées" : "Bougies neutres ignorées", na(dojiShare) ? "—" : str.tostring(dojiShare, "0") + " %", white)
         row(5, "Calcul du delta", useLower ? "bougies d'une minute (" + ltf + ")" : "bougies du graphique", white)
-        string trunc = nMacro < barsFor(macroHours) ? "oui, historique trop court" : missMacro ? "oui, minutes manquantes : delta incomplet" : "non"
-        row(6, "Fenêtre macro tronquée", trunc, trunc == "non" ? white : color.new(#f5a623, 0))
+        string trunc = nKnown == 0 ? "oui, aucune ouverture de séance sur le graphique" :
+             nKnown < nSess ? "oui, seulement " + str.tostring(nKnown) + " séance(s) sur le graphique" :
+             missN ? "oui, minutes manquantes : delta incomplet" : "non"
+        row(6, "Fenêtre tronquée", trunc, trunc == "non" ? white : color.new(#f5a623, 0))
         table.cell(t, 0, 7, "Range sur bougies closes. Couleur des minutes, pas flux d'ordres. Lecture seulement, aucun signal testé.",
              text_color = color.new(#787b86, 0), text_size = size.tiny)
         table.merge_cells(t, 0, 7, 1, 7)
