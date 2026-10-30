@@ -12,7 +12,10 @@
 //  3. Fenêtres en heures de cotation, converties en nombre de bougies selon
 //     l'unité de temps : 1 minute, 15 minutes et 1 heure lisent la même période.
 //  4. Zones recalculées à chaque bougie : haut et bas de la fenêtre, plus une
-//     marge, et milieu (équilibre) au centre du range.
+//     marge, et milieu (équilibre) au centre du range. Le range est calculé
+//     sur les bougies CLOSES (la bougie en cours en est exclue) : une sortie
+//     du range reste visible, et le tableau dit si c'est une mèche revenue
+//     dedans (balayage possible) ou une clôture dehors (cassure).
 //  5. Étiquettes honnêtes : les volumes affichés sont ceux de toute la fenêtre,
 //     pas ceux échangés dans les zones.
 //  6. Message clair quand l'instrument n'a pas de volume (indice cash PX1).
@@ -77,15 +80,36 @@ var line midLine = na
 fmtVol(float v) => str.tostring(v, format.volume)
 fmtPct(float x) => na(x) ? "—" : (x > 0 ? "+" : "") + str.tostring(x, "0.0") + " %"
 
+string posTxt = "dans le range"
+color posCol = color.new(#d1d4dc, 0)
+
 if barstate.islast
-    float hiZ = high
-    float loZ = low
-    for i = 0 to nZone - 1
+    // Bougie en cours exclue tant qu'elle n'est pas close
+    int off = barstate.isconfirmed ? 0 : 1
+    int nR  = math.max(1, math.min(nZone, bar_index + 1 - off))
+    float hiZ = high[off]
+    float loZ = low[off]
+    for i = off to off + nR - 1
         hiZ := math.max(hiZ, high[i])
         loZ := math.min(loZ, low[i])
     float mid = (hiZ + loZ) / 2
-    int left  = bar_index - nZone + 1
+    int left  = bar_index - off - nR + 1
     int right = bar_index + 20
+    if off == 1
+        if close > hiZ
+            posTxt := "clôture au-dessus du haut (+" + str.tostring(close - hiZ, format.mintick) + ") : cassure si elle tient"
+            posCol := upColor
+        else if close < loZ
+            posTxt := "clôture sous le bas (-" + str.tostring(loZ - close, format.mintick) + ") : cassure si elle tient"
+            posCol := downColor
+        else if high > hiZ
+            posTxt := "mèche au-dessus du haut, prix revenu dedans : balayage possible"
+            posCol := color.new(#f5a623, 0)
+        else if low < loZ
+            posTxt := "mèche sous le bas, prix revenu dedans : balayage possible"
+            posCol := color.new(#f5a623, 0)
+    else
+        posTxt := "marché fermé : dernière bougie close incluse dans le range"
     string padTxt = nz(atrPad) > 0 ? "" : " (marge indisponible)"
     if na(topBox)
         topBox  := box.new(left, hiZ + nz(atrPad), right, hiZ, border_color = downColor, bgcolor = color.new(downColor, 70),
@@ -111,7 +135,7 @@ if barstate.islast
     line.set_xy2(midLine, right, mid)
 
 // ---------- Tableau ----------
-var table t = table.new(position.top_right, 2, 6, bgcolor = color.new(#131722, 10), border_width = 1,
+var table t = table.new(position.top_right, 2, 7, bgcolor = color.new(#131722, 10), border_width = 1,
      border_color = color.new(#2a2e39, 0), frame_color = color.new(#2a2e39, 0), frame_width = 1)
 
 row(int r, string label, string value, color col) =>
@@ -129,9 +153,10 @@ if barstate.islast
              deltaMacro >= 0 ? upColor : downColor)
         row(1, "Delta zones (" + str.tostring(zoneHours) + " h, " + str.tostring(nZone) + " bougies)", fmtPct(deltaZone),
              deltaZone >= 0 ? upColor : downColor)
-        row(2, "Volume vert / rouge (macro)", fmtVol(buyMacro) + " / " + fmtVol(sellMacro), white)
-        row(3, "Bougies neutres ignorées", str.tostring(dojiShare, "0") + " %", white)
-        row(4, "Fenêtre macro tronquée", nMacro < barsFor(macroHours) ? "oui, historique trop court" : "non", white)
-        table.cell(t, 0, 5, "Couleur des bougies, pas flux d'ordres. Lecture seulement, aucun signal testé.",
+        row(2, "Prix (bougie en cours)", posTxt, posCol)
+        row(3, "Volume vert / rouge (macro)", fmtVol(buyMacro) + " / " + fmtVol(sellMacro), white)
+        row(4, "Bougies neutres ignorées", str.tostring(dojiShare, "0") + " %", white)
+        row(5, "Fenêtre macro tronquée", nMacro < barsFor(macroHours) ? "oui, historique trop court" : "non", white)
+        table.cell(t, 0, 6, "Range sur bougies closes. Couleur des bougies, pas flux d'ordres. Lecture seulement, aucun signal testé.",
              text_color = color.new(#787b86, 0), text_size = size.tiny)
-        table.merge_cells(t, 0, 5, 1, 5)
+        table.merge_cells(t, 0, 6, 1, 6)
