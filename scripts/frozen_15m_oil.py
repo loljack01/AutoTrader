@@ -44,7 +44,7 @@ FREEZE_START = "2026-10-30"
 REFERENCE_END = "2026-10-29"
 MIN_LIVE_TRADES = 50
 OIL = {"NYMEX:CL1!": ("Petrole WTI", 0.0115), "ICEEUR:BRN1!": ("Petrole Brent", 0.0125)}
-REFERENCE = {}
+REFERENCE = {"NYMEX:CL1!": (25, -9.6), "ICEEUR:BRN1!": (29, 0.1)}
 OUT = Path(__file__).resolve().parent.parent / "data" / "backtests" / "frozen_15m_oil_trades.csv"
 
 
