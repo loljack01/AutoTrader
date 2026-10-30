@@ -148,7 +148,9 @@ def main():
     print(f"Tendance : cloture veille {f(prev.Close)} {'>' if up else '<'} SMA20 {f(sma20)} -> "
           f"{'calls ET puts autorises' if up else 'PUTS seulement (calls interdits)'}")
     if len(pre) and cac:
-        print(f"Depuis 8h00 : haut {f(pre.High.max())}, bas {f(pre.Low.min())} (provisoire, la bougie 8h45 n'est pas close)")
+        before_open = now.tz_convert("Europe/Paris").hour < 9
+        print(f"Depuis 8h00 : haut {f(pre.High.max())}, bas {f(pre.Low.min())} "
+              f"({'provisoire, avant l ouverture du cash' if before_open else 'seance en cours'})")
     print(f"\nNiveaux a +/- {WINDOW_ATR} ATR ({f(lo)} - {f(hi)}), du plus haut au plus bas :")
     shown = False
     for v, lab in levels:
