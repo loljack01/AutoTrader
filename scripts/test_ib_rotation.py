@@ -85,7 +85,7 @@ def day_trades(day, prev_hi, prev_lo, k, cost):
     for ts, b in after.iterrows():
         last = ts.strftime("%H:%M") == "17:15" or ts == after.index[-1]
         if pos is not None:
-            s = pos["side"]
+            s = "sell" if pos["side"] == "put" else "buy"
             hit_stop = b.High >= pos["stop"] if s == "sell" else b.Low <= pos["stop"]
             hit_take = b.Low <= pos["take"] if s == "sell" else b.High >= pos["take"]
             exit_px, res = None, None
