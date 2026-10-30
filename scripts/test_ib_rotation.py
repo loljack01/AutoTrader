@@ -48,6 +48,13 @@ Otherwise REJETEE, no re-tuning (no other IB length, margin, target,
 filter or exit is tried). All days and trend days (open outside) are
 shown for information only.
 
+Result (run on 2026-10-30, after fixing an exit bug that scored every
+put as a win in the first run): REJETEE. CAC balance days 64 trades, 28%
+winners, -6.1R at 1pt, -8.4R at 3pt, halves +9.0R / -15.1R (calls -12.5R,
+puts +6.4R); DAX + Euro Stoxx 50 at 3pt-eq -38.1R. Information: trend
+days (open outside) positive on all three (+7.2R, +2.4R, +6.4R) but on
+9-12 trades each.
+
 Usage: python scripts/test_ib_rotation.py
 """
 
