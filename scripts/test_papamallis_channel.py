@@ -36,6 +36,11 @@ worth live tracking WITHOUT money only if ALL of:
 Otherwise REJETE, no re-tuning (no other length, lookback, exit or
 filter is tried).
 
+Result (run on 2026-10-31): REJETE. 2167 trades, 25% winners, -284.9R at
+1pt (-0.13R/trade), -669.6R at 3pt, capped -538.5R, halves -79.9R /
+-205.0R, 3/10 markets positive; calls -258.4R, puts -26.5R. MACD
+confirmation (information): 1235 trades, -196.6R.
+
 Usage: python scripts/test_papamallis_channel.py
 """
 
