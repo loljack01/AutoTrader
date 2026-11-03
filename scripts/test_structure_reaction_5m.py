@@ -57,6 +57,13 @@ strategy, which does not change) only if ALL of:
 Otherwise REJETE, no re-tuning (no other swing length, level set, margin,
 window, R:R or target is tried).
 
+Result (run on 2026-11-03, 51 sessions 24/08 -> 02/11): REJETE.
+Structure version 56 trades, 34% winners, +1.9R at 1pt (+0.034R/trade),
++1.8R at 3pt (41 trades), capped +1.9R, but halves +13.5R / -11.6R and
+below the random 95th percentile (+12.5R). Calls -8.4R (27), puts +10.3R
+(29): the calls taken on higher 5m lows - the very case that inspired the
+idea - lost. "Sans filtre": 145 trades, -4.9R at 1pt, -24.4R at 3pt.
+
 Usage: python scripts/test_structure_reaction_5m.py
 """
 
