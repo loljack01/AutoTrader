@@ -42,6 +42,16 @@ separate swing strategy WITHOUT money only if ALL of:
 Otherwise REJETE, no re-tuning (no other look-back, number of sectors,
 holding period or filter is tried).
 
+Result (run on 2026-11-03, signals end 12/2012 -> 10/2026, 166 months;
+a first run crashed on a bug - momentum computed after cutting the
+period - fixed before any result was used): REJETE. Rotation +274.7%
+total (+10.0%/year) at 0.2%, +206.4% (+8.4%/year) at 0.5%, worst drawdown
+-18.2%; equal-weight sector basket +300.6% (+10.6%/year, -22.9%); S&P 500
++431.5% (+12.8%/year, -24.8%). Versus the basket: -39.9 points in the
+first half, +37.8 in the second; random 3 sectors median +210.6%, 95th
+percentile +346.6%. Last 12 months: rotation +5.2%, basket +14.1%, S&P 500
++10.8%. Signal for November 2026: energy, health care, consumer staples.
+
 Usage: python scripts/test_sector_momentum.py
 """
 
