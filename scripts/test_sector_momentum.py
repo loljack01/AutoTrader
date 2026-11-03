@@ -71,12 +71,13 @@ def stats(r):
     return eq.iloc[-1] - 1, eq.iloc[-1] ** (1 / years) - 1, dd
 
 
-def strategy(px, cost, rng=None):
-    """Monthly returns of the top-3 (or random-3 if rng) rotation."""
+def strategy(px, cost, start, rng=None):
+    """Monthly returns of the top-3 (or random-3 if rng) rotation, signals
+    from the month end `start` on (momentum computed on the full history)."""
     ret = px.pct_change()
     mom = px / px.shift(LOOK) - 1
     out, held = [], set()
-    for i in range(len(px) - 1):
+    for i in range(px.index.get_loc(start), len(px) - 1):
         elig = mom.iloc[i].dropna()
         if rng is None:
             pick = set(elig.sort_values(ascending=False).index[:TOP])
@@ -95,21 +96,22 @@ def main():
     px = px[px.index <= END]
     elig = (px / px.shift(LOOK) - 1).notna().sum(axis=1)
     start = elig[elig >= MIN_SECTORS].index[0]
-    px = px[px.index >= start]
-    s2, s5 = strategy(px, 0.002), strategy(px, 0.005)
-    ret = px.pct_change().iloc[1:]
-    mom_ok = (px / px.shift(LOOK) - 1).notna().shift(1).iloc[1:]
+    s2, s5 = strategy(px, 0.002, start), strategy(px, 0.005, start)
+    ret = px.pct_change()
+    mom_ok = (px / px.shift(LOOK) - 1).notna().shift(1)
     basket = ret.where(mom_ok).mean(axis=1)
-    bench = spx.reindex(px.index).pct_change().iloc[1:]
+    basket = basket[basket.index > start]
+    bench = spx.reindex(px.index).pct_change()
+    bench = bench[bench.index > start]
     n = len(s2)
-    print(f"Periode : {px.index[0]:%m/%Y} -> {px.index[-1]:%m/%Y}, {n} mois")
+    print(f"Periode : signal fin {start:%m/%Y} -> {px.index[-1]:%m/%Y}, {n} mois")
     rows = {"rotation top 3, cout 0,2 %": s2.r, "rotation top 3, cout 0,5 %": s5.r,
             "panier des secteurs": basket, "S&P 500": bench}
     for k, r in rows.items():
         tot, ann, dd = stats(r)
         print(f"  {k:28s} total {tot:+8.1%} | annualise {ann:+6.2%} | pire baisse {dd:+6.1%}")
     rng = np.random.default_rng(0)
-    finals = np.array([(1 + strategy(px, 0.002, rng).r).prod() - 1 for _ in range(2000)])
+    finals = np.array([(1 + strategy(px, 0.002, start, rng).r).prod() - 1 for _ in range(2000)])
     p95 = np.percentile(finals, 95)
     half = n // 2
     ex1 = (1 + s2.r.iloc[:half]).prod() - (1 + basket.iloc[:half]).prod()
