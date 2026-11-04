@@ -187,6 +187,18 @@ def main():
         for x in o.itertuples():
             print(f"  Position ouverte ({mk}) : {x.sens} {x.entree_paris} entree {x.entree} stop {x.stop} cible {x.cible}")
     if cac:
+        # signaux de la principale depuis la veille au soir (le fichier des trades n'est mis a jour qu'au bilan du soir)
+        import incremental_engine as ie
+        from ma_grid_test import trend_up
+        up = np.asarray(trend_up(SYMBOL, d15, "SMA", 20), bool)
+        tr = ie.run(d15, 1.0, 1.0, up)
+        since = pd.Timestamp(today, tz=TZ) - pd.Timedelta(hours=6)
+        tr = tr[pd.to_datetime(tr.entry_time) >= since] if len(tr) else tr
+        for x in tr.itertuples():
+            res = "OUVERT" if x.result == "open" else f"{x.result} {x.exit_time.tz_convert(TZ):%H:%M} {x.net_r:+.2f}R"
+            print(f"  Signal de la principale depuis hier 18h : {'call' if x.side == 1 else 'put'} "
+                  f"{x.entry_time.tz_convert(TZ):%d/%m %H:%M} entree {x.entry:.1f} stop {x.stop:.1f} cible {x.take:.1f} -> {res}")
+    if cac:
         print("\nRappels : rien entre 9h00 et 9h15 ni dans les 15 min autour d'une annonce ; la strategie principale (15m) "
               "reste la seule candidate au reel ; les trades de reaction se notent au journal, sans argent.")
     else:
