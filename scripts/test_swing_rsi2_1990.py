@@ -24,6 +24,13 @@ ALL of: weekly-clustered t-stat of net R at 0.05 % >= 2.0; net R > 0 at
 mean net R per trade at 0.05 % >= +0.037R. Otherwise NON CONFIRME (the
 live tracking goes on but the swing's evidence is downgraded).
 
+Result (run on 2026-11-05): CONFIRME EN DEHORS DE LA PERIODE. 1991-2011:
+1613 trades, 68 % winners, net +106.5R at 0.05 % (+0.066R/trade), +76.8R at
+0.10 %; 502 weeks, weekly-clustered t = +2.72; 8/10 indices positive
+(Russell 2000 -7.6R, FTSE MIB -4.9R); every sub-period positive: 1991-97
++49.9R, 1998-2004 +29.3R, 2005-11 +27.3R. Same edge per trade as
+2012-2026 (+0.074R).
+
 Usage: python scripts/test_swing_rsi2_1990.py <tool-result JSON files, 1D>
 """
 
