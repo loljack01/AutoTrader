@@ -86,7 +86,7 @@ def exit_trade(a, i, side):
     o, h, l, c, s5, atr = a
     entry, risk = c[i], STOP_ATR * atr[i]
     stop = entry - side * risk
-    last = min(i + MAX_DAYS, len(d) - 1)
+    last = min(i + MAX_DAYS, len(c) - 1)
     for j in range(i + 1, last + 1):
         if (side == 1 and l[j] <= stop) or (side == -1 and h[j] >= stop):
             gap = (o[j] <= stop) if side == 1 else (o[j] >= stop)
