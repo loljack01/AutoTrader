@@ -27,6 +27,17 @@ Decision (reserved-period method):
   A SUIVRE EN REEL SANS ARGENT (as the account-sized version) only if both
   pass; otherwise REJETE, no re-tuning (no other capacity, priority or list).
 
+Result (run on 2026-11-05): REJETE.
+  development 2012-2021: 350 trades (35/year), 68 % winners, net +12.8R at
+    0.05 % (+0.037R/trade, at the limit), +6.1R at 0.10 %; random entries in
+    the uptrend with the same 2-slot rule: median +7.1R, 95th percentile
+    +23.8R -> not distinguishable from random -> ECHOUE;
+  confirmation 2022 -> 05/11/2026: 172 trades, +7.9R (+0.046R/trade),
+    random median +4.5R -> PASSE (+79 EUR at 10 EUR risk, worst -48 EUR).
+  With only 2 slots and 6 indices, most of the edge of the full rule (1322
+  trades on 10 indices, far above random) is lost: the account-sized
+  version has no demonstrated edge; the full version stays tracked.
+
 Usage: python scripts/test_swing_rsi2_2pos.py
 """
 
