@@ -42,6 +42,17 @@ money only if ALL of:
   - pooled net R at 0.05 % above the 95th percentile of the random baseline.
 Otherwise REJETE for that side, no re-tuning.
 
+Result (run on 2026-11-05, signals 2012-01 -> 29/10/2026; a first run
+crashed on an undefined name in the exit loop, fixed before any result was
+seen):
+  CALLS: A SUIVRE EN REEL SANS ARGENT. 1322 trades, 69 % winners, net
+    +97.8R at 0.05 % (+0.074R/trade), +73.4R at 0.10 %; halves +59.7R /
+    +38.1R; 10/10 indices positive; random entries in the uptrend 95th
+    percentile +28.1R (median +4.8R); mean holding 4.4 days; last 12 months
+    126 trades, +11.8R.
+  PUTS: REJETE. 425 trades, 57 % winners, net -11.7R at 0.05 %, -16.6R at
+    0.10 %; halves +2.2R / -13.9R; 3/10 indices positive.
+
 Usage: python scripts/test_swing_rsi2.py
 """
 

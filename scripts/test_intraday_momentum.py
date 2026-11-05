@@ -42,6 +42,13 @@ only if ALL of:
     baseline.
 Otherwise REJETE, no re-tuning.
 
+Result (run on 2026-11-05, 874 trades on the 10 markets): REJETE. 43 %
+winners, net -32.2R at 1pt (-0.037R/trade), -68.1R at 3pt; calls -23.7R
+(492), puts -8.5R (382); halves -15.5R / -16.6R; 0 of 10 markets positive;
+random direction 95th percentile -6.1R (median -17.6R): the published
+effect does not show on these futures over these months, it is even
+slightly reversed (the last half-hour tends to go against the morning).
+
 Usage: python scripts/test_intraday_momentum.py
 """
 
