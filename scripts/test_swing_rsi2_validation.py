@@ -28,6 +28,14 @@ Verdict: CONFIRME if A and B pass; FRAGILE if only one passes; DOUTEUX if
 neither (then the live tracking goes on, but no money even after its 50
 trades without a new discussion).
 
+Result (run on 2026-11-05): CONFIRME.
+  A. 8 unseen indices: 978 trades, net +62.6R at 0.05 % (+0.064R/trade),
+     +44.1R at 0.10 %; 7/8 positive (Hang Seng -1.1R); AEX +7.9, IBEX +5.3,
+     OMX +10.4, Nikkei +13.2, ASX +6.4, TSX +18.6, BEL 20 +2.0 -> PASSE.
+  B. 27/27 neighbouring versions positive at 0.10 % (from +33.6R to
+     +120.0R) -> PASSE. Some neighbours did better (exit SMA7, RSI < 15);
+     as fixed beforehand, none is chosen: the frozen rule stays as it is.
+
 Usage: python scripts/test_swing_rsi2_validation.py [tool-results JSON files
 of the 8 new indices, 1D] (merged into data/cache first)
 """
