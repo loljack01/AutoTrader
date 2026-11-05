@@ -13,6 +13,10 @@ in EACH period, the capped version keeps a mean net R per trade at 0.05 %
 >= 80 % of the uncapped version's AND a weekly-clustered t >= 2.0.
 Otherwise the cap is not used (positions are then sized down instead).
 
+Result (run on 2026-11-05): ADOPTEE. 1991-2011: 1374 trades +77.8R
+(+0.057R/trade, 86 % of the uncapped +0.066R, weekly t 2.42); 2012-2026:
+1121 trades +70.2R (+0.063R/trade, 85 %, weekly t 2.25).
+
 Usage: python scripts/test_swing_rsi2_cap5.py <1990-2011 tool-result files>
 """
 

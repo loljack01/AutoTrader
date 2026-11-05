@@ -35,6 +35,23 @@ every gain capped at +5R (1pt). A side with fewer than 30 trades keeps
 being tracked without money. The pooled test is still shown but is no
 longer enough on its own.
 
+Amended on 2026-11-05 (stricter only, before the verdict, at 34 closed
+live trades), after the working group's statistician showed that the
+100-trade rule lets a strategy with NO edge pass 19 % of the time (the
+main strategy's false-positive probability was estimated at 70-85 % after
+correcting for the ~50-100 variants tried in its family). New go-live rule,
+a group-sequential test on the sma20 live trades in exit order, with every
+gain capped at +5R (1pt cost):
+  checkpoints every 100 closed trades, up to 600;
+  PASS at a checkpoint if the capped cumulative R >= +72R AND the net R at
+    3pt-equivalent is > 0 (simulated false-positive rate 4.7 %, power 60 %
+    if the backtest edge is real, ~440 trades on average);
+  ABANDON if the capped cumulative R is <= 0 at any checkpoint from 200
+    trades, or <= -15R at any time (emergency brake), or 600 trades are
+    reached without passing.
+The calls/puts split of 29/10 is still shown for information. Size once
+live: 0.5 % of the capital per trade (half Kelly on a realistic edge).
+
 Usage: python scripts/frozen_15m_calls_trend.py [tool_result.json ...]
 """
 
@@ -59,6 +76,7 @@ MARKETS = {"FCE1!": ("CAC 40", 1.0), "FDAX1!": ("DAX", 3.2397), "FESX1!": ("Euro
            "FIB1!": ("FTSE MIB", 6.5848)}
 VERSIONS = {"sma20": 20, "sma10": 10}
 GO_LIVE_TRADES = 100
+SEQ_PASS, SEQ_BRAKE, SEQ_MAX = 72.0, -15.0, 600
 MIN_SIDE_TRADES = 30
 REFERENCE = {("FCE1!", "sma20"): (29, 15.0), ("FCE1!", "sma10"): (30, 14.0),
              ("FDAX1!", "sma20"): (29, 2.6), ("FDAX1!", "sma10"): (34, -0.1),
@@ -94,6 +112,7 @@ def main():
     now = pd.Timestamp.now(tz="UTC")
     paris = lambda ts: ts.tz_convert("Europe/Paris").strftime("%d/%m %H:%M")
     rows, totals, totals3 = [], {v: [] for v in VERSIONS}, {v: [] for v in VERSIONS}
+    seq = []  # (exit_time, net_r 1pt) of the sma20 live closed trades, for the sequential verdict
     by_side = {(c, s): [] for c in (1.0, 3.0) for s in ("call", "put")}
     for symbol, (name, _) in MARKETS.items():
         d = bt.cache.closed_bars(bt.cache.load(symbol, "15m"), "15m", now)
@@ -112,6 +131,8 @@ def main():
             r3 = t3[(t3.entry_time >= FREEZE_START) & (t3.result != "open")].net_r.to_numpy()
             totals3[version].append(r3)
             if version == "sma20":
+                cl = live[live.result != "open"]
+                seq += list(zip(cl.exit_time, cl.net_r))
                 for cost, tt in ((1.0, t), (3.0, t3)):
                     cl = tt[(tt.entry_time >= FREEZE_START) & (tt.result != "open")]
                     is_call = (cl["take"] > cl["entry"]).to_numpy()
@@ -148,8 +169,27 @@ def main():
                       f"chaque cote juge seul, {MIN_SIDE_TRADES} trades min.): "
                       f"{'OUI, petite taille, ' + ' et '.join(s + 's' for s in go) + ' seulement' if go else 'NON'}")
             else:
-                print(f"  Passage en reel: verdict a {GO_LIVE_TRADES} trades clos (encore {GO_LIVE_TRADES - len(r)}), "
-                      f"calls et puts juges separement (regle du 29/10)")
+                print(f"  (regle du 29/10, information : verdict a {GO_LIVE_TRADES} trades, calls et puts separes)")
+            order = np.array([x[1] for x in sorted(seq, key=lambda x: x[0])])
+            cum = np.cumsum(np.minimum(order, 5.0))
+            state = "en cours"
+            if len(cum) and cum.min() <= SEQ_BRAKE:
+                state = f"ABANDON (frein d'urgence : {cum.min():+.1f}R plafonnes)"
+            else:
+                for k in range(100, min(len(cum), SEQ_MAX) + 1, 100):
+                    if cum[k - 1] >= SEQ_PASS and r3.sum() > 0:
+                        state = f"PASSE au controle de {k} trades ({cum[k - 1]:+.1f}R plafonnes)"
+                        break
+                    if k >= 200 and cum[k - 1] <= 0:
+                        state = f"ABANDON au controle de {k} trades ({cum[k - 1]:+.1f}R plafonnes)"
+                        break
+                else:
+                    if len(cum) >= SEQ_MAX:
+                        state = f"ABANDON ({SEQ_MAX} trades sans atteindre {SEQ_PASS:+.0f}R)"
+            nxt = (len(cum) // 100 + 1) * 100
+            print(f"  Passage en reel (regle sequentielle du 05/11) : {len(cum)} trades, cumul plafonne 5R "
+                  f"{cum[-1] if len(cum) else 0:+.1f}R, objectif {SEQ_PASS:+.0f}R aux controles de 100 en 100 "
+                  f"(prochain a {nxt}), frein {SEQ_BRAKE:+.0f}R -> {state}")
     pd.DataFrame(rows, columns=["marche", "version", "sens", "entree_paris", "entree", "stop", "cible",
                                 "sortie_paris", "resultat", "net_r"]).to_csv(OUT, index=False)
 

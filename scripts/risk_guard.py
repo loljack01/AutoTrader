@@ -3,8 +3,9 @@
 real trade. They apply to the MAIN strategy (sma20 live trades) as soon as
 it is traded with money, and are shown every evening meanwhile.
 
-  risk per trade   0.5 % to 1 % of the capital (1 % is about a quarter of
-                   the Kelly fraction estimated by the audit: never more)
+  risk per trade   0.5 % of the capital (25 EUR on 5 000 EUR, decided on
+                   2026-11-05 after the working group: about half Kelly on a
+                   realistic edge)
   daily stop       once the day's realised result reaches -3R, no new trade
                    that day (orders already open keep their stop)
   pause            if the live cumulative result falls 15R below its best
