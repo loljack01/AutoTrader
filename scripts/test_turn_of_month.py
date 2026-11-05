@@ -34,6 +34,19 @@ Decision rule (fixed before running):
   A SUIVRE EN REEL SANS ARGENT only if both pass; otherwise REJETE, no
   re-tuning (no other window, stop or market list).
 
+Result (run on 2026-11-05; month boundaries fixed to local exchange time
+before the run): REJETE.
+  development 2012-2021: 2160 trades, net +24.9R at 0.05 % (+0.012R/trade),
+    -13.2R at 0.10 %; 11/18 indices positive; ordinary 4-day windows of the
+    same indices: median +50.0R, 95th percentile +93.5R -> the turn of the
+    month did WORSE than ordinary days (the long drift of the indices, not
+    the calendar, makes the money) -> ECHOUE;
+  confirmation 2022 -> 05/11/2026 (reserved, looked at once): 1034 trades,
+    +13.4R at 0.05 %, -3.9R at 0.10 %; 12/18 positive; random median
+    +22.7R -> ECHOUE.
+  Consistent with the literature reporting that the effect has faded since
+  its publication.
+
 Usage: python scripts/test_turn_of_month.py
 """
 
