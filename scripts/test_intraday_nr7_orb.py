@@ -41,6 +41,17 @@ only if ALL of:
 Calls and puts are shown separately for information (one symmetric rule).
 Otherwise REJETE, no re-tuning.
 
+Result (run on 2026-11-05, sessions 2012-01 -> 29/10/2026): REJETE. 5743
+trades, 44 % winners, net +654.1R at 0.05 % (+0.114R/trade) but -137.6R at
+0.10 % (the stretch is small, so costs weigh heavily); halves +436.8R /
++217.3R; 6/10 indices positive (CAC -29.5R, SMI -48.9R, FTSE MIB -37.4R,
+Nasdaq -15.4R); the same breakout on sessions NOT following an NR7 day does
+far better (median +1189.6R, 95th percentile +1420.0R): the NR7 condition
+adds nothing. The large gains of the plain breakout on some cash indices
+(FTSE 100, Russell 2000) may come from their recorded opening prices (a
+cash index open can be stale) and are NOT a tested result: they would need
+their own rule, fixed beforehand and tested on futures bars.
+
 Usage: python scripts/test_intraday_nr7_orb.py
 """
 
