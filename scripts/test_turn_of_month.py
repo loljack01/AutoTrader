@@ -72,9 +72,14 @@ def all_trades(d):
     return move, frac
 
 
-def tom_entries(d):
-    m = d.index.tz_convert("Europe/Paris").to_period("M") if d.index.tz is not None else d.index.to_period("M")
-    m = np.asarray(m.astype(str))
+TZ = {"ASX:XJO": "Australia/Sydney", "TVC:NI225": "Asia/Tokyo", "HSI:HSI": "Asia/Hong_Kong",
+      "SP:SPX": "America/New_York", "NASDAQ:NDX": "America/New_York", "TVC:DJI": "America/New_York",
+      "TVC:RUT": "America/New_York", "TSX:TSX": "America/Toronto"}
+
+
+def tom_entries(d, symbol):
+    """Entry bars: the day before the last trading day of each month (local exchange calendar)."""
+    m = np.asarray(d.index.tz_convert(TZ.get(symbol, "Europe/Paris")).strftime("%Y-%m"))
     last = np.flatnonzero(m[:-1] != m[1:])  # last trading day of each month
     return last - 1
 
@@ -85,7 +90,7 @@ def main():
     for s, name in INDICES.items():
         d = sw.load(s)
         move, frac = all_trades(d)
-        e = tom_entries(d)
+        e = tom_entries(d, s)
         e = e[(e >= 0) & ~np.isnan(move[e])]
         res[name] = (d.index, move, frac, e)
     for label, (a, b) in (("DEVELOPPEMENT 2012-2021", DEV), ("CONFIRMATION 2022 -> fin (periode reservee)", (CONF_START, "2100"))):
