@@ -21,6 +21,13 @@ Pour le petrole (suivi sans argent depuis le 30/10) : --symbol NYMEX:CL1! ou
 --symbol ICEEUR:BRN1! (memes niveaux, chiffres ronds tous les 1 $, marge de
 stop 8 pts CAC x facteur fixe, pas de seuils "ecart continue").
 
+Pour le Nasdaq 100 (ajoute le 05/11, suivi sans argent comme les autres
+marches de la principale) : --symbol NQ1! (future CME ; memes niveaux,
+chiffres ronds tous les 100 points, marge et frais x 3.7619 comme dans
+frozen_15m_calls_trend.py, signaux de la principale depuis la veille au soir).
+Les turbos Nasdaq suivent en general l'indice cash NDX : decaler les niveaux
+de l'ecart future - cash (calcule par la tache du matin).
+
 Usage: python scripts/day_plan.py [--symbol SYM] [fichier_15m.json fichier_1D.json ...]
   (fichiers tool-results TradingView de FCE1!, fusionnes en memoire avec le
   cache sans l'ecrire)
@@ -41,8 +48,8 @@ from data import cache
 from levels import liquidity, structure
 
 SYMBOL = "FCE1!"
-FACTOR = {"FCE1!": 1.0, "NYMEX:CL1!": 0.0115, "ICEEUR:BRN1!": 0.0125}
-NAME = {"FCE1!": "CAC 40", "NYMEX:CL1!": "Petrole WTI", "ICEEUR:BRN1!": "Petrole Brent"}
+FACTOR = {"FCE1!": 1.0, "NYMEX:CL1!": 0.0115, "ICEEUR:BRN1!": 0.0125, "NQ1!": 3.7619}
+NAME = {"FCE1!": "CAC 40", "NYMEX:CL1!": "Petrole WTI", "ICEEUR:BRN1!": "Petrole Brent", "NQ1!": "Nasdaq 100"}
 OIL_TRADES = Path(__file__).resolve().parent.parent / "data" / "backtests" / "frozen_15m_oil_trades.csv"
 TZ = "Europe/Paris"
 WINDOW_ATR = 1.2  # niveaux affiches a +/- 1.2 ATR journalier du dernier cours
@@ -84,6 +91,8 @@ def main():
         args = args[:i] + args[i + 2:]
     k = FACTOR[SYMBOL]
     cac = SYMBOL == "FCE1!"
+    nq = SYMBOL == "NQ1!"
+    main_mkt = cac or nq  # marches de la strategie principale (signaux et positions)
     nd = 1 if cac else 2
     now = pd.Timestamp.now(tz="UTC")
     d15, daily = load(args)
@@ -127,7 +136,7 @@ def main():
     singles_l = [p for p in singles_l if p["members"][0][0] >= since]
     levels += [(p["level"], f"sommet isole {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M}") for p in singles_h]
     levels += [(p["level"], f"creux isole {p['members'][0][0].tz_convert(TZ):%d/%m %H:%M}") for p in singles_l]
-    step = 50 if cac else 1.0
+    step = 50 if cac else 100 if nq else 1.0
     base = np.floor(last / step) * step
     levels += [(base + j * step, "chiffre rond") for j in (-2, -1, 0, 1, 2, 3)]
     lo, hi = last - WINDOW_ATR * atr, last + WINDOW_ATR * atr
@@ -178,7 +187,7 @@ def main():
         print(f"  Ecart continue (bougie 9h00-9h15, version fragile suivie sans argent) : achat si cloture entre "
               f"{c + g1:.1f} et {c + g2:.1f}, vente si entre {c - g2:.1f} et {c - g1:.1f}, et la bougie ne touche pas {c:.1f} ; "
               f"stop {c:.1f}, cible 1:1, sortie 12h00")
-    src, mk = (TRADES, "CAC 40") if cac else (OIL_TRADES, NAME[SYMBOL])
+    src, mk = (TRADES, NAME[SYMBOL]) if main_mkt else (OIL_TRADES, NAME[SYMBOL])
     if src.exists():
         t = pd.read_csv(src)
         o = t[(t.marche == mk) & (t.resultat == "open")]
@@ -186,12 +195,12 @@ def main():
             o = o[o.version == "sma20"]
         for x in o.itertuples():
             print(f"  Position ouverte ({mk}) : {x.sens} {x.entree_paris} entree {x.entree} stop {x.stop} cible {x.cible}")
-    if cac:
+    if main_mkt:
         # signaux de la principale depuis la veille au soir (le fichier des trades n'est mis a jour qu'au bilan du soir)
         import incremental_engine as ie
         from ma_grid_test import trend_up
         up = np.asarray(trend_up(SYMBOL, d15, "SMA", 20), bool)
-        tr = ie.run(d15, 1.0, 1.0, up)
+        tr = ie.run(d15, k, k, up)
         since = pd.Timestamp(today, tz=TZ) - pd.Timedelta(hours=6)
         tr = tr[pd.to_datetime(tr.entry_time) >= since] if len(tr) else tr
         for x in tr.itertuples():
@@ -201,6 +210,10 @@ def main():
     if cac:
         print("\nRappels : rien entre 9h00 et 9h15 ni dans les 15 min autour d'une annonce ; la strategie principale (15m) "
               "reste la seule candidate au reel ; les trades de reaction se notent au journal, sans argent.")
+    elif nq:
+        print("\nRappels : Nasdaq suivi sans argent (principale, verdict a 100 trades sur les 10 marches) ; tendance "
+              "journaliere baissiere = puts seulement ; rien entre 15h30 et 15h45 (ouverture US) ; les turbos suivent en "
+              "general le cash NDX : decaler les niveaux de l'ecart future - cash.")
     else:
         print("\nRappel : le petrole est suivi sans argent ; la principale n'a pas tenu sur son historique (test du 30/10).")
 
