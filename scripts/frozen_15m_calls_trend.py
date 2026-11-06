@@ -52,6 +52,12 @@ gain capped at +5R (1pt cost):
 The calls/puts split of 29/10 is still shown for information. Size once
 live: 0.5 % of the capital per trade (half Kelly on a realistic edge).
 
+Amended on 2026-11-06 (working group, at the user's request): an extra
+CONDITION for real money. The sequential rule above must ALSO be passed by
+the part of the strategy a turbo can trade (entries 8:00-21:30 Paris, exit
+at 21:45 at the latest, 3pt cost), tracked forward from 2026-11-06 as
+variant "D executable turbo" in frozen_15m_variants.py. Nothing else changes.
+
 Usage: python scripts/frozen_15m_calls_trend.py [tool_result.json ...]
 """
 

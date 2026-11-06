@@ -59,7 +59,8 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     Audit options, all off by default (defaults reproduce the frozen rules):
     gap_fill        a bar opening beyond the stop/target exits at its open
     breakeven_r     once price has gone this many R in favour, stop -> entry
-    session_exit    close any open trade at the last bar of each Paris day
+    session_exit    close any open trade at the last bar of each Paris day; a number
+                    (e.g. 21.75) also closes at the bar ending at that Paris hour
     entry_hours     (start, end) Paris hours, e.g. (9.25, 17.5); entries outside are skipped
     consumed_pools  a pool closed through before being swept is consumed:
                     it can no longer be swept nor used as a target
@@ -150,6 +151,13 @@ def backtest(d, one_trade_per_sweep=True, discount_only=False, since=None, entry
     paris_date = paris_idx.date
     last_of_day = np.append(paris_date[1:] != paris_date[:-1], True)
     paris_hour = paris_idx.hour + paris_idx.minute / 60
+    if session_exit is not True and session_exit:
+        # session_exit given as a Paris hour (e.g. 21.75): also close at the first bar
+        # of each Paris day that ENDS at or after that hour (bar start >= hour - 15 min)
+        cut = paris_hour >= float(session_exit) - 0.25
+        same_day = np.append(False, paris_date[1:] == paris_date[:-1])
+        first_cut = cut & ~(np.append(False, cut[:-1]) & same_day)
+        last_of_day = last_of_day | first_cut
 
     start = d.index.searchsorted(pd.Timestamp(since, tz="UTC")) if since else 0
     trades = []

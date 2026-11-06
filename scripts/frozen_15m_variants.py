@@ -23,6 +23,22 @@ discussion with the user) only if, over the SAME forward period, its net R
 with gains capped at +5R (1pt) is above the main strategy's AND its net R at
 3pt-equivalent is > 0. Otherwise the main strategy stays the candidate.
 
+Amended on 2026-11-06 at the user's request (working group's "test 0", fixed
+BEFORE any forward trade of it), does not use the multiple-testing budget:
+  D "executable turbo"     entries only between 8:00 and 21:30 Paris and any
+                           open trade closed at the close of the 21:30-21:45
+                           bar (turbos do not quote 22h-8h): the part of the
+                           main strategy the user can actually trade.
+                           bt.backtest entry_hours=(8, 21.5), session_exit=21.75
+It is NOT a candidate to replace the main strategy: it is an extra CONDITION.
+The main strategy goes to real money only if D ALSO passes the same
+sequential rule as the main one (frozen_15m_calls_trend.py, 05/11), judged
+on D's forward trades from 2026-11-06 at 3pt-equivalent cost: checks every
+100 closed trades on the cumulative net R (3pt) with gains capped at +5R,
+PASSE if >= +72R; ABANDON if <= 0 from 200 trades, or <= -15R at any time,
+or 600 trades without passing. If D is abandoned, the main strategy cannot
+go to real money as it stands.
+
 Usage: python scripts/frozen_15m_variants.py (reads data/cache; run after
 frozen_15m_calls_trend.py, which ingests the day's files)
 """
@@ -43,7 +59,9 @@ from ma_grid_test import trend_up
 FORWARD_START = pd.Timestamp("2026-11-06", tz="UTC")
 VERDICT_TRADES = 100
 VARIANTS = {"principale": {}, "A sortie le jour meme": {"session_exit": True},
-            "B entrees 8h-22h": {"entry_hours": (8, 22)}, "C puts seulement": {"puts_only": True}}
+            "B entrees 8h-22h": {"entry_hours": (8, 22)}, "C puts seulement": {"puts_only": True},
+            "D executable turbo": {"entry_hours": (8, 21.5), "session_exit": 21.75}}
+SEQ_PASS, SEQ_BRAKE, SEQ_MAX = 72.0, -15.0, 600
 OUT = Path(__file__).resolve().parent.parent / "data" / "backtests" / "frozen_15m_variants_trades.csv"
 
 
@@ -81,6 +99,22 @@ def main():
         c3 = t3[(t3.entry_time >= FORWARD_START) & (t3.result != "open")].net_r.to_numpy()
         cap = np.minimum(closed, 5.0).sum()
         summary[name] = (len(closed), closed.sum(), c3.sum(), cap)
+        if name.startswith("D "):
+            fw3 = t3[(t3.entry_time >= FORWARD_START) & (t3.result != "open")].sort_values("exit_time")
+            seq = np.minimum(fw3.net_r.to_numpy(), 5.0).cumsum()
+            state = "en cours"
+            for k in range(1, len(seq) + 1):
+                if seq[k - 1] <= SEQ_BRAKE:
+                    state = f"ABANDON ({seq[k - 1]:+.1f}R au trade {k})"
+                    break
+                if k % 100 == 0:
+                    if seq[k - 1] >= SEQ_PASS:
+                        state = f"PASSE au trade {k}"
+                        break
+                    if k >= 200 and seq[k - 1] <= 0 or k >= SEQ_MAX:
+                        state = f"ABANDON au trade {k}"
+                        break
+            summary["_seqD"] = (len(seq), seq[-1] if len(seq) else 0.0, state)
         print(f"{name:22s} historique (info) {len(hist):3d} trades {hist.sum():+7.1f}R (plafond 5R "
               f"{np.minimum(hist, 5).sum():+6.1f}R) | depuis le 06/11 : {len(closed)} trades clos, net {closed.sum():+.2f}R, "
               f"3pt {c3.sum():+.2f}R, plafond 5R {cap:+.2f}R")
@@ -95,8 +129,13 @@ def main():
                          "net_r": None if x.result == "open" else round(x.net_r, 3)})
     pd.DataFrame(rows).to_csv(OUT, index=False)
     base = summary["principale"]
-    for name, (n, net, net3, cap) in summary.items():
+    for name, (n, net, net3, cap) in ((k, v) for k, v in summary.items() if not k.startswith("_")):
         if name == "principale":
+            continue
+        if name.startswith("D "):
+            sn, scum, state = summary["_seqD"]
+            print(f"Condition du passage en reel (D, regle sequentielle a 3pt) : {sn} trades, cumul plafonne 5R "
+                  f"{scum:+.1f}R, objectif +{SEQ_PASS:.0f}R aux controles de 100 en 100, frein {SEQ_BRAKE:+.0f}R -> {state}")
             continue
         if n >= VERDICT_TRADES:
             better = cap > base[3] and net3 > 0
