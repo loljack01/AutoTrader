@@ -47,6 +47,13 @@ tolerance. The larger capital lets the 5 positions be held with little or
 no leverage (about 700-900 EUR of exposure each, ETF/tracker or turbo
 leverage <= 1.5), which limits the knock-out risk of a gap at the open.
 
+Tooling amended on 2026-11-06 after the full audit (trade rule, book, size,
+brake and execution check UNCHANGED): the journal is checked for duplicates,
+lines that are not a signal of the model (out of system), signals executed
+although the model skipped them, and prices far below the model's (a turbo
+price instead of the index level: the journal must hold the INDEX level at
+the time of the order, otherwise the slippage check is wrong).
+
 Usage: python scripts/frozen_swing_rsi2.py [tool-results JSON files of the
 10 cash indices, 1D, any format] (merged into data/cache first)
 """
@@ -137,6 +144,33 @@ def main():
           f"(soit {cum * risk_eur:+.0f} EUR a {risk_eur:.0f} EUR par trade)")
     if cum <= BRAKE:
         print(f"  FREIN : {cum:+.1f}R <= {BRAKE:+.0f}R -> arret et revision")
+    if JOURNAL.exists():
+        try:
+            jr = pd.read_csv(JOURNAL, parse_dates=["entree"])
+        except Exception:
+            jr = pd.DataFrame(columns=["marche", "entree", "prix_entree", "sortie", "prix_sortie"])
+        # tooling checks added on 06/11/2026 after the full audit (reporting only, rules unchanged)
+        if len(jr):
+            dup = jr.duplicated(["marche", "entree"], keep=False)
+            if dup.any():
+                print(f"  ATTENTION journal : {int(dup.sum())} lignes en double (meme indice et meme date) -> a corriger")
+            ref = (t.assign(entree=pd.to_datetime(t.entree))[["marche", "entree", "prix_entree", "pris"]] if len(t) else
+                   pd.DataFrame({"marche": pd.Series(dtype=str), "entree": pd.Series(dtype="datetime64[ns]"),
+                                 "prix_entree": pd.Series(dtype=float), "pris": pd.Series(dtype=bool)}))
+            if True:
+                mm = jr.merge(ref, on=["marche", "entree"], how="left", suffixes=("", "_modele"))
+                out = mm[mm.prix_entree_modele.isna()]
+                for x in out.itertuples():
+                    print(f"  ATTENTION journal : {x.marche} {x.entree:%d/%m} n'est pas un signal du modele "
+                          f"(hors systeme ? a noter dans data/journal_hors_systeme.csv)")
+                low = mm[mm.prix_entree < 0.2 * mm.prix_entree_modele]
+                for x in low.itertuples():
+                    print(f"  ATTENTION journal : {x.marche} {x.entree:%d/%m} prix {x.prix_entree} tres loin du modele "
+                          f"({x.prix_entree_modele}) : prix de turbo ? Noter le COURS DE L'INDICE au moment de l'ordre")
+                skipped = mm[mm.pris == False]  # noqa: E712
+                for x in skipped.itertuples():
+                    print(f"  ATTENTION journal : {x.marche} {x.entree:%d/%m} execute alors que le modele l'ignore "
+                          f"(5 positions) -> hors systeme")
     if JOURNAL.exists() and len(closed):
         j = pd.read_csv(JOURNAL, parse_dates=["entree"])
         m = closed.assign(entree=pd.to_datetime(closed.entree)).merge(j, on=["marche", "entree"], how="left",

@@ -12,19 +12,24 @@
 4. **Données différées** (NQ1! ~10 min, NDX ~15 min) : jamais de décision en temps réel
    sur ces séries ; utiliser une série en temps réel (ex. CAPITALCOM:US100) en
    recalculant l'écart.
-5. **Garde-fous** (`scripts/risk_guard.py`) : 0,5 à 1 % de risque par trade ; plus de
-   nouveau trade dans la journée après −3R réalisés ; pause et révision si le suivi réel
-   tombe 15R sous son plus haut.
+5. **Garde-fous** (`scripts/risk_guard.py`, mis à jour le 06/11/2026) : en ARGENT RÉEL,
+   arrêt global si le résultat des 91 derniers jours atteint −500 €, arrêt du jour à −3R
+   réalisés, pas d'ordre inverse après un stop sans signal du système (point 10). Pour la
+   principale (sans argent) : arrêt du jour à −3R, pause si le suivi tombe 15R sous son
+   plus haut.
 6. **Ordre minimum de 500 €** (courtage gratuit) : levier du turbo = (risque en € × cours /
    distance du stop en points) / 500.
-7. **Capital 5 000 € (05/11/2026), tailles décidées après le groupe de travail :**
-   - principale : **0,5 % = 25 €** par trade, et seulement après son verdict séquentiel
-     (+72R plafonnés, voir `frozen_15m_calls_trend.py`) ;
-   - swing : phase 1 en réel à **0,5 % = 25 €** par trade, **5 positions au maximum**
-     (priorité au RSI(2) le plus bas), chaque exécution notée dans
-     `data/journal_swing.csv` ; contrôle d'exécution à 30 trades ; frein à −10R ;
-     phase 2 jusqu'à 1 % seulement si le contrôle passe et avec l'accord de l'utilisateur
-     (recommandé 0,5-0,75 % : pire baisse historique −40R).
+7. **Tailles (remplacé le 06/11/2026 : capital 10 000 €, tolérance 500 € sur 3 mois)** :
+   - swing : phase 1 en réel à **25 €** par trade, **5 positions au maximum** (priorité au
+     RSI(2) le plus bas), chaque exécution notée dans `data/journal_swing.csv` avec le
+     **cours de l'indice** (pas le prix du turbo) ; contrôle d'exécution à 30 trades ;
+     frein à −10R ; phase 2 plafonnée à **37,5 €** (jamais 50 €) ;
+   - principale : **sans argent**. L'audit du 06/11 lui donne environ 1 % de chances de
+     passer sa règle séquentielle avec la condition D. Si elle y passait un jour, ce
+     serait à **8-10 € par trade au plus** (à 25 €, une fenêtre de 3 mois sur quatre
+     atteindrait −500 € avec le swing) ;
+   - produit du swing : turbo infini de 560 à 900 €, levier ≤ 1,6, barrière à au moins 35 %
+     du cours (jamais moins de 15 %) ; ordre = max(500 €, exposition / 1,6).
 8. **Réponses de l'utilisateur du 06/11/2026** (questions du groupe de travail) :
    - **perte maximale tolérée : 500 € sur 3 mois**, soit 20R à 25 €. Règle globale :
      si le résultat réel cumulé de TOUTES les stratégies en argent sur les 3 derniers
@@ -70,3 +75,17 @@
     (0,01 € sur le prix du turbo) coûte, ce qui reste sous les coûts des modèles. Le swing
     reste donc en turbos sur le compte-titres (avis du fiscaliste : le PEA n'exécute pas les
     signaux US de 22h et sa vente d'ETF serait payante).
+12. **Discipline de recherche (audit complet du 06/11/2026, accord de l'utilisateur)** :
+    - **moratoire** : aucune nouvelle idée de stratégie testée avant le verdict du test 4
+      (P2, 150 trades) ;
+    - au plus **une modification de règle par semaine**, décidée le dimanche, jamais en
+      séance ni dans les 24 h qui suivent une perte ;
+    - la règle et son critère sont commités et poussés dans un commit, le résultat (avec la
+      sortie brute) dans un commit séparé ;
+    - chaque test et chaque changement de règle de passage est inscrit dans
+      `docs/registre_tests.csv` (seuil corrigé selon le nombre cumulé de tests).
+13. **Routines** : la « checklist pré-séance CAC 8h50 » (ancien plan v3, 100 € par trade) est
+    supprimée le 06/11/2026. Les semaines où la Bourse de New York ferme à 21h00 (heure de
+    Paris : Europe et États-Unis pas encore ou plus à la même heure d'été), le contrôle swing
+    US se fait à 20h42 (routine dédiée) ; `swing_preclose.py` affiche l'heure de clôture US.
+    Audit complet : `docs/audit_complet_2026-11-06.md`.

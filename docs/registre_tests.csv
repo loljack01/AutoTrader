@@ -1,0 +1,49 @@
+n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni_5pct
+1,d715b30,recherche exhaustive de combinaisons d'indicateurs,1,3066,exploratoire,1,1.64
+2,7e4e603,filtre tendance journalière (achats),1,1,info,2,1.96
+3,7b8171e,miroir vente + filtre,1,1,info,3,2.13
+4,977de41,puts 5m figés (plancher 2xATR),1,2,"figé, suivi -9.8R/30",4,2.24
+5,c1b2a69,filtres 1D/4h/1h 5m,1,3,info,5,2.33
+6,c78be96,filtres rapides SMA20/EMA20/SMA10,1,3,non remplacé,6,2.39
+7,a880a29,15m sma20/ema20 figés,1,2,figé,7,2.45
+8,a8c1284,options d'audit (5),1,5,info,8,2.5
+9,321adb5,balayage de l'extrême de séance,1,1,rejeté,9,2.54
+10,6f42ca5,continuation P1/P2,2,2,rejeté,11,2.61
+11,f66b1ad,2 sorties,2,2,rejeté,13,2.67
+12,05d6792,3 filtres de direction,3,3,rejeté,16,2.73
+13,7985e51,règles 15m sur 4 marchés,2,2,non confirmé,18,2.77
+14,0933b45,version améliorée (5 corrections),1,6,non retenu (1 point tient),19,2.79
+15,1f0828e,grille SMA/EMA x 6 longueurs,1,24,sma20 gardée,20,2.81
+16,97239b2,escalier intraday,1,1,rejeté (non suivi),21,2.82
+17,752b631,comblement d'écart,1,1,rejeté t=-3.54,22,2.84
+18,752b631,squeeze Bollinger,1,1,rejeté (non suivi),23,2.85
+19,c6efe40,écart continue (a posteriori),1,1,suivi,24,2.87
+20,8762eab,CHoCH frais A/B/A+B,1,3,suivi (t=1.06),25,2.88
+21,39259dd,entrée limite,1,1,rejeté (non suivi),26,2.89
+22,306b5d5,robustesse aux gros gains (familles),1,9,calls avec tendance robuste,27,2.9
+23,daf3e25,cassure du range d'ouverture,1,2,rejeté (non suivi),28,2.91
+24,3fe82f1,repli VWAP d'ouverture,1,1,rejeté (non suivi),29,2.92
+25,175bd05,supertrend A/B/C,3,3,rejeté (non suivi),32,2.96
+26,ce89557,TSMOM 12m actions,1,1,rejeté (non suivi),33,2.96
+27,060853a,TSMOM diversifié,1,1,rejeté (non suivi),34,2.97
+28,ee9e6ee,principale sur pétrole,1,1,ne tient pas,35,2.98
+29,0746bc4,1m contexte,1,1,rejeté,36,2.99
+30,ff107fa,1m un seul sens,1,1,rejeté,37,3.0
+31,bccba12,1m marge 16,1,1,rejeté,38,3.01
+32,8191138,enchère ratée IB,1,1,rejeté,39,3.02
+33,226c296,divergence SMT,1,1,rejeté,40,3.02
+34,70077ae,delta corrigé,1,1,en attente,41,3.03
+35,5d4a0eb,papamallis,1,1,rejeté,42,3.04
+36,265b14b,réaction structure 5m,1,1,rejeté,43,3.05
+37,ed6b223,rotation sectorielle,1,1,rejeté,44,3.05
+38,f170711,swing RSI(2) calls / puts,2,2,"calls PASSE, puts rejeté",46,3.07
+39,f170711,momentum fin de séance,1,1,rejeté,47,3.07
+40,d1abab6,NR7,1,1,rejeté,48,3.08
+41,77181f2,validation swing (8 indices + 27 voisins),2,28,confirmé,50,3.09
+42,117745c,tournant du mois,1,1,rejeté,51,3.1
+43,fad8c5b,swing 2 positions,1,1,rejeté,52,3.1
+44,8328601,swing 1991-2011,1,1,confirmé t=2.72,53,3.11
+45,2c2d347,limite 5 positions,1,1,adopté,54,3.11
+46,b808b85,tests 1-3 du 06/11,3,3,non adoptés,57,3.13
+47,e5c4103,condition D exécutable turbo (règle de passage),1,1,en cours (suivi depuis le 06/11),58,3.14
+48,frozen_p2,test 4 P2 rejet PDH/PDL (suivi en avant dès le 09/11),1,1,en cours,59,3.14

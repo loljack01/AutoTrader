@@ -82,6 +82,35 @@ def intact(pools, d, kind):
     return out
 
 
+def swing_positions():
+    """Swing positions taken (frozen_swing_rsi2_trades.csv, updated by the evening report) plus real fills of the
+    journal not yet in it, with the stop and the SMA5 exit reminder."""
+    root = Path(__file__).resolve().parent.parent
+    f, j = root / "data" / "backtests" / "frozen_swing_rsi2_trades.csv", root / "data" / "journal_swing.csv"
+    rows = []
+    try:
+        t = pd.read_csv(f)
+    except Exception:  # empty file (no trade yet) or missing
+        t = pd.DataFrame()
+    if len(t):
+        if True:
+            rows = [f"{x.marche} entree {x.entree} a {x.prix_entree}, stop {x.stop}"
+                    for x in t[(t.pris == True) & t.sortie.isna()].itertuples()]  # noqa: E712
+    try:
+        jj = pd.read_csv(j)
+    except Exception:
+        jj = pd.DataFrame()
+    if True:
+        if len(jj) and "prix_sortie" in jj.columns:
+            for x in jj[jj.prix_sortie.isna()].itertuples():
+                line = f"{x.marche} entree {x.entree} a {x.prix_entree} (journal)"
+                if not any(r.startswith(f"{x.marche} entree {x.entree}") for r in rows):
+                    rows.append(line)
+    print("\nPositions SWING en argent : " + ("aucune" if not rows else ""))
+    for r in rows:
+        print(f"  {r} ; sortie a la 1re cloture > SMA5 ou au 10e jour ; ouverture sous le stop = sortie a l'ouverture")
+
+
 def main():
     global SYMBOL
     args = sys.argv[1:]
@@ -169,19 +198,9 @@ def main():
         print(f"   {f(v):>9s}  {lab}")
     if not shown:
         print(f"   ---- {f(last)} dernier cours ----")
-    above = [x for x in levels if x[0] > last]
-    below = [x for x in levels if x[0] < last]
-    print("\nScenarios (a valider sur CLOTURE 5m, jamais au contact) :")
-    if below:
-        v, lab = below[0]
-        tgt = f"{f(above[-1][0])} ({above[-1][1]})" if above else "niveau suivant"
-        print(f"  CALL{'' if up else ' (interdit : tendance baissiere)'} : balayage de {f(v)} ({lab}) puis cloture 5m "
-              f"revenue au-dessus -> stop sous la meche - {margin}, premiere cible {tgt}")
-    if above:
-        v, lab = above[-1]
-        tgt = f"{f(below[0][0])} ({below[0][1]})" if below else "niveau suivant"
-        print(f"  PUT : depassement de {f(v)} ({lab}) puis cloture 5m revenue en dessous -> stop au-dessus de la "
-              f"meche + {margin}, premiere cible {tgt}")
+    # 06/11/2026 (audit) : les scenarios de reaction en cloture 5m (famille rejetee le 03/11, trade manuel arrete
+    # le 05/11) ne sont plus affiches ; la carte des niveaux reste pour information.
+    print("\nSuivis sans argent (aucun scenario de reaction : famille rejetee) :")
     if cac:
         c, g1, g2 = prev.Close, 0.25 * atr, 1.0 * atr
         print(f"  Ecart continue (bougie 9h00-9h15, version fragile suivie sans argent) : achat si cloture entre "
@@ -208,10 +227,12 @@ def main():
             print(f"  Signal de la principale depuis hier 18h : {'call' if x.side == 1 else 'put'} "
                   f"{x.entry_time.tz_convert(TZ):%d/%m %H:%M} entree {x.entry:.1f} stop {x.stop:.1f} cible {x.take:.1f} -> {res}")
     if cac:
-        print("\nRappels : rien entre 9h00 et 9h15 ni dans les 15 min autour d'une annonce ; la strategie principale (15m) "
-              "reste la seule candidate au reel ; les trades de reaction se notent au journal, sans argent.")
+        swing_positions()
+        print("\nRappels : seul le SWING est joue en argent (25 EUR par trade) ; la principale (15m) est suivie sans argent "
+              "(regle sequentielle + condition D) ; aucun ordre sur capture ni hors alerte ; rien dans les 15 min autour "
+              "d'une annonce.")
     elif nq:
-        print("\nRappels : Nasdaq suivi sans argent (principale, verdict a 100 trades sur les 10 marches) ; tendance "
+        print("\nRappels : Nasdaq suivi sans argent (principale : regle sequentielle +72R et condition D) ; tendance "
               "journaliere baissiere = puts seulement ; rien entre 15h30 et 15h45 (ouverture US) ; les turbos suivent en "
               "general le cash NDX : decaler les niveaux de l'ecart future - cash.")
     else:
