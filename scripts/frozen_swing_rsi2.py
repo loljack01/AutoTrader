@@ -36,6 +36,17 @@ now checks the EXECUTION, not the edge (50 trades cannot test the edge:
   brake         if the cumulative live net R (0.05 %) reaches -10R, stop
                 and review (5th percentile at 50 trades if the edge is real)
 
+Amended on 2026-11-06 (still before any live trade), at the user's request
+("applique D"): capital raised to 10 000 EUR. The trade rule, the 5-position
+cap, the brake and the execution check are unchanged. The risk per trade is
+NOT doubled: the user's loss tolerance (500 EUR over 3 months, given on
+06/11) and the worst 3-month period of the capped swing (-13R, 2012-2026)
+cap it at about 38 EUR. Phase 1 stays at 25 EUR (0.25 % of 10 000 EUR);
+phase 2 up to 0.375 % (37.5 EUR), more only if the user raises the
+tolerance. The larger capital lets the 5 positions be held with little or
+no leverage (about 700-900 EUR of exposure each, ETF/tracker or turbo
+leverage <= 1.5), which limits the knock-out risk of a gap at the open.
+
 Usage: python scripts/frozen_swing_rsi2.py [tool-results JSON files of the
 10 cash indices, 1D, any format] (merged into data/cache first)
 """
@@ -54,7 +65,7 @@ from test_swing_rsi2 import COSTS, INDICES, MAX_DAYS, exit_trade, load, net, run
 
 FREEZE = pd.Timestamp("2026-11-05", tz="UTC")
 REF_END, REF = "2026-10-01", (1317, 96.49)
-CAP, CAPITAL, PHASE1_PCT, PHASE1_TRADES, BRAKE, MAX_SLIP = 5, 5000.0, 0.005, 30, -10.0, -0.03
+CAP, CAPITAL, PHASE1_PCT, PHASE1_TRADES, BRAKE, MAX_SLIP = 5, 10000.0, 0.0025, 30, -10.0, -0.03
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"

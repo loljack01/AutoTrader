@@ -42,3 +42,15 @@
      modèles (0,05 % du sous-jacent pour le swing, environ 4 points CAC ; 1 et 3 points
      pour la principale) sont donc prudents, hors élargissement du spread à
      l'ouverture et autour des annonces.
+9. **Capital porté à 10 000 € (06/11/2026, option D du groupe de travail).**
+   Le risque par trade n'est PAS doublé : il reste borné par la tolérance de 500 € sur
+   3 mois (pire période de 3 mois du swing : −13R).
+   - swing phase 1 : **25 €** par trade (0,25 %), inchangé ; phase 2 : jusqu'à
+     **37,5 €** (0,375 %) si le contrôle d'exécution passe ; 50 € (0,5 %) seulement si
+     la tolérance est relevée à environ 650-700 € sur 3 mois ;
+   - le capital supplémentaire sert à tenir les 5 positions avec peu ou pas de levier
+     (environ 700 à 900 € d'exposition chacune, soit 3 500 à 4 500 € au total : ETF ou
+     tracker, ou turbo de levier ≤ 1,5), ce qui réduit le risque de désactivation sur un
+     écart d'ouverture ;
+   - principale (sans argent jusqu'à son verdict) : même borne de 25 € par trade, et la
+     règle globale −500 € sur 3 mois s'applique à l'ensemble.

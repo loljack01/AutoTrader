@@ -11,7 +11,8 @@ before it. Computed with the current price as a stand-in for the close
 The stop uses yesterday's ATR(14) (today's range is not known yet). The
 evening report remains the reference; a signal that flips between the
 pre-close check and the close is followed as the evening report says.
-Size 25 EUR of risk (0.5 % of 5 000 EUR); order >= 500 EUR.
+Size 25 EUR of risk (phase 1: 0.25 % of 10 000 EUR since 06/11, capped by the
+user's 500 EUR / 3 months tolerance); order >= 500 EUR.
 
 Usage: python scripts/swing_preclose.py SYMBOL=PRICE [SYMBOL=PRICE ...]
   e.g. EURONEXT:PX1=8205.4 XETR:DAX=26325
