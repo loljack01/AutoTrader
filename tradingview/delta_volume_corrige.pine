@@ -1,0 +1,227 @@
+//@version=6
+// Version corrigée de « Premium & Discount Delta Volume [BigBeluga] »
+// (© BigBeluga, licence Creative Commons BY-NC-SA 4.0 : usage personnel non
+// commercial, modifications partagées sous la même licence).
+// Corrections après l'audit du 30/10/2026 :
+//  1. Delta symétrique : (volume vert - volume rouge) / (vert + rouge), au lieu
+//     de (vert - rouge) / vert qui grossissait les lectures vendeuses.
+//  2. Recalculé de zéro sur chaque bougie à partir de sommes glissantes : plus
+//     de tableaux jamais remis à zéro, donc plus de dérive pendant la séance.
+//     La valeur est la même graphique ouvert ou rechargé, et son historique est
+//     lisible dans la fenêtre de données.
+//  3. Fenêtres en heures de cotation, converties en nombre de bougies selon
+//     l'unité de temps : 1 minute, 15 minutes et 1 heure lisent la même période.
+//  4. Zones recalculées à chaque bougie : haut et bas de la fenêtre, plus une
+//     marge, et milieu (équilibre) au centre du range. Le range est calculé
+//     sur les bougies CLOSES (la bougie en cours en est exclue) : une sortie
+//     du range reste visible, et le tableau dit si c'est une mèche revenue
+//     dedans (balayage possible) ou une clôture dehors (cassure).
+//  5. Étiquettes honnêtes : les volumes affichés sont ceux de toute la fenêtre,
+//     pas ceux échangés dans les zones.
+//  6. Message clair quand l'instrument n'a pas de volume (indice cash PX1).
+//  7. (version 3) Le delta est calculé à partir des bougies d'UNE MINUTE
+//     contenues dans chaque bougie du graphique, quelle que soit l'unité de
+//     temps affichée : la même fenêtre donne la même valeur en 1 minute, 15
+//     minutes ou 1 heure. Sans cela, une bougie rouge de 15 minutes comptait
+//     tout son volume en ventes alors que ses minutes étaient presque à
+//     l'équilibre (mesuré le 30/10 : zones +11,8 % en 1 minute contre -0,4 %
+//     en 15 minutes sur les mêmes 7 heures). Si TradingView ne fournit pas les
+//     minutes sur toute la fenêtre, le tableau le signale.
+//  8. (version 4) Les deltas sont ancrés sur les SÉANCES et non plus sur un
+//     nombre de bougies : « delta séance » depuis l'ouverture de la séance en
+//     cours, « delta N séances » depuis l'ouverture de la N-ième séance. Les
+//     minutes sans échange n'ont pas de bougie d'une minute : compter des
+//     bougies faisait remonter la fenêtre plus loin en 1 minute qu'en 15
+//     minutes (écart d'environ 1 point le 30/10). Avec des séances, ce sont
+//     exactement les mêmes minutes quelle que soit l'unité de temps.
+//     Le range (zones) reste calculé sur une fenêtre en heures.
+// Limite qui reste : ce « delta » classe le volume de chaque minute selon sa
+// couleur. Ce n'est PAS le flux d'ordres (achats agressifs - ventes agressives).
+// Outil de lecture, AUCUN signal : il n'a pas été testé sur l'historique.
+indicator("Delta Volume corrigé (d'après BigBeluga)", overlay = true, max_boxes_count = 10, max_lines_count = 5, max_bars_back = 5000)
+
+// ---------- Réglages ----------
+zoneHours  = input.float(7, "Fenêtre des zones (heures de cotation)", minval = 0.25, step = 0.25,
+     tooltip = "7 h environ une séance du CAC. Même période quelle que soit l'unité de temps")
+nSess      = input.int(5, "Delta long : nombre de séances", minval = 1, maxval = 20,
+     tooltip = "Séance en cours comprise. 5 = environ une semaine")
+pad        = input.float(0.8, "Marge des zones (x ATR 200)", minval = 0, step = 0.1)
+calcSrc    = input.string("Bougies d'une minute", "Calcul du delta", options = ["Bougies d'une minute", "Bougies du graphique"],
+     tooltip = "Bougies d'une minute : même valeur quelle que soit l'unité de temps (recommandé)")
+showHalves = input.bool(true, "Colorer les moitiés premium et discount")
+upColor    = input.color(#79c1f1, "Discount / acheteurs", group = "Couleurs")
+downColor  = input.color(#f19579, "Premium / vendeurs", group = "Couleurs")
+
+// ---------- Fenêtres en bougies ----------
+tfSec = timeframe.in_seconds()
+barsFor(float hours) =>
+    math.max(1, math.min(4900, int(math.round(hours * 3600.0 / tfSec))))
+nZone  = math.min(barsFor(zoneHours), bar_index + 1)
+
+// ---------- Volumes par couleur de bougie, sommes glissantes ----------
+// Bougies d'une minute contenues dans chaque bougie du graphique (sur un
+// graphique d'une minute ou moins, la bougie elle-même)
+string ltf = tfSec > 60 ? "1" : timeframe.period
+[upArr, dnArr, flatArr] = request.security_lower_tf(syminfo.tickerid, ltf,
+     [close > open ? nz(volume) : 0.0, close < open ? nz(volume) : 0.0, close == open ? 1.0 : 0.0])
+bool useLower = calcSrc == "Bougies d'une minute"
+bool lowerOk  = array.size(upArr) > 0
+vol      = nz(volume)
+buyVol   = useLower ? (lowerOk ? array.sum(upArr) : 0.0) : (close > open ? vol : 0.0)
+sellVol  = useLower ? (lowerOk ? array.sum(dnArr) : 0.0) : (close < open ? vol : 0.0)
+doji     = useLower ? (lowerOk ? array.sum(flatArr) : 0.0) : (close == open ? 1.0 : 0.0)
+nCandles = useLower ? float(array.size(upArr)) : 1.0
+missing  = useLower and not lowerOk and vol > 0 ? 1.0 : 0.0
+cumBuy   = ta.cum(buyVol)
+cumSell  = ta.cum(sellVol)
+cumDoji  = ta.cum(doji)
+cumCount = ta.cum(nCandles)
+cumMiss  = ta.cum(missing)
+
+// ---------- Séances : sommes cumulées mémorisées à chaque ouverture ----------
+tD = time("D")
+bool newSess = bar_index > 0 and tD != tD[1]
+var array<float> sBuy  = array.new_float()
+var array<float> sSell = array.new_float()
+var array<float> sDoji = array.new_float()
+var array<float> sCnt  = array.new_float()
+var array<float> sMiss = array.new_float()
+var array<int>   sTime = array.new_int()
+if newSess
+    array.push(sBuy, nz(cumBuy[1]))
+    array.push(sSell, nz(cumSell[1]))
+    array.push(sDoji, nz(cumDoji[1]))
+    array.push(sCnt, nz(cumCount[1]))
+    array.push(sMiss, nz(cumMiss[1]))
+    array.push(sTime, time)
+    if array.size(sBuy) > 21
+        array.shift(sBuy)
+        array.shift(sSell)
+        array.shift(sDoji)
+        array.shift(sCnt)
+        array.shift(sMiss)
+        array.shift(sTime)
+
+// Somme depuis l'ouverture de la `back`-ième séance (1 = séance en cours)
+fromStart(array<float> a, float cum, int back) =>
+    int k = array.size(a)
+    k == 0 ? na : cum - array.get(a, math.max(0, k - back))
+
+startTime(int back) =>
+    int k = array.size(sTime)
+    k == 0 ? na : array.get(sTime, math.max(0, k - back))
+
+delta(float b, float s) =>
+    b + s > 0 ? (b - s) / (b + s) * 100 : na
+
+int nKnown  = array.size(sBuy)
+buySess   = fromStart(sBuy, cumBuy, 1)
+sellSess  = fromStart(sSell, cumSell, 1)
+buyN      = fromStart(sBuy, cumBuy, nSess)
+sellN     = fromStart(sSell, cumSell, nSess)
+deltaSess = delta(buySess, sellSess)
+deltaN    = delta(buyN, sellN)
+countN    = fromStart(sCnt, cumCount, nSess)
+dojiShare = nz(countN) > 0 ? fromStart(sDoji, cumDoji, nSess) / countN * 100 : na
+missN     = nz(fromStart(sMiss, cumMiss, nSess)) > 0
+noVolume  = nKnown > 0 and nz(buyN) + nz(sellN) == 0
+
+// Historique consultable (fenêtre de données), sans tracé sur le prix
+plot(deltaSess, "Delta séance (%)", color = deltaSess >= 0 ? upColor : downColor, display = display.data_window)
+plot(deltaN, "Delta N séances (%)", color = deltaN >= 0 ? upColor : downColor, display = display.data_window)
+
+// ---------- Zones ----------
+atrPad = ta.atr(200) * pad
+var box topBox  = na
+var box botBox  = na
+var box premBox = na
+var box discBox = na
+var line midLine = na
+
+fmtVol(float v) => str.tostring(v, format.volume)
+fmtPct(float x) => na(x) ? "—" : (x > 0 ? "+" : "") + str.tostring(x, "0.0") + " %"
+fmtT(int ts) => na(ts) ? "—" : str.format_time(ts, "dd/MM HH:mm", "Europe/Paris")
+
+string posTxt = "dans le range"
+color posCol = color.new(#d1d4dc, 0)
+
+if barstate.islast
+    // Bougie en cours exclue tant qu'elle n'est pas close
+    int off = barstate.isconfirmed ? 0 : 1
+    int nR  = math.max(1, math.min(nZone, bar_index + 1 - off))
+    float hiZ = high[off]
+    float loZ = low[off]
+    for i = off to off + nR - 1
+        hiZ := math.max(hiZ, high[i])
+        loZ := math.min(loZ, low[i])
+    float mid = (hiZ + loZ) / 2
+    int left  = bar_index - off - nR + 1
+    int right = bar_index + 20
+    if off == 1
+        if close > hiZ
+            posTxt := "prix au-dessus du haut (+" + str.tostring(close - hiZ, format.mintick) + ") : cassure si la bougie clôture ainsi"
+            posCol := upColor
+        else if close < loZ
+            posTxt := "prix sous le bas (-" + str.tostring(loZ - close, format.mintick) + ") : cassure si la bougie clôture ainsi"
+            posCol := downColor
+        else if high > hiZ
+            posTxt := "mèche au-dessus du haut, prix revenu dedans : balayage possible"
+            posCol := color.new(#f5a623, 0)
+        else if low < loZ
+            posTxt := "mèche sous le bas, prix revenu dedans : balayage possible"
+            posCol := color.new(#f5a623, 0)
+    else
+        posTxt := "marché fermé : dernière bougie close incluse dans le range"
+    string padTxt = nz(atrPad) > 0 ? "" : " (marge indisponible)"
+    if na(topBox)
+        topBox  := box.new(left, hiZ + nz(atrPad), right, hiZ, border_color = downColor, bgcolor = color.new(downColor, 70),
+             text_size = size.small, text_color = chart.fg_color, text_halign = text.align_right)
+        botBox  := box.new(left, loZ, right, loZ - nz(atrPad), border_color = upColor, bgcolor = color.new(upColor, 70),
+             text_size = size.small, text_color = chart.fg_color, text_halign = text.align_right)
+        premBox := box.new(left, hiZ, right, mid, border_color = na, bgcolor = na)
+        discBox := box.new(left, mid, right, loZ, border_color = na, bgcolor = na)
+        midLine := line.new(left, mid, right, mid, color = chart.fg_color, style = line.style_dashed)
+    box.set_lefttop(topBox, left, hiZ + nz(atrPad))
+    box.set_rightbottom(topBox, right, hiZ)
+    box.set_text(topBox, "Haut du range " + str.tostring(hiZ, format.mintick) + padTxt)
+    box.set_lefttop(botBox, left, loZ)
+    box.set_rightbottom(botBox, right, loZ - nz(atrPad))
+    box.set_text(botBox, "Bas du range " + str.tostring(loZ, format.mintick) + padTxt)
+    box.set_lefttop(premBox, left, hiZ)
+    box.set_rightbottom(premBox, right, mid)
+    box.set_bgcolor(premBox, showHalves ? color.new(downColor, 93) : na)
+    box.set_lefttop(discBox, left, mid)
+    box.set_rightbottom(discBox, right, loZ)
+    box.set_bgcolor(discBox, showHalves ? color.new(upColor, 93) : na)
+    line.set_xy1(midLine, left, mid)
+    line.set_xy2(midLine, right, mid)
+
+// ---------- Tableau ----------
+var table t = table.new(position.top_right, 2, 8, bgcolor = color.new(#131722, 10), border_width = 1,
+     border_color = color.new(#2a2e39, 0), frame_color = color.new(#2a2e39, 0), frame_width = 1)
+
+row(int r, string label, string value, color col) =>
+    table.cell(t, 0, r, label, text_color = color.new(#d1d4dc, 0), text_size = size.small, text_halign = text.align_left)
+    table.cell(t, 1, r, value, text_color = col, text_size = size.small, text_halign = text.align_right)
+
+if barstate.islast
+    white = color.new(#d1d4dc, 0)
+    if noVolume
+        table.cell(t, 0, 0, "Pas de volume sur cet instrument (indice cash ?) : utiliser le contrat à terme, par exemple FCE1!",
+             text_color = color.new(#f5a623, 0), text_size = size.small)
+        table.merge_cells(t, 0, 0, 1, 0)
+    else
+        row(0, "Delta séance (depuis " + fmtT(startTime(1)) + ")", fmtPct(deltaSess), deltaSess >= 0 ? upColor : downColor)
+        row(1, "Delta " + str.tostring(nSess) + " séances (depuis " + fmtT(startTime(nSess)) + ")", fmtPct(deltaN),
+             deltaN >= 0 ? upColor : downColor)
+        row(2, "Prix (bougie en cours, range " + str.tostring(zoneHours) + " h)", posTxt, posCol)
+        row(3, "Volume vert / rouge (" + str.tostring(nSess) + " séances)", na(buyN) ? "—" : fmtVol(buyN) + " / " + fmtVol(sellN), white)
+        row(4, useLower ? "Minutes neutres ignorées" : "Bougies neutres ignorées", na(dojiShare) ? "—" : str.tostring(dojiShare, "0") + " %", white)
+        row(5, "Calcul du delta", useLower ? "bougies d'une minute (" + ltf + ")" : "bougies du graphique", white)
+        string trunc = nKnown == 0 ? "oui, aucune ouverture de séance sur le graphique" :
+             nKnown < nSess ? "oui, seulement " + str.tostring(nKnown) + " séance(s) sur le graphique" :
+             missN ? "oui, minutes manquantes : delta incomplet" : "non"
+        row(6, "Fenêtre tronquée", trunc, trunc == "non" ? white : color.new(#f5a623, 0))
+        table.cell(t, 0, 7, "Range sur bougies closes. Couleur des minutes, pas flux d'ordres. Lecture seulement, aucun signal testé.",
+             text_color = color.new(#787b86, 0), text_size = size.tiny)
+        table.merge_cells(t, 0, 7, 1, 7)
