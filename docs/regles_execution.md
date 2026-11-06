@@ -54,3 +54,14 @@
      écart d'ouverture ;
    - principale (sans argent jusqu'à son verdict) : même borne de 25 € par trade, et la
      règle globale −500 € sur 3 mois s'applique à l'ensemble.
+10. **Réponses de l'utilisateur au coach de discipline (06/11/2026)** :
+   - ordres réels hors système depuis le 22/10 : **zéro** (le compteur global de −500 € sur
+     3 mois part donc de 0 €) ;
+   - après une perte : « j'arrête, ou je reprends dans l'autre sens en espérant ». Règle
+     ajoutée sur recommandation du coach : **après un stop, aucun ordre dans le sens inverse
+     sans signal du système** (moteur officiel ou contrôle swing) ; un ordre inverse « en
+     espérant » est un trade de revanche, il est interdit et noté au journal hors système
+     s'il est passé quand même ;
+   - temps disponible : variable selon les jours, souvent important. La routine reste de
+     25 minutes environ (9h05, 17h25, 21h50, 22h15) ; le temps en plus sert au journal et
+     à la revue du dimanche, pas à regarder le 1 minute.
