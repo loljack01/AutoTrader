@@ -10,6 +10,11 @@ a net R <= 0 at 0.05 %, on the development period (2012-2021) AND on the
 reserved period (2022 -> last day). Otherwise normal size whatever the VIX.
 Multiple-testing budget: 4 tests (tests 1-4).
 
+Result (run on 2026-11-06, development 2012-2021): NON ADOPTEE. Only 10
+of 757 swing trades entered with VIX(J-1) > 30 (+4.8R, +0.485R/trade; the
+others +0.069R/trade): fewer than 50 and positive. Normal size whatever the
+VIX. Reserved period not run.
+
 Usage: python scripts/test_swing_vix.py dev|reserved
 """
 

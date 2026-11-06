@@ -17,6 +17,11 @@ AND R per year >= 90 % of the reference. Otherwise NOT ADOPTED. The reserved
 period is run once, only after the development verdict.
 Multiple-testing budget: 4 tests (tests 1-4).
 
+Result (run on 2026-11-06, development 2012-2021): NON ADOPTE. Reference
+757 trades +56.1R (+5.62R/year, worst drawdown -31.3R, worst 3 months -13.0R);
+zone limit 637 trades +43.9R (+4.41R/year, -24.9R, -9.3R): drawdown reduced by
+20 % but only 78 % of the R per year (threshold 90 %). Reserved period not run.
+
 Usage: python scripts/test_swing_zone_cap.py dev|reserved
 """
 

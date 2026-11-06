@@ -23,6 +23,13 @@ test_swing_rsi2_1990.py): t >= 1.65. Adopted only if all three pass.
 Multiple-testing budget: 4 tests (tests 1-4), development threshold t >= 2.24.
 Only descriptive count done before (205 signals, 30 % same day as RSI(2)).
 
+Result (run on 2026-11-06, development 2012-2021): REJETE. 205 signals,
+30 % the same day as RSI(2); P1 alone 205 trades, 54 % winners, +34.6R at
+0.05 % (+0.169R/trade), +23.5R at 0.10 %, weekly t 1.66 (threshold 2.24),
+6/10 indices positive (threshold 7); combined +7.09R/year vs +5.62R/year
+(+1.47, threshold +1). Two criteria failed: not adopted, no re-tuning.
+Reserved period not run.
+
 Usage: python scripts/test_swing_p1_false_break.py dev|reserved
 """
 

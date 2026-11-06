@@ -84,3 +84,16 @@ coût 3 pts. La principale ne passe en réel que si D passe aussi la règle séq
   données 15m antérieures.
 - **Verdict à 150 trades clos** : net R > 0 à 3 pts ET t (par jour) ≥ 2,24 → candidat ;
   sinon la famille des réactions aux niveaux est fermée. **Abandon** dès −15R cumulés.
+
+## Résultats (06/11/2026, développement 2012-2021, période réservée non utilisée)
+
+- **Test 1 : NON ADOPTÉ.** Référence 757 trades, +5,62R/an, pire baisse −31,3R, pire
+  3 mois −13,0R ; limite par zone 637 trades, +4,41R/an, −24,9R, −9,3R. Baisse réduite de
+  20 % mais 78 % du R par an (seuil 90 %).
+- **Test 2 (P1) : REJETÉ.** 30 % de signaux communs avec le RSI(2) ; P1 seul 205 trades,
+  +0,169R/trade, +34,6R à 0,05 %, +23,5R à 0,10 %, mais t hebdomadaire 1,66 (seuil 2,24)
+  et 6 indices positifs sur 10 (seuil 7). Combiné +1,47R/an (seuil +1). Pas de réglage.
+- **Test 3 (VIX) : NON ADOPTÉ.** 10 trades seulement avec VIX > 30 (seuil 50), et
+  positifs (+4,8R).
+- Budget : 3 tests sur 4 utilisés. Reste le test 4 (P2, suivi en avant dès le 09/11).
+  La période réservée 2022-2026 reste intacte.
