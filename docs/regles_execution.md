@@ -25,3 +25,20 @@
      `data/journal_swing.csv` ; contrôle d'exécution à 30 trades ; frein à −10R ;
      phase 2 jusqu'à 1 % seulement si le contrôle passe et avec l'accord de l'utilisateur
      (recommandé 0,5-0,75 % : pire baisse historique −40R).
+8. **Réponses de l'utilisateur du 06/11/2026** (questions du groupe de travail) :
+   - **perte maximale tolérée : 500 € sur 3 mois**, soit 20R à 25 €. Règle globale :
+     si le résultat réel cumulé de TOUTES les stratégies en argent sur les 3 derniers
+     mois atteint −500 €, tout s'arrête et on fait une révision avant de reprendre
+     (les freins propres à chaque stratégie restent en place).
+     Calcul descriptif (swing limité à 5 positions, 2012-2026, 1124 trades) : pire
+     période de 3 mois −13R, 5e centile −6,4R, pire baisse −31,3R. À 25 € la pire
+     période de 3 mois fait −325 € (compatible) ; à 1 % (50 €) elle ferait −650 €
+     (incompatible). Taille maximale du swing compatible avec la tolérance :
+     500 / 13 ≈ 38 € (0,75 %). La phase 2 du swing est donc plafonnée à 0,75 %.
+   - **disponible à 17h25 et à 21h50** : contrôles avant clôture du swing à ces heures
+     (indices européens, puis indices américains).
+   - **spread payé sur les turbos : 0,01 €** (sur le prix du turbo), soit en points du
+     sous-jacent 0,01 × parité (1 point CAC pour une parité de 100). Les coûts des
+     modèles (0,05 % du sous-jacent pour le swing, environ 4 points CAC ; 1 et 3 points
+     pour la principale) sont donc prudents, hors élargissement du spread à
+     l'ouverture et autour des annonces.
