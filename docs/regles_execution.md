@@ -65,3 +65,8 @@
    - temps disponible : variable selon les jours, souvent important. La routine reste de
      25 minutes environ (9h05, 17h25, 21h50, 22h15) ; le temps en plus sert au journal et
      à la revue du dimanche, pas à regarder le 1 minute.
+11. **Frais de vente des turbos : 0 €** (confirmé par l'utilisateur le 06/11/2026 sur son avis
+    d'opéré Boursorama). Achat et vente à 0 € pour les ordres >= 500 € : seul le spread
+    (0,01 € sur le prix du turbo) coûte, ce qui reste sous les coûts des modèles. Le swing
+    reste donc en turbos sur le compte-titres (avis du fiscaliste : le PEA n'exécute pas les
+    signaux US de 22h et sa vente d'ETF serait payante).
