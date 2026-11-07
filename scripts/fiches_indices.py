@@ -3,7 +3,7 @@ Operational only: no rule is tested or changed (moratorium of 06/11).
 
 For each of the 10 cash indices of the swing it prints, from data/cache:
   last close, SMA200 and trend, ATR(14), stop of the rule (2.5 ATR) in points
-  and %, exposure for 25 EUR of risk, order = max(500 EUR, exposure / 1.6)
+  and %, exposure for 25 EUR of risk, order = max(500 EUR, exposure / 2.85)
   and leverage, and, from the reference book (5 positions, 2012 -> last day,
   0.05 % cost, descriptive only): signals per year and R per trade.
 Static notes (closing time, auction, holidays, products) are in
@@ -24,7 +24,7 @@ import pandas as pd
 import swing_portfolio as sp
 import test_swing_rsi2 as sw
 
-RISK_EUR, MIN_ORDER, MAX_LEV = 25.0, 500.0, 1.6
+RISK_EUR, MIN_ORDER, MAX_LEV = 25.0, 500.0, 2.85
 
 
 def main():
@@ -50,7 +50,7 @@ def main():
     t = pd.DataFrame(rows)
     pd.set_option("display.width", 250)
     print(t.to_string(index=False))
-    print(f"\nCarnet de reference : {len(book)} trades sur {years:.1f} ans ; ordre = max(500 EUR, exposition / 1,6) ; "
+    print(f"\nCarnet de reference : {len(book)} trades sur {years:.1f} ans ; ordre = max(500 EUR, exposition / 2,85) ; "
           f"si l'exposition est < 500 EUR, ordre de 500 EUR au levier ~1 et risque reel > 25 EUR.")
 
 

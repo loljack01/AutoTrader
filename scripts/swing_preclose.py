@@ -27,7 +27,9 @@ false and 5 missed entries out of 41), the trade rule is unchanged:
     weeks when the US and Europe are not on the same summer time).
 
 Order size (user reminder of 07/11/2026: every order is 500 EUR minimum):
-order = max(500 EUR, exposure / 1.6) at leverage exposure / order. When the
+order = max(500 EUR, exposure / 2.85) at leverage exposure / order (07/11: the
+user's orders are ~500 EUR, a bit more at most; leverage 2.85 keeps the
+barrier at least 35 % below the price). When the
 exposure for 25 EUR of risk is below 500 EUR (2.5 % of the signals since
 2012, wide stops), the order stays at 500 EUR with the lowest leverage (~1):
 the real risk is then up to ~34 EUR (median ~27 EUR).
@@ -48,7 +50,7 @@ import pandas as pd
 from test_swing_rsi2 import INDICES, MAX_DAYS, STOP_ATR, load
 
 RISK_EUR, CAP, NEAR = 25.0, 5, 0.003
-MIN_ORDER, MAX_LEV = 500.0, 1.6  # user's minimum order (0 EUR fees) and turbo leverage cap
+MIN_ORDER, MAX_LEV = 500.0, 2.85  # user's order of ~500 EUR (0 EUR fees); leverage cap = barrier >= 35 % away
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"

@@ -28,8 +28,9 @@
      passer sa règle séquentielle avec la condition D. Si elle y passait un jour, ce
      serait à **8-10 € par trade au plus** (à 25 €, une fenêtre de 3 mois sur quatre
      atteindrait −500 € avec le swing) ;
-   - produit du swing : turbo infini de 560 à 900 €, levier ≤ 1,6, barrière à au moins 35 %
-     du cours (jamais moins de 15 %) ; ordre = max(500 €, exposition / 1,6).
+   - produit du swing : turbo call (infini de préférence), **ordre d'environ 500 €** (un peu
+     plus au maximum, précision de l'utilisateur du 07/11), levier = exposition / 500 (≈ 1,2
+     à 2,7 selon le stop), barrière à au moins 35 % du cours (levier ≤ 2,85) ; voir point 14.
 8. **Réponses de l'utilisateur du 06/11/2026** (questions du groupe de travail) :
    - **perte maximale tolérée : 500 € sur 3 mois**, soit 20R à 25 €. Règle globale :
      si le résultat réel cumulé de TOUTES les stratégies en argent sur les 3 derniers
@@ -90,8 +91,12 @@
     US se fait à 20h42 (routine dédiée) ; `swing_preclose.py` affiche l'heure de clôture US.
     Audit complet : `docs/audit_complet_2026-11-06.md`.
 14. **Ordre minimum de 500 € pour CHAQUE trade (rappel de l'utilisateur, 07/11/2026)** :
-    - swing : ordre = max(500 €, exposition / 1,6), au levier exposition / ordre ; dans
-      97,5 % des signaux depuis 2012 cela respecte 25 € de risque et un levier ≤ 1,6 ;
+    - swing : ordre = max(500 €, exposition / 2,85), au levier exposition / ordre (précisé le
+      07/11 : l'utilisateur engage environ 500 € par trade, un peu plus au maximum) ; le
+      risque reste de 25 € tant que le levier choisi vaut exposition / ordre. **Le montant
+      engagé n'est pas la perte** : la perte au stop vaut ordre × levier × distance du stop
+      (500 € × 1,6 × 3,2 % ≈ 25 €). Un turbo de levier trop élevé pour l'ordre (ex. levier 3,5
+      avec 500 € et un stop à 3,2 %) porterait le risque à ≈ 56 € : à éviter ;
     - quand l'exposition pour 25 € de risque est inférieure à 500 € (2,5 % des signaux,
       stops larges, surtout Nasdaq et FTSE MIB), l'ordre reste à 500 € au levier le plus bas
       disponible (~1) : le risque réel monte alors jusqu'à ~34 € (médiane ~27 €), accepté
