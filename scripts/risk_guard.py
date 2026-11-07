@@ -14,8 +14,11 @@ MAIN strategy (sma20 live tracking, WITHOUT money):
 
 REAL MONEY (swing journal data/journal_swing.csv + out-of-system journal
 data/journal_hors_systeme.csv), user's rules of 06/11:
-  global stop      if the real result over the last 91 days reaches -500 EUR,
-                   everything stops and is reviewed before any restart
+  global stop      if the TOTAL real result since the first trade reaches
+                   -500 EUR, everything stops and is reviewed before any
+                   restart (user's correction of 07/11: 500 EUR is the minimum
+                   order per trade; the loss limit is -500 EUR in total, chosen
+                   on 07/11, not over a 3-month window)
   daily stop       -3R realised on a day (25 EUR per R) -> no new order that day
   no revenge       after a stop, no order in the opposite direction without a
                    signal of the system (anything else goes to the
@@ -39,7 +42,7 @@ SWING = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
 OUTSIDE = ROOT / "data" / "journal_hors_systeme.csv"
 DAILY_STOP, PAUSE = -3.0, -15.0
-CAPITAL, RISK_EUR, GLOBAL_STOP_EUR, WINDOW_DAYS = 10000.0, 45.0, -500.0, 91  # 1R ~45 EUR since 07/11 (500 EUR orders)
+CAPITAL, RISK_EUR, GLOBAL_STOP_EUR = 10000.0, 45.0, -500.0  # 1R ~45 EUR since 07/11 (500 EUR orders); -500 EUR = total real loss (user, 07/11)
 
 
 def read_csv(path, **kw):
@@ -100,17 +103,16 @@ def real_money(now):
     for x in o.itertuples() if len(o) else []:
         rows.append((pd.Timestamp(x.date), "hors systeme", x.resultat_eur))
     r = pd.DataFrame(rows, columns=["date", "source", "eur"])
-    since = now.normalize() - pd.Timedelta(days=WINDOW_DAYS)
-    win = r[(r.date >= since)]
+    win = r  # total since the first real trade (user's correction of 07/11: no 3-month window)
     missing = int(win.eur.isna().sum())
     total = win.eur.sum()
     today = r[r.date == now.normalize()].eur.sum()
-    print(f"Argent reel (capital {CAPITAL:,.0f} EUR) : {WINDOW_DAYS} derniers jours {total:+.0f} EUR "
+    print(f"Argent reel (capital {CAPITAL:,.0f} EUR) : total depuis le debut {total:+.0f} EUR "
           f"(arret global a {GLOBAL_STOP_EUR:+.0f} EUR) | aujourd'hui {today:+.0f} EUR soit {today / RISK_EUR:+.1f}R "
           f"(arret du jour a {DAILY_STOP:+.0f}R) | trades reels : {len(r)}"
           + (f" | {missing} sans resultat calculable (stop du modele introuvable : remplir resultat_eur)" if missing else ""))
     if total <= GLOBAL_STOP_EUR:
-        print("  ARRET GLOBAL : -500 EUR sur 3 mois atteint, tout s'arrete, revision avant toute reprise")
+        print("  ARRET GLOBAL : perte totale de 500 EUR atteinte, tout s'arrete, revision avant toute reprise")
     if today / RISK_EUR <= DAILY_STOP:
         print("  ARRET DU JOUR : -3R realises aujourd'hui, plus aucun nouvel ordre")
     if len(o):

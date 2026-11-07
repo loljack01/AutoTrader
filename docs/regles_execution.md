@@ -113,3 +113,11 @@
     La limite globale reste fixée à −500 € sur 3 mois (l'utilisateur ne l'a pas changée) ;
     le frein du swing reste à −10R (≈ −450 €) ; plus de « phase 2 » : la taille ne monte pas
     au-delà. Si un turbo de levier plus bas apparaît, le prendre (perte plus faible).
+16. **Correction de l'utilisateur du 07/11/2026 : « ce n'est pas 500 € sur trois mois, c'est au
+    minimum 500 € par trade ».** Sa réponse « 500 € » du 06/11 désignait le montant minimum engagé par
+    ordre, pas une perte tolérée sur 3 mois : la « tolérance de 500 € sur 3 mois » des points 5, 7, 8, 9
+    et 15 était une mauvaise lecture. Question posée le 07/11 (« quelle perte totale en argent réel
+    acceptez-vous avant d'arrêter tout et de faire le point ? ») : **−500 € au total**. Règle en vigueur :
+    si le résultat réel cumulé de toutes les stratégies en argent depuis le premier trade atteint
+    −500 €, tout s'arrête et on fait une révision avant de reprendre (`risk_guard.py`, sans fenêtre de
+    3 mois). Les autres freins (swing −10R, arrêt du jour −3R, anti-revanche) restent en place.
