@@ -103,3 +103,13 @@
       pour garder 100 % des signaux ; `swing_preclose.py` l'affiche ;
     - principale (si un jour en réel à 8-10 €) : ordre de 500 € minimum, levier =
       exposition / 500 (≈ 6 pour un stop CAC de 26 points à 10 €).
+15. **Décision de l'utilisateur du 07/11/2026 : 500 € par ordre, au minimum.** Le turbo call
+    au plus petit levier chez Boursomarkets est à environ 2,8 (CAC 40 : prix d'exercice
+    5 250, échéance 19/03/2027, levier 2,79, barrière à 35 % sous le cours). Avec 500 €
+    engagés, la perte au stop vaut 500 × 2,8 × distance du stop, **environ 40 à 50 € par trade
+    (1R ≈ 45 €)** au lieu de 25 €. Historique du swing (2012-2026) à 44 € par R : gain moyen
+    ≈ +211 € par an avant impôt, pire période de 3 mois ≈ −573 €, la limite de −500 € sur
+    3 mois aurait été atteinte une fois en 14 ans (arrêt et révision), pire baisse ≈ −1 375 €.
+    La limite globale reste fixée à −500 € sur 3 mois (l'utilisateur ne l'a pas changée) ;
+    le frein du swing reste à −10R (≈ −450 €) ; plus de « phase 2 » : la taille ne monte pas
+    au-delà. Si un turbo de levier plus bas apparaît, le prendre (perte plus faible).

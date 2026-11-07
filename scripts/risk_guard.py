@@ -39,7 +39,7 @@ SWING = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
 OUTSIDE = ROOT / "data" / "journal_hors_systeme.csv"
 DAILY_STOP, PAUSE = -3.0, -15.0
-CAPITAL, RISK_EUR, GLOBAL_STOP_EUR, WINDOW_DAYS = 10000.0, 25.0, -500.0, 91
+CAPITAL, RISK_EUR, GLOBAL_STOP_EUR, WINDOW_DAYS = 10000.0, 45.0, -500.0, 91  # 1R ~45 EUR since 07/11 (500 EUR orders)
 
 
 def read_csv(path, **kw):

@@ -5,32 +5,31 @@ Les chiffres se reproduisent avec `python3 scripts/fiches_indices.py` (cache du 
 l'ATR et donc le stop, l'exposition et l'ordre changent chaque jour ; le contrôle avant
 clôture (`swing_preclose.py`) donne les valeurs du jour au moment du signal.
 
-## Tableau au 06/11/2026
+## Tableau au 06/11/2026 (choix du 07/11 : 500 € par ordre, turbo au levier le plus bas ≈ 2,8)
 
-| Indice | Tendance | Stop de la règle (2,5 ATR) | Exposition pour 25 € | Ordre conseillé | Levier | Trades/an (historique) | R/trade (historique, descriptif) |
-|---|---|---|---|---|---|---|---|
-| CAC 40 | **sous SMA200** | 257 pts (3,2 %) | 793 € | 500 € | 1,6 | 7,5 | +0,017 |
-| DAX | au-dessus | 932 pts (3,6 %) | 693 € | 500 € | 1,4 | 7,0 | +0,042 |
-| Euro Stoxx 50 | au-dessus | 214 pts (3,5 %) | 721 € | 500 € | 1,4 | 7,0 | +0,013 |
-| S&P 500 | au-dessus | 252 pts (3,4 %) | 732 € | 500 € | 1,5 | 8,2 | +0,091 |
-| Nasdaq 100 | **sous SMA200** | 1 577 pts (5,8 %) | 428 € | 500 € | ~1 (0,86 calculé) | 8,4 | +0,102 |
-| FTSE 100 | au-dessus | 314 pts (2,9 %) | 849 € | 500 € | 1,7 | 6,9 | +0,048 |
-| SMI | au-dessus | 432 pts (2,9 %) | 857 € | 500 € | 1,7 | 7,1 | +0,041 |
-| Dow Jones | au-dessus | 1 767 pts (3,4 %) | 726 € | 500 € | 1,5 | 9,7 | +0,077 |
-| Russell 2000 | **sous SMA200** | 111 pts (4,0 %) | 621 € | 500 € | 1,2 | 7,1 | +0,120 |
-| FTSE MIB | au-dessus | 2 001 pts (4,0 %) | 625 € | 500 € | 1,3 | 6,7 | +0,068 |
+| Indice | Tendance | Stop de la règle (2,5 ATR) | Perte au stop avec 500 € au levier 2,8 (= 1R) | Trades/an (historique) | R/trade (historique, descriptif) |
+|---|---|---|---|---|---|
+| CAC 40 | **sous SMA200** | 257 pts (3,2 %) | ≈ 44 € | 7,5 | +0,017 |
+| DAX | au-dessus | 932 pts (3,6 %) | ≈ 51 € | 7,0 | +0,042 |
+| Euro Stoxx 50 | au-dessus | 214 pts (3,5 %) | ≈ 49 € | 7,0 | +0,013 |
+| S&P 500 | au-dessus | 252 pts (3,4 %) | ≈ 48 € | 8,2 | +0,091 |
+| Nasdaq 100 | **sous SMA200** | 1 577 pts (5,8 %) | **≈ 82 €** | 8,4 | +0,102 |
+| FTSE 100 | au-dessus | 314 pts (2,9 %) | ≈ 41 € | 6,9 | +0,048 |
+| SMI | au-dessus | 432 pts (2,9 %) | ≈ 41 € | 7,1 | +0,041 |
+| Dow Jones | au-dessus | 1 767 pts (3,4 %) | ≈ 48 € | 9,7 | +0,077 |
+| Russell 2000 | **sous SMA200** | 111 pts (4,0 %) | ≈ 56 € | 7,1 | +0,120 |
+| FTSE MIB | au-dessus | 2 001 pts (4,0 %) | ≈ 56 € | 6,7 | +0,068 |
 
-Ordre ≈ 500 € (un peu plus au maximum, précision du 07/11) : ordre = max(500 €, exposition / 2,85), levier = exposition / ordre. Le montant engagé n'est pas la perte : perte au stop = ordre × levier × distance du stop ≈ 25 €. Quand l'exposition est sous 500 € (Nasdaq aujourd'hui,
-stop de 5,8 %), l'ordre reste à 500 € et le risque réel dépasse 25 € (environ 29 € au levier 1 ;
-**davantage si aucun turbo de levier proche de 1 n'existe** : au levier 1,5, l'exposition serait
-de 750 € et le risque d'environ 44 €). Dans ce cas, prendre le turbo au levier le plus bas
-disponible et noter le risque réel au journal.
+Perte au stop = 500 € × levier × distance du stop. Le montant engagé (500 €) n'est pas la perte.
+Quand le stop est large (Nasdaq aujourd'hui), la perte au stop dépasse nettement 50 € : chercher
+pour cet indice le turbo au levier le plus bas possible (un levier de 2 la ramènerait à ≈ 58 €).
+Si un turbo de levier plus bas que 2,8 existe sur un indice, le préférer.
 
 ## Ce qu'il faut chercher chez Boursorama (une fois, avant le premier signal)
 
 Pour chaque indice : un **turbo infini call** (« Turbo Infini », « Open End », « BEST »…)
 sur l'indice lui-même, coté sur la plateforme, avec :
-- un **levier égal à exposition / 500 €** (le tableau : 1,2 à 1,7 aujourd'hui ; jamais plus de 2,85, soit une barrière à au moins 35 % sous le cours). Un levier plus élevé avec 500 € engagés augmente la perte au stop (levier 3,5 : ≈ 56 € au lieu de 25 €) ;
+- le **levier le plus bas disponible** (≈ 2,8 chez Boursomarkets pour le CAC 40 : prix d'exercice 5 250, échéance 19/03/2027 ; barrière à au moins 35 % sous le cours, jamais plus de 2,85). Un levier plus élevé avec 500 € engagés augmente la perte au stop (levier 3,5 : ≈ 56 € pour un stop de 3,2 %) ;
 - une **parité** qui garde le spread de 0,01 € proche de 1 point d'indice (parité 100 pour
   CAC, Euro Stoxx, S&P ; parité plus élevée possible sur DAX, Dow, FTSE MIB : vérifier le coût
   du spread en points = 0,01 × parité) ;

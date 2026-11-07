@@ -34,6 +34,11 @@ exposure for 25 EUR of risk is below 500 EUR (2.5 % of the signals since
 2012, wide stops), the order stays at 500 EUR with the lowest leverage (~1):
 the real risk is then up to ~34 EUR (median ~27 EUR).
 
+User's choice of 07/11/2026: every order is 500 EUR, in the call turbo with
+the lowest leverage available at Boursomarkets (CAC 40: strike 5 250,
+leverage 2.79). The loss at the stop is then 500 x 2.8 x stop distance
+(about 40-50 EUR, 1R), no longer 25 EUR; the script prints it per signal.
+
 Usage: python scripts/swing_preclose.py SYMBOL=PRICE [SYMBOL=PRICE ...]
   e.g. EURONEXT:PX1=8205.4 XETR:DAX=26325
 """
@@ -50,7 +55,7 @@ import pandas as pd
 from test_swing_rsi2 import INDICES, MAX_DAYS, STOP_ATR, load
 
 RISK_EUR, CAP, NEAR = 25.0, 5, 0.003
-MIN_ORDER, MAX_LEV = 500.0, 2.85  # user's order of ~500 EUR (0 EUR fees); leverage cap = barrier >= 35 % away
+MIN_ORDER, LEV_TURBO = 500.0, 2.8  # user's choice of 07/11: 500 EUR per order, lowest-leverage turbo (~2.8 at Boursomarkets)
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
@@ -144,13 +149,12 @@ def main():
         risk = STOP_ATR * atr
         expo = RISK_EUR * p / risk
         take = k < free
-        order = max(MIN_ORDER, expo / MAX_LEV)
-        size = (f"ordre {order:.0f} EUR au levier {expo / order:.1f}" if expo >= MIN_ORDER else
-                f"ordre {MIN_ORDER:.0f} EUR minimum au levier le plus bas (~1) : exposition {MIN_ORDER:.0f} EUR, risque reel "
-                f"~{RISK_EUR * MIN_ORDER / expo:.0f} EUR au lieu de {RISK_EUR:.0f}")
+        loss = MIN_ORDER * LEV_TURBO * risk / p
         lines.append(f"  {name}: ENTREE {'a prendre' if take else 'ignoree (5 positions)'} avant la cloture, RSI(2) {r:.1f}, "
-                     f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}), exposition {expo:.0f} EUR pour {RISK_EUR:.0f} EUR "
-                     f"de risque -> {size}" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
+                     f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}) -> ordre {MIN_ORDER:.0f} EUR en turbo call au levier "
+                     f"le plus bas disponible (~{LEV_TURBO:.1f}, barriere ~{1 / LEV_TURBO:.0%} sous le cours) : exposition "
+                     f"~{MIN_ORDER * LEV_TURBO:.0f} EUR, perte au stop ~{loss:.0f} EUR (= 1R ; moins si un turbo de levier plus "
+                     f"bas existe)" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
     print(f"Swing, verification avant la cloture ({n_open} position(s) ouverte(s), {exits} sortie(s) du jour, "
           f"{max(free, 0)} place(s) libre(s)) ; cloture US aujourd'hui a {us_close_paris(today)} (heure de Paris) :")
     print("\n".join(lines) if lines else "  rien a faire")

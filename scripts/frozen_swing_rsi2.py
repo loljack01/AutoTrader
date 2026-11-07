@@ -54,6 +54,12 @@ although the model skipped them, and prices far below the model's (a turbo
 price instead of the index level: the journal must hold the INDEX level at
 the time of the order, otherwise the slippage check is wrong).
 
+Amended on 2026-11-07 (still before any live trade), user's choice: every
+order is 500 EUR in the call turbo with the lowest leverage available
+(about 2.8 at Boursomarkets), so 1R in euros = 500 x 2.8 x stop distance,
+about 45 EUR (0.45 % of 10 000 EUR) instead of 25 EUR. Rule, book, brake
+(-10R) and execution check unchanged; no phase-2 increase on top of it.
+
 Usage: python scripts/frozen_swing_rsi2.py [tool-results JSON files of the
 10 cash indices, 1D, any format] (merged into data/cache first)
 """
@@ -72,7 +78,7 @@ from test_swing_rsi2 import COSTS, INDICES, MAX_DAYS, exit_trade, load, net, run
 
 FREEZE = pd.Timestamp("2026-11-05", tz="UTC")
 REF_END, REF = "2026-10-01", (1317, 96.49)
-CAP, CAPITAL, PHASE1_PCT, PHASE1_TRADES, BRAKE, MAX_SLIP = 5, 10000.0, 0.0025, 30, -10.0, -0.03
+CAP, CAPITAL, PHASE1_PCT, PHASE1_TRADES, BRAKE, MAX_SLIP = 5, 10000.0, 0.0045, 30, -10.0, -0.03
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
