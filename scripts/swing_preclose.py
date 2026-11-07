@@ -26,6 +26,12 @@ false and 5 missed entries out of 41), the trade rule is unchanged:
   - the US close time of the day in Paris is printed (21h00 during the
     weeks when the US and Europe are not on the same summer time).
 
+Order size (user reminder of 07/11/2026: every order is 500 EUR minimum):
+order = max(500 EUR, exposure / 1.6) at leverage exposure / order. When the
+exposure for 25 EUR of risk is below 500 EUR (2.5 % of the signals since
+2012, wide stops), the order stays at 500 EUR with the lowest leverage (~1):
+the real risk is then up to ~34 EUR (median ~27 EUR).
+
 Usage: python scripts/swing_preclose.py SYMBOL=PRICE [SYMBOL=PRICE ...]
   e.g. EURONEXT:PX1=8205.4 XETR:DAX=26325
 """
@@ -42,6 +48,7 @@ import pandas as pd
 from test_swing_rsi2 import INDICES, MAX_DAYS, STOP_ATR, load
 
 RISK_EUR, CAP, NEAR = 25.0, 5, 0.003
+MIN_ORDER, MAX_LEV = 500.0, 1.6  # user's minimum order (0 EUR fees) and turbo leverage cap
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
@@ -135,9 +142,13 @@ def main():
         risk = STOP_ATR * atr
         expo = RISK_EUR * p / risk
         take = k < free
+        order = max(MIN_ORDER, expo / MAX_LEV)
+        size = (f"ordre {order:.0f} EUR au levier {expo / order:.1f}" if expo >= MIN_ORDER else
+                f"ordre {MIN_ORDER:.0f} EUR minimum au levier le plus bas (~1) : exposition {MIN_ORDER:.0f} EUR, risque reel "
+                f"~{RISK_EUR * MIN_ORDER / expo:.0f} EUR au lieu de {RISK_EUR:.0f}")
         lines.append(f"  {name}: ENTREE {'a prendre' if take else 'ignoree (5 positions)'} avant la cloture, RSI(2) {r:.1f}, "
-                     f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}), exposition {expo:.0f} EUR, levier pour 500 EUR "
-                     f"{expo / 500:.1f}" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
+                     f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}), exposition {expo:.0f} EUR pour {RISK_EUR:.0f} EUR "
+                     f"de risque -> {size}" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
     print(f"Swing, verification avant la cloture ({n_open} position(s) ouverte(s), {exits} sortie(s) du jour, "
           f"{max(free, 0)} place(s) libre(s)) ; cloture US aujourd'hui a {us_close_paris(today)} (heure de Paris) :")
     print("\n".join(lines) if lines else "  rien a faire")

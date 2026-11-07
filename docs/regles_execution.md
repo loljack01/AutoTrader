@@ -89,3 +89,12 @@
     Paris : Europe et États-Unis pas encore ou plus à la même heure d'été), le contrôle swing
     US se fait à 20h42 (routine dédiée) ; `swing_preclose.py` affiche l'heure de clôture US.
     Audit complet : `docs/audit_complet_2026-11-06.md`.
+14. **Ordre minimum de 500 € pour CHAQUE trade (rappel de l'utilisateur, 07/11/2026)** :
+    - swing : ordre = max(500 €, exposition / 1,6), au levier exposition / ordre ; dans
+      97,5 % des signaux depuis 2012 cela respecte 25 € de risque et un levier ≤ 1,6 ;
+    - quand l'exposition pour 25 € de risque est inférieure à 500 € (2,5 % des signaux,
+      stops larges, surtout Nasdaq et FTSE MIB), l'ordre reste à 500 € au levier le plus bas
+      disponible (~1) : le risque réel monte alors jusqu'à ~34 € (médiane ~27 €), accepté
+      pour garder 100 % des signaux ; `swing_preclose.py` l'affiche ;
+    - principale (si un jour en réel à 8-10 €) : ordre de 500 € minimum, levier =
+      exposition / 500 (≈ 6 pour un stop CAC de 26 points à 10 €).
