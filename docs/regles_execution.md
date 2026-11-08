@@ -130,3 +130,7 @@
     `ecart`) et compte dans le contrôle d'exécution à 30 trades. Le swing ne prend que des calls :
     les puts (règle miroir, RSI(2) > 90 sous la SMA200) ont été REJETÉS le 05/11 (425 trades,
     −11,7R à 0,05 %, 3 indices positifs sur 10 ; `scripts/test_swing_rsi2.py`), sans nouvel essai.
+18. **Test 5 lancé le 08/11/2026 (moratoire levé pour ce seul test, à la demande explicite de
+    l'utilisateur)** : seuil RSI(2) < 15 du swing, règle et critère figés avant (commit `Freeze test 5`) :
+    **non adopté** (gain 117 % de la référence pour 120 % exigés, t = 2,06 pour 2,33). Le swing reste à
+    RSI(2) < 10 ; le moratoire sur les autres idées reste en vigueur jusqu'au verdict du test 4.

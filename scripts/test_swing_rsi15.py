@@ -1,7 +1,7 @@
 """TEST 5 of docs/test_5_rsi15_fige_2026-11-08.md (frozen on 2026-11-08 BEFORE
 running, at the user's request, Sunday decision): more swing signals through a
-looser entry threshold. NOT RUN before the verdict of test 4 (moratorium of
-06/11, rule 12 of docs/regles_execution.md).
+looser entry threshold. Run on 2026-11-08 at the user's explicit request ("Fais le test"), which lifted
+the moratorium of 06/11 (rule 12 of docs/regles_execution.md) for this test only.
 
 Rule (the ONLY change to the reference swing): RSI(2) < 15 instead of
 RSI(2) < 10 for the entry. Everything else identical: close > SMA200, entry at
@@ -30,7 +30,11 @@ Otherwise NOT ADOPTED, no re-tuning (no other threshold is tried). The reserved
 period is run once, only after the development verdict.
 Multiple-testing budget: 5 tests (tests 1-5 of 2026).
 
-Result: not run yet.
+Result (run on 2026-11-08, development 2012-2021): NON ADOPTE. Reference threshold 10:
+757 trades, +5.62R/year, worst drawdown -31.3R, worst 3 months -13.0R; threshold 15:
+1032 trades, +6.56R/year (117 % of the reference, 120 % required), worst drawdown
+-36.9R (118 %, OK), worst 3 months -13.2R; 507 added trades, +34.7R (+0.068R/trade),
+weekly t = +2.06 (2.33 required). Conditions (a) and (d) fail. Reserved period not run.
 
 Usage: python scripts/test_swing_rsi15.py dev|reserved
 """
