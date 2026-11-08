@@ -60,8 +60,10 @@ MIN_ORDER, LEV_TURBO = 500.0, 2.8  # user's choice of 07/11: 500 EUR per order, 
 # (Boursomarkets tab, captures of 08/11/2026; on US indices Goldman Sachs displays index in USD / turbo
 # price in EUR, i.e. too high by the EUR/USD rate): Russell SG 1 440.56 -> 2.09, S&P GS ~4 588 -> 2.65,
 # Dow GS 35 121 -> 3.17, DAX GS 14 724 -> 2.33, Euro Stoxx 50 GS 4 449 -> 3.58,
-# Nasdaq 100 GS 19 641.59 -> 3.67; others: LEV_TURBO
-LEV_BY_INDEX = {"Russell 2000": 2.09, "S&P 500": 2.65, "Dow Jones": 3.17, "DAX": 2.33, "Euro Stoxx 50": 3.58, "Nasdaq 100": 3.67}
+# Nasdaq 100 GS 19 641.59 -> 3.67, FTSE 100 GS 7 626.69 GBP -> 3.50 (GS displays 2.93: GBP index / EUR
+# price), FTSE MIB SG 36 958.91 -> 3.82, SMI SG 7 798.17 CHF -> 2.11; CAC 40 Boursomarkets 5 250 -> 2.79
+LEV_BY_INDEX = {"Russell 2000": 2.09, "S&P 500": 2.65, "Dow Jones": 3.17, "DAX": 2.33, "Euro Stoxx 50": 3.58, "Nasdaq 100": 3.67,
+                "FTSE 100": 3.50, "FTSE MIB": 3.82, "SMI": 2.11, "CAC 40": 2.79}
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"

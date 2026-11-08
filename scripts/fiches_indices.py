@@ -23,6 +23,7 @@ import pandas as pd
 
 import swing_portfolio as sp
 import test_swing_rsi2 as sw
+from swing_preclose import LEV_BY_INDEX, LEV_TURBO
 
 RISK_EUR, MIN_ORDER, MAX_LEV = 25.0, 500.0, 2.85
 
@@ -42,14 +43,15 @@ def main():
                      "tendance": "au-dessus SMA200" if c > s200 else "SOUS SMA200 (pas de call)",
                      "atr14": round(atr, 1), "stop_pts": round(stop, 1), "stop_pct": f"{stop / c:.1%}",
                      "expo_pour_25eur": round(expo),
-                     "perte_stop_500eur_lev2_8": round(500 * 2.8 * stop / c),
+                     "levier_turbo": LEV_BY_INDEX.get(name, LEV_TURBO),
+                     "perte_stop_500eur": round(500 * LEV_BY_INDEX.get(name, LEV_TURBO) * stop / c),
                      "trades_par_an": round(len(b) / years, 1),
                      "r_par_trade": round(b.r.mean(), 3) if len(b) else np.nan})
     t = pd.DataFrame(rows)
     pd.set_option("display.width", 250)
     print(t.to_string(index=False))
     print(f"\nCarnet de reference : {len(book)} trades sur {years:.1f} ans ; choix du 07/11 : ordre de 500 EUR en turbo "
-          f"call au levier le plus bas (~2,8) -> perte au stop = 500 x 2,8 x stop %.")
+          f"call au levier reel le plus bas trouve (08/11) -> perte au stop = 500 x levier x stop %.")
 
 
 if __name__ == "__main__":
