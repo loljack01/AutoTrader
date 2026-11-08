@@ -32,7 +32,8 @@ Si un turbo de levier plus bas que 2,8 existe sur un indice, le préférer.
 | CAC 40 | oui (Boursomarkets, prix d'exercice 5 250, levier 2,79, échéance 19/03/2027) | ISIN à noter |
 | Nasdaq 100 | oui | à compléter |
 | Dow Jones | oui | à compléter |
-| les 7 autres | non vérifié | signal noté « non exécutable » tant qu'aucun produit n'est trouvé |
+| Russell 2000 | oui : Turbos Illimités Best Call Société Générale, onglet Boursomarkets (capture du 08/11 : 22 produits ; parité 100 ; non quanto, prix converti au cours EUR/USD ≈ 1,13 ; indice ≈ 2 763) | levier ≈ 2,8 = prix d'exercice ≈ 1 780 USD (prix d'exercice = cours × (1 − 1/levier)) ; ISIN et cotation jusqu'à 22h à noter |
+| les 6 autres | non vérifié | signal noté « non exécutable » tant qu'aucun produit n'est trouvé |
 
 Historique 2012-2026 avec 500 € au levier 2,8, calcul descriptif (5 positions au plus, seulement les
 indices exécutables) : 10 indices ≈ +220 €/an (depuis 2018 : +80 €/an) ; CAC + Nasdaq + Dow
