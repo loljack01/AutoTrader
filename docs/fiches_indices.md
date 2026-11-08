@@ -31,6 +31,9 @@ trop bas sur le FTSE 100.
 
 ## Produits disponibles (déclaration de l'utilisateur, 08/11/2026)
 
+Cotation jusqu'à 22h confirmée par l'utilisateur le 08/11 pour les turbos retenus : les signaux
+américains de 21h50 sont exécutables. Reste à noter l'ISIN de chaque turbo au journal le jour de l'achat.
+
 | Indice | Turbo call accessible | Détails à noter (ISIN, levier, parité, quanto, cotation jusqu'à 22h) |
 |---|---|---|
 | CAC 40 | oui (Boursomarkets, prix d'exercice 5 250, levier 2,79, échéance 19/03/2027) | ISIN à noter |
