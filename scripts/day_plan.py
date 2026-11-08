@@ -228,7 +228,7 @@ def main():
                   f"{x.entry_time.tz_convert(TZ):%d/%m %H:%M} entree {x.entry:.1f} stop {x.stop:.1f} cible {x.take:.1f} -> {res}")
     if cac:
         swing_positions()
-        print("\nRappels : seul le SWING est joue en argent (25 EUR par trade) ; la principale (15m) est suivie sans argent "
+        print("\nRappels : seul le SWING est joue en argent (ordre de 500 EUR en turbo call, levier reel de chaque indice dans docs/fiches_indices.md) ; la principale (15m) est suivie sans argent "
               "(regle sequentielle + condition D) ; aucun ordre sur capture ni hors alerte ; rien dans les 15 min autour "
               "d'une annonce.")
     elif nq:
