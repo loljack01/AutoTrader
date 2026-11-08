@@ -56,6 +56,8 @@ from test_swing_rsi2 import INDICES, MAX_DAYS, STOP_ATR, load
 
 RISK_EUR, CAP, NEAR = 25.0, 5, 0.003
 MIN_ORDER, LEV_TURBO = 500.0, 2.8  # user's choice of 07/11: 500 EUR per order, lowest-leverage turbo (~2.8 at Boursomarkets)
+# lowest leverage found by the user per index (Boursomarkets tab, captures of 08/11/2026); others: LEV_TURBO
+LEV_BY_INDEX = {"Russell 2000": 2.09, "S&P 500": 2.9}
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
@@ -149,11 +151,12 @@ def main():
         risk = STOP_ATR * atr
         expo = RISK_EUR * p / risk
         take = k < free
-        loss = MIN_ORDER * LEV_TURBO * risk / p
+        lev = LEV_BY_INDEX.get(name, LEV_TURBO)
+        loss = MIN_ORDER * lev * risk / p
         lines.append(f"  {name}: ENTREE {'a prendre' if take else 'ignoree (5 positions)'} avant la cloture, RSI(2) {r:.1f}, "
                      f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}) -> ordre {MIN_ORDER:.0f} EUR en turbo call au levier "
-                     f"le plus bas disponible (~{LEV_TURBO:.1f}, barriere ~{1 / LEV_TURBO:.0%} sous le cours) : exposition "
-                     f"~{MIN_ORDER * LEV_TURBO:.0f} EUR, perte au stop ~{loss:.0f} EUR (= 1R ; moins si un turbo de levier plus "
+                     f"le plus bas disponible (~{lev:.1f}, barriere ~{1 / lev:.0%} sous le cours) : exposition "
+                     f"~{MIN_ORDER * lev:.0f} EUR, perte au stop ~{loss:.0f} EUR (= 1R ; moins si un turbo de levier plus "
                      f"bas existe)" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
     print(f"Swing, verification avant la cloture ({n_open} position(s) ouverte(s), {exits} sortie(s) du jour, "
           f"{max(free, 0)} place(s) libre(s)) ; cloture US aujourd'hui a {us_close_paris(today)} (heure de Paris) :")
