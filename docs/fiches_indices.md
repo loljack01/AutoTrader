@@ -31,10 +31,12 @@ Si un turbo de levier plus bas que 2,8 existe sur un indice, le préférer.
 |---|---|---|
 | CAC 40 | oui (Boursomarkets, prix d'exercice 5 250, levier 2,79, échéance 19/03/2027) | ISIN à noter |
 | Nasdaq 100 | oui | à compléter |
-| Dow Jones | oui | à compléter |
+| Dow Jones | oui : levier le plus bas trouvé ≈ 3,2 : Turbo Illimité/Infini Call Goldman Sachs, **prix d'exercice 35 121,37 USD** (145,08 / 145,09 € le 08/11 ; levier affiché 3,50, levier réel 51 291 / (51 291 − 35 121) ≈ 3,17 ; barrière au-dessus du prix d'exercice, ≈ 29 % sous l'indice d'après le levier affiché) ; Société Générale 36 773,94 USD, levier 3,51 ; non quanto ; filtrer « Call » (la liste mélange calls et puts) | ISIN et cotation jusqu'à 22h à noter |
 | Russell 2000 | oui : Turbo Illimité Best Call Société Générale, onglet Boursomarkets, **prix d'exercice 1 440,56 USD, levier 2,09** (11,81 / 11,82 € le 08/11 ; barrière = prix d'exercice, ≈ 48 % sous l'indice à 2 754) ; parité 100 ; non quanto | ISIN et cotation jusqu'à 22h à noter |
-| S&P 500 | oui : Turbos Illimités/Infinis Call Goldman Sachs, onglet Boursomarkets, prix d'exercice 4 563 à 4 603 USD, levier affiché 2,90 à 2,94 (≈ 25 € ; non Best : barrière au-dessus du prix d'exercice, à lire sur la fiche) ; non quanto | ISIN, barrière et cotation jusqu'à 22h à noter |
+| S&P 500 | oui : Turbos Illimités/Infinis Call Goldman Sachs, onglet Boursomarkets, prix d'exercice 4 563 à 4 603 USD (≈ 25 €), levier affiché 2,90 à 2,94, **levier réel ≈ 2,65** (7 377 / (7 377 − 4 588), vérifié sur le prix du turbo) ; barrière au-dessus du prix d'exercice, ≈ 34 % sous l'indice ; non quanto | ISIN et cotation jusqu'à 22h à noter |
 | les 5 autres | non vérifié | signal noté « non exécutable » tant qu'aucun produit n'est trouvé |
+
+Levier réel = indice / (indice − prix d'exercice) ; c'est lui qui fixe la perte au stop (500 € × levier réel × distance du stop). Goldman Sachs affiche un levier plus élevé (mesuré jusqu'à la barrière, semble-t-il) : se fier au levier réel.
 
 Historique 2012-2026 avec 500 € au levier 2,8, calcul descriptif (5 positions au plus, seulement les
 indices exécutables) : 10 indices ≈ +220 €/an (depuis 2018 : +80 €/an) ; CAC + Nasdaq + Dow

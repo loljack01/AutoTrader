@@ -56,8 +56,10 @@ from test_swing_rsi2 import INDICES, MAX_DAYS, STOP_ATR, load
 
 RISK_EUR, CAP, NEAR = 25.0, 5, 0.003
 MIN_ORDER, LEV_TURBO = 500.0, 2.8  # user's choice of 07/11: 500 EUR per order, lowest-leverage turbo (~2.8 at Boursomarkets)
-# lowest leverage found by the user per index (Boursomarkets tab, captures of 08/11/2026); others: LEV_TURBO
-LEV_BY_INDEX = {"Russell 2000": 2.09, "S&P 500": 2.9}
+# lowest REAL leverage (index / (index - strike), checked on the turbo price) found by the user per index
+# (Boursomarkets tab, captures of 08/11/2026; Goldman Sachs displays a higher figure, measured to the
+# barrier): Russell SG 1 440.56 -> 2.09, S&P GS ~4 588 -> 2.65, Dow GS 35 121 -> 3.17; others: LEV_TURBO
+LEV_BY_INDEX = {"Russell 2000": 2.09, "S&P 500": 2.65, "Dow Jones": 3.17}
 ROOT = Path(__file__).resolve().parent.parent
 TRADES = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
