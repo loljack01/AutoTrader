@@ -121,3 +121,12 @@
     si le résultat réel cumulé de toutes les stratégies en argent depuis le premier trade atteint
     −500 €, tout s'arrête et on fait une révision avant de reprendre (`risk_guard.py`, sans fenêtre de
     3 mois). Les autres freins (swing −10R, arrêt du jour −3R, anti-revanche) restent en place.
+17. **Signal « A CONFIRMER » du contrôle avant clôture (accord de l'utilisateur, dimanche 08/11/2026)** :
+    le contrôle est suivi tel qu'il s'affiche, même quand il dit « A CONFIRMER » (cours à moins de
+    0,3 % d'un seuil, environ une ligne sur deux au rejeu du 07/11). Le lendemain, on s'aligne sur le
+    bilan de 22h15 : entrée faite mais que le modèle n'a pas prise → revente à l'ouverture suivante ;
+    sortie manquée (le modèle est sorti à la clôture) → vente à l'ouverture suivante ; sortie faite
+    alors que le modèle garde la position → pas de rachat. Chaque écart est noté au journal (colonne
+    `ecart`) et compte dans le contrôle d'exécution à 30 trades. Le swing ne prend que des calls :
+    les puts (règle miroir, RSI(2) > 90 sous la SMA200) ont été REJETÉS le 05/11 (425 trades,
+    −11,7R à 0,05 %, 3 indices positifs sur 10 ; `scripts/test_swing_rsi2.py`), sans nouvel essai.
