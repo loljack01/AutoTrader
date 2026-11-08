@@ -30,7 +30,13 @@ AFTER seeing the development result of test 5 (threshold 15: 117 % of the
 reference R per year, t = 2.06), so it is not independent of it: hence the
 stricter conditions (c) and (d) than for test 5.
 
-Result: not run yet.
+Result (run on 2026-11-08, development 2012-2021): NON ADOPTE. Reference threshold 10:
+757 trades, +5.62R/year (+56.1R), worst drawdown -31.3R, worst 3 months -13.0R;
+threshold 20: 1251 trades, +6.56R/year (+65.6R, 117 % of the reference, 120 %
+required), worst drawdown -38.5R (123 %, OK), worst 3 months -14.4R; 863 added
+trades, +44.3R (+0.051R/trade), weekly t = +1.83 (2.39 required). Conditions (a)
+and (d) fail. Reserved period not run. Total R is the same as at threshold 15
+(+65.4R): the extra trades displace others in the 5-position book.
 
 Usage: python scripts/test_swing_rsi20.py dev|reserved
 """

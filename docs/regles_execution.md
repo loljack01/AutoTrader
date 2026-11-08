@@ -134,3 +134,7 @@
     l'utilisateur)** : seuil RSI(2) < 15 du swing, règle et critère figés avant (commit `Freeze test 5`) :
     **non adopté** (gain 117 % de la référence pour 120 % exigés, t = 2,06 pour 2,33). Le swing reste à
     RSI(2) < 10 ; le moratoire sur les autres idées reste en vigueur jusqu'au verdict du test 4.
+19. **Test 6 lancé le 08/11/2026 (sur le feu vert explicite de l'utilisateur)** : seuil RSI(2) < 20 du
+    swing, règle et critère figés avant (commit `Freeze test 6`) : **non adopté** (117 % du gain de
+    référence pour 120 % exigés, t = 1,83 pour 2,39). Le swing reste à RSI(2) < 10, sans nouvel essai de
+    seuil. Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.

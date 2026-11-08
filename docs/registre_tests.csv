@@ -48,4 +48,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 47,e5c4103,condition D exécutable turbo (règle de passage),1,1,en cours (suivi depuis le 06/11),58,3.14
 48,frozen_p2,test 4 P2 rejet PDH/PDL (suivi en avant dès le 09/11),1,1,en cours,59,3.14
 49,frozen_rsi15,"test 5 swing : seuil RSI(2) < 15 (plus de signaux), fige non lance (moratoire)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 2,06 pour 2,33)",60,3.14
-50,frozen_rsi20,"test 6 swing : seuil RSI(2) < 20, fige non lance, propose apres le resultat du test 5 (non independant)",1,1,"fige, en attente du feu vert",61,3.15
+50,frozen_rsi20,"test 6 swing : seuil RSI(2) < 20, fige non lance, propose apres le resultat du test 5 (non independant)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 1,83 pour 2,39)",61,3.15
