@@ -42,6 +42,7 @@ SWING = ROOT / "data" / "backtests" / "frozen_swing_rsi2_trades.csv"
 JOURNAL = ROOT / "data" / "journal_swing.csv"
 OUTSIDE = ROOT / "data" / "journal_hors_systeme.csv"
 DAILY_STOP, PAUSE = -3.0, -15.0
+MAIN_EUR_PER_R = 10.0  # hypothetical size of the main strategy if it ever trades (8-10 EUR per trade): euro display only
 CAPITAL, RISK_EUR, GLOBAL_STOP_EUR = 10000.0, 45.0, -500.0  # 1R ~45 EUR since 07/11 (500 EUR orders); -500 EUR = total real loss (user, 07/11)
 
 
@@ -76,10 +77,12 @@ def main_strategy(now):
     dd = eq - np.maximum.accumulate(np.r_[0.0, eq])[1:]
     day = t.groupby("day", sort=False).net_r.sum()
     bad = day[day <= DAILY_STOP]
-    print(f"Garde-fous (principale, sans argent, suivi depuis le 28/10) : cumul {eq[-1] if len(eq) else 0:+.2f}R, "
-          f"ecart au plus haut {dd[-1] if len(dd) else 0:+.2f}R (pause a {PAUSE:+.0f}R), pire ecart {dd.min() if len(dd) else 0:+.2f}R")
-    print(f"  journees a {DAILY_STOP:+.0f}R ou pire (arret du jour) : "
-          f"{', '.join(f'{d[:5]} {v:+.1f}R' for d, v in bad.items()) if len(bad) else 'aucune'}")
+    e = MAIN_EUR_PER_R
+    cum, gap, worst = (eq[-1] if len(eq) else 0), (dd[-1] if len(dd) else 0), (dd.min() if len(dd) else 0)
+    print(f"Garde-fous (principale, sans argent, suivi depuis le 28/10) : cumul {cum:+.2f}R ({cum * e:+.0f} EUR a {e:.0f} EUR par R, hypothetique), "
+          f"ecart au plus haut {gap:+.2f}R ({gap * e:+.0f} EUR) (pause a {PAUSE:+.0f}R = {PAUSE * e:+.0f} EUR), pire ecart {worst:+.2f}R ({worst * e:+.0f} EUR)")
+    print(f"  journees a {DAILY_STOP:+.0f}R ({DAILY_STOP * e:+.0f} EUR) ou pire (arret du jour) : "
+          f"{', '.join(f'{d[:5]} {v:+.1f}R ({v * e:+.0f} EUR)' for d, v in bad.items()) if len(bad) else 'aucune'}")
     if len(dd) and dd[-1] <= PAUSE:
         print("  PAUSE : ecart de -15R atteint, pas d'argent avant revision")
 
