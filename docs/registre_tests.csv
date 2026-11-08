@@ -47,3 +47,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 46,b808b85,tests 1-3 du 06/11,3,3,non adoptés,57,3.13
 47,e5c4103,condition D exécutable turbo (règle de passage),1,1,en cours (suivi depuis le 06/11),58,3.14
 48,frozen_p2,test 4 P2 rejet PDH/PDL (suivi en avant dès le 09/11),1,1,en cours,59,3.14
+49,frozen_rsi15,"test 5 swing : seuil RSI(2) < 15 (plus de signaux), fige non lance (moratoire)",1,1,"fige, en attente du verdict du test 4",60,3.14
