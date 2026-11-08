@@ -25,6 +25,20 @@ Quand le stop est large (Nasdaq aujourd'hui), la perte au stop dépasse nettemen
 pour cet indice le turbo au levier le plus bas possible (un levier de 2 la ramènerait à ≈ 58 €).
 Si un turbo de levier plus bas que 2,8 existe sur un indice, le préférer.
 
+## Produits disponibles (déclaration de l'utilisateur, 08/11/2026)
+
+| Indice | Turbo call accessible | Détails à noter (ISIN, levier, parité, quanto, cotation jusqu'à 22h) |
+|---|---|---|
+| CAC 40 | oui (Boursomarkets, prix d'exercice 5 250, levier 2,79, échéance 19/03/2027) | ISIN à noter |
+| Nasdaq 100 | oui | à compléter |
+| Dow Jones | oui | à compléter |
+| les 7 autres | non vérifié | signal noté « non exécutable » tant qu'aucun produit n'est trouvé |
+
+Historique 2012-2026 avec 500 € au levier 2,8, calcul descriptif (5 positions au plus, seulement les
+indices exécutables) : 10 indices ≈ +220 €/an (depuis 2018 : +80 €/an) ; CAC + Nasdaq + Dow
+≈ +111 €/an (depuis 2018 : +74 €/an), 30 trades/an, pire baisse −498 € ; CAC seul ≈ +18 €/an
+(depuis 2018 : −11 €/an).
+
 ## Ce qu'il faut chercher chez Boursorama (une fois, avant le premier signal)
 
 Pour chaque indice : un **turbo infini call** (« Turbo Infini », « Open End », « BEST »…)
