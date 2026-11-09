@@ -91,7 +91,7 @@ Regle fixee avant: REJETEE
 | 6. t ≥ 2,45 | **+0,35** | échoue |
 
 - Le gain moyen est de +0,009R par trade, c'est-à-dire zéro : les gains à 1 point sont plus petits que les
-  frais à 3 points (−13,5R). Le résultat est même **inférieur au hasard** (médiane du hasard −9,6R, mais son 95e
-  centile à +11,9R) : il ne se distingue pas du tirage aléatoire.
+  frais à 3 points (−13,5R). Le résultat (+4,0R) est au-dessus de la médiane du hasard (−9,6R) mais **sous son 95e centile (+11,9R)** : il ne se
+  distingue pas d'un tirage aléatoire.
 - Les marchés américains perdent (S&P 500 −6,2R, Nasdaq −3,7R, Russell −3,9R, Dow −2,3R), les européens gagnent un peu.
 - Aucun autre test d'écart d'ouverture ne sera essayé, quel que soit le résultat (règle du document).
