@@ -1,7 +1,7 @@
 """TEST 7 of docs/test_7_petit_ecart_tendance_fige_2026-11-09.md (frozen on
 2026-11-09 BEFORE running, at the user's request: "Oui, fige le test").
-NOT RUN: the moratorium of 06/11 (rule 12 of docs/regles_execution.md) is only
-lifted for a test by the user's explicit order to run it.
+Run on 2026-11-09 at the user's explicit order, which lifted the moratorium of
+06/11 (rule 12 of docs/regles_execution.md) for this test only.
 
 Origin and honesty: idea born from the CAC morning of 2026-11-09 (open below
 the previous close, then +80 points, no signal of the main strategy nor of the
@@ -44,7 +44,11 @@ history only starts between 2026-05 and 2026-08 depending on the market, so
 the test is short; condition (a) guards against a tiny sample.
 Multiple-testing budget: 7 tests (tests 1-7 of 2026).
 
-Result: not run yet.
+Result (run on 2026-11-09 at the user's order "Lance le test 7"): REJETE. 425 trades
+on the 10 markets, 49 % winners, net +4.0R at 1pt (+0.009R/trade, t = +0.35),
+-13.5R at 3pt; halves -5.7R / +9.7R; 6 of 10 markets positive at 1pt; random
+baseline median -9.6R, 95th percentile +11.9R. Conditions (b) 3pt, (c) halves,
+(e) baseline and (f) t fail.
 
 Usage: python scripts/test_small_gap_trend.py
 """

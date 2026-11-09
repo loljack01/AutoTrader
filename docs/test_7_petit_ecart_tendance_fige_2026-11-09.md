@@ -58,3 +58,40 @@ rejeté, sans réglage supplémentaire.
 
 Script : `scripts/test_small_gap_trend.py` (docstring identique à cette règle). Résultat dans un commit
 séparé de celui-ci, avec la sortie brute.
+
+## Résultat (09/11/2026)
+
+**REJETÉ** : quatre conditions sur six échouent. Sortie brute du script :
+
+```
+CAC 40         1pt-eq: n= 61 gagnants= 41% net=  +1.8R | 3pt-eq: n= 61 gagnants= 41% net=  -0.5R
+DAX            1pt-eq: n= 46 gagnants= 65% net=  +4.8R | 3pt-eq: n= 46 gagnants= 57% net=  +2.9R
+Euro Stoxx 50  1pt-eq: n= 47 gagnants= 47% net=  +1.6R | 3pt-eq: n= 47 gagnants= 45% net=  -0.4R
+S&P 500        1pt-eq: n= 26 gagnants= 27% net=  -6.2R | 3pt-eq: n= 26 gagnants= 27% net=  -7.5R
+Nasdaq 100     1pt-eq: n= 25 gagnants= 48% net=  -3.7R | 3pt-eq: n= 25 gagnants= 44% net=  -4.4R
+FTSE 100       1pt-eq: n= 47 gagnants= 64% net=  +5.7R | 3pt-eq: n= 47 gagnants= 64% net=  +3.5R
+SMI            1pt-eq: n= 65 gagnants= 55% net=  +2.3R | 3pt-eq: n= 65 gagnants= 54% net=  -0.5R
+Dow Jones      1pt-eq: n= 34 gagnants= 47% net=  -2.3R | 3pt-eq: n= 34 gagnants= 47% net=  -3.9R
+Russell 2000   1pt-eq: n= 28 gagnants= 36% net=  -3.9R | 3pt-eq: n= 28 gagnants= 32% net=  -4.9R
+FTSE MIB       1pt-eq: n= 46 gagnants= 43% net=  +3.9R | 3pt-eq: n= 46 gagnants= 43% net=  +2.1R
+
+10 marches ensemble: 1pt-eq n=425 gagnants=49% net=+4.0R moy=+0.009R t=+0.35 | 3pt-eq net=-13.5R
+  moities -5.7/+9.7R | marches positifs 6/10 | hasard: mediane -9.6R, 95e centile +11.9R
+
+Regle fixee avant: REJETEE
+```
+
+| Condition | Résultat | Verdict |
+|---|---|---|
+| 1. au moins 150 trades | 425 | OK |
+| 2. net > 0 à 1 pt ET 3 pts | +4,0R à 1 pt, **−13,5R à 3 pts** | échoue |
+| 3. deux moitiés > 0 | **−5,7R** / +9,7R | échoue |
+| 4. au moins 6 marchés sur 10 positifs | 6 sur 10 | OK |
+| 5. au-dessus du 95e centile du hasard | +4,0R pour **+11,9R** | échoue |
+| 6. t ≥ 2,45 | **+0,35** | échoue |
+
+- Le gain moyen est de +0,009R par trade, c'est-à-dire zéro : les gains à 1 point sont plus petits que les
+  frais à 3 points (−13,5R). Le résultat est même **inférieur au hasard** (médiane du hasard −9,6R, mais son 95e
+  centile à +11,9R) : il ne se distingue pas du tirage aléatoire.
+- Les marchés américains perdent (S&P 500 −6,2R, Nasdaq −3,7R, Russell −3,9R, Dow −2,3R), les européens gagnent un peu.
+- Aucun autre test d'écart d'ouverture ne sera essayé, quel que soit le résultat (règle du document).

@@ -138,3 +138,8 @@
     swing, règle et critère figés avant (commit `Freeze test 6`) : **non adopté** (117 % du gain de
     référence pour 120 % exigés, t = 1,83 pour 2,39). Le swing reste à RSI(2) < 10, sans nouvel essai de
     seuil. Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.
+20. **Test 7 lancé le 09/11/2026 (sur l'ordre explicite de l'utilisateur, moratoire levé pour ce seul test)** :
+    petit écart d'ouverture (moins de 0,25 ATR) joué dans le sens de la tendance, règle et critère figés avant
+    (commit `Freeze test 7`) : **rejeté** (425 trades, +4,0R à 1 pt, −13,5R à 3 pts, t = 0,35, sous le 95e centile
+    du hasard). Aucun autre test d'écart d'ouverture. Le moratoire reste en vigueur pour toute autre idée jusqu'au
+    verdict du test 4.

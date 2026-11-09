@@ -49,4 +49,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 48,frozen_p2,test 4 P2 rejet PDH/PDL (suivi en avant dès le 09/11),1,1,en cours,59,3.14
 49,frozen_rsi15,"test 5 swing : seuil RSI(2) < 15 (plus de signaux), fige non lance (moratoire)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 2,06 pour 2,33)",60,3.14
 50,frozen_rsi20,"test 6 swing : seuil RSI(2) < 20, fige non lance, propose apres le resultat du test 5 (non independant)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 1,83 pour 2,39)",61,3.15
-51,frozen_small_gap,"test 7 : petit ecart d'ouverture dans le sens de la tendance (post-hoc), fige non lance",1,1,"fige, en attente de l'ordre de lancement",62,3.15
+51,frozen_small_gap,"test 7 : petit ecart d'ouverture dans le sens de la tendance (post-hoc), fige non lance",1,1,"rejete (425 trades: +4,0R a 1pt, -13,5R a 3pt, t 0,35, sous le 95e centile du hasard)",62,3.15
