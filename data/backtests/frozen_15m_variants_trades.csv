@@ -1,14 +1,25 @@
 variante,marche,sens,entree_paris,entree,stop,cible,resultat,net_r
 principale,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,open,
-principale,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,open,
+principale,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,stop,-1.016
 principale,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,open,
+principale,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
+principale,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 A sortie le jour meme,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,eod,0.056
-A sortie le jour meme,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,eod,0.125
-A sortie le jour meme,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,eod,-0.514
+A sortie le jour meme,DAX,put,09/11 07:30,25874.0,25949.92,25748.0,stop,-1.043
+A sortie le jour meme,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,eod,0.146
+A sortie le jour meme,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,eod,-0.538
+A sortie le jour meme,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
+A sortie le jour meme,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 B entrees 8h-22h,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,open,
-B entrees 8h-22h,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,open,
+B entrees 8h-22h,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,stop,-1.016
 B entrees 8h-22h,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,open,
-C puts seulement,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,open,
+B entrees 8h-22h,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
+B entrees 8h-22h,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
+C puts seulement,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,stop,-1.016
+C puts seulement,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
+C puts seulement,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 D executable turbo,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,eod,0.082
 D executable turbo,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,eod,0.186
 D executable turbo,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,eod,-0.585
+D executable turbo,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
+D executable turbo,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
