@@ -1,0 +1,120 @@
+         entree         marche  sens resultat  net_r  objectif_r  stop_atr  stop_pct  duree_h    mfe   mae tendance  executable       sortie  a_l_ouverture  objectif_apres  pire_24h                                               cause
+0   28/10 09:15         CAC 40  call     take   1.65        1.68      2.00      0.33    11.75   1.82  0.68     avec        True  28/10 21:00          False           False       NaN                                                    
+1   28/10 11:00   Russell 2000   put     stop  -1.05        4.00      2.84      0.28     2.25   0.05  1.00   contre        True  28/10 13:15          False           False      4.79                                  faux des le depart
+2   28/10 11:00  Euro Stoxx 50   put     stop  -1.03        3.46      2.00      0.39     2.50   0.04  1.00     avec        True  28/10 13:30          False           False      3.33                                  faux des le depart
+3   28/10 18:30   Russell 2000   put     stop  -1.05        1.44      2.00      0.26     1.00   1.42  1.00   contre        True  28/10 19:30          False            True      6.59  parti dans le bon sens (>= 1R) puis retour au stop
+4   28/10 19:30      Dow Jones   put     stop  -1.04        1.47      2.39      0.34     1.50   1.01  1.00   contre        True  28/10 21:00          False            True      2.50  parti dans le bon sens (>= 1R) puis retour au stop
+5   28/10 21:00   Russell 2000  call     stop  -1.01        2.52      2.86      1.00    42.00   1.29  1.00     avec        True  30/10 17:00          False           False      1.68  parti dans le bon sens (>= 1R) puis retour au stop
+6   29/10 01:15        S&P 500  call     stop  -1.03        4.51      2.00      0.36    13.25   0.47  1.00     avec       False  29/10 14:30          False           False      4.74                 petit gain latent puis retournement
+7   29/10 04:15   Russell 2000   put     stop  -1.04        3.07      2.76      0.35     1.75   0.07  1.00   contre       False  29/10 06:00          False            True      3.28                                  faux des le depart
+8   29/10 05:30            DAX  call     stop  -1.06        6.15      3.59      0.22     3.25   1.12  1.00     avec       False  29/10 08:45          False            True      1.14  parti dans le bon sens (>= 1R) puis retour au stop
+9   29/10 09:15      Dow Jones   put     stop  -1.05        2.57      2.00      0.24     2.25   0.96  1.00   contre        True  29/10 11:30          False            True      1.17                 petit gain latent puis retournement
+10  29/10 10:30       FTSE MIB  call     stop  -1.02        1.75      2.00      0.55    12.50   1.38  1.00     avec        True  30/10 09:00           True            True      2.17  parti dans le bon sens (>= 1R) puis retour au stop
+11  29/10 18:30   Russell 2000   put     take   3.95        3.98      2.00      0.41    21.00   4.03  0.80   contre        True  30/10 16:30          False           False       NaN                                                    
+12  29/10 18:45       FTSE MIB   put     take   1.97        2.00      2.84      0.43     4.25   2.82  0.61   contre        True  30/10 09:00           True           False       NaN                                                    
+13  29/10 21:00  Euro Stoxx 50   put     take   3.96        3.98      4.16      0.57    67.00   4.01  0.17     avec        True  04/11 04:00          False           False       NaN                                                    
+14  29/10 21:30            DAX   put     take   2.06        2.10      3.15      0.35    10.25   2.11  0.44   contre       False  30/10 11:15          False           False       NaN                                                    
+15  30/10 02:00      Dow Jones   put     stop  -1.04        2.14      3.84      0.33     7.75   0.49  1.00   contre       False  30/10 09:45          False            True      1.40                 petit gain latent puis retournement
+16  30/10 11:45       FTSE 100   put     take   1.67        1.71      2.00      0.33     7.25   1.88  0.20   contre        True  30/10 19:00          False           False       NaN                                                    
+17  30/10 14:45       FTSE 100  call     stop  -1.04        4.11      2.23      0.34     3.00   0.00  1.00     avec        True  30/10 17:45          False           False      1.80                                  faux des le depart
+18  30/10 20:45      Dow Jones  call     stop  -1.04        7.74      2.00      0.32    36.50   4.01  1.00     avec        True  03/11 12:15          False            True      2.91  parti dans le bon sens (>= 1R) puis retour au stop
+19  02/11 07:00   Russell 2000   put     stop  -1.06        7.61      3.93      0.22     3.50   0.88  1.00   contre       False  02/11 10:30          False           False      3.52                 petit gain latent puis retournement
+20  02/11 10:15   Russell 2000  call     stop  -1.04        2.41      2.89      0.33     5.25   0.78  1.00     avec        True  02/11 15:30           True            True      3.80                 petit gain latent puis retournement
+21  02/11 10:15       FTSE 100  call     stop  -1.04        4.73      2.38      0.32     4.00   0.43  1.00     avec        True  02/11 14:15          False            True      3.83                 petit gain latent puis retournement
+22  02/11 13:00            SMI  call     take   2.01        2.06      2.00      0.24     3.25   2.11  0.28     avec        True  02/11 16:15          False           False       NaN                                                    
+23  02/11 18:15   Russell 2000   put     stop  -1.02        3.58      2.00      0.53    38.25   3.17  1.00   contre        True  04/11 10:30          False            True      3.01  parti dans le bon sens (>= 1R) puis retour au stop
+24  02/11 18:30   Russell 2000  call     stop  -1.02        1.74      2.00      0.55     2.00   0.47  1.00     avec        True  02/11 20:30          False            True      1.99                 petit gain latent puis retournement
+25  03/11 09:15   Russell 2000  call     take   2.79        2.85      2.00      0.23     5.00   2.86  0.83     avec        True  03/11 14:15          False           False       NaN                                                    
+26  03/11 10:00            DAX  call     take   2.35        2.38      2.00      0.37     4.50   2.51  0.41     avec        True  03/11 14:30          False           False       NaN                                                    
+27  03/11 12:45         CAC 40   put     stop  -1.05        6.79      2.00      0.27     1.00   0.35  1.00   contre        True  03/11 13:45          False           False     12.11                 petit gain latent puis retournement
+28  03/11 17:00         CAC 40   put     stop  -1.01        1.77      4.42      1.08     8.00   0.26  1.00   contre        True  04/11 11:00          False           False      2.93                 petit gain latent puis retournement
+29  03/11 17:30            DAX   put     stop  -1.01        2.42      3.45      0.82    13.50   1.47  1.00   contre        True  04/11 10:00          False           False      3.84  parti dans le bon sens (>= 1R) puis retour au stop
+30  03/11 18:00       FTSE MIB   put     stop  -1.01        1.34      3.95      0.93     5.00   0.23  1.00   contre        True  04/11 09:00           True           False      3.27                                  faux des le depart
+31  04/11 07:15   Russell 2000  call     take   2.54        2.56      2.98      0.50     4.00   2.72  0.02     avec       False  04/11 11:15          False           False       NaN                                                    
+32  04/11 08:00         CAC 40  call     take   6.06        6.10      3.25      0.30     6.50   6.79  0.35     avec        True  04/11 14:30          False           False       NaN                                                    
+33  04/11 13:00   Russell 2000   put     stop  -1.03        6.75      2.00      0.36     1.00   0.15  1.00   contre        True  04/11 14:00          False            True      2.73                                  faux des le depart
+34  04/11 16:15   Russell 2000   put     stop  -1.01        1.72      3.16      1.17    18.50   0.23  1.00   contre        True  05/11 11:45          False            True      1.22                                  faux des le depart
+35  04/11 21:45        S&P 500   put     take   8.00        8.04      2.85      0.37    18.00  10.43  0.59     avec       False  05/11 16:45          False           False       NaN                                                    
+36  05/11 07:45   Russell 2000  call     stop  -1.04        5.09      3.74      0.30     7.75   1.97  1.00     avec       False  05/11 15:30           True           False     18.18  parti dans le bon sens (>= 1R) puis retour au stop
+37  05/11 09:15            SMI   put     open    NaN       13.27      2.15      0.29    40.50  10.88  0.36   contre        True          NaN          False           False       NaN                                                    
+38  05/11 09:45       FTSE 100   put     open    NaN        9.52      2.40      0.40    52.00   9.30  0.50   contre        True          NaN          False           False       NaN                                                    
+39  05/11 12:00         CAC 40   put     stop  -1.03        1.70      2.00      0.43     2.75   0.41  1.00   contre        True  05/11 14:45          False            True      1.07                 petit gain latent puis retournement
+40  05/11 12:00       FTSE MIB  call     stop  -1.03        2.68      2.47      0.51     3.50   0.54  1.00     avec        True  05/11 15:30           True           False      6.46                 petit gain latent puis retournement
+41  05/11 14:00   Russell 2000   put     take   2.73        2.77      2.37      0.33     1.50   2.99  0.56   contre        True  05/11 15:30           True           False       NaN                                                    
+42  05/11 15:45            DAX   put     open    NaN        4.58      4.30      0.91    48.00   3.48  0.25   contre        True          NaN          False           False       NaN                                                    
+43  05/11 16:45         CAC 40   put     take   2.48        2.49      4.43      0.94    11.75   2.68  0.57   contre        True  06/11 14:30          False           False       NaN                                                    
+44  06/11 14:15  Euro Stoxx 50   put     stop  -1.02        1.74      3.53      0.80    16.00   0.59  1.00   contre        True  09/11 09:15           True           False      4.01                 petit gain latent puis retournement
+45  06/11 15:45         CAC 40  call     open    NaN        2.37      5.48      1.43    20.00   1.70  0.03     avec        True          NaN          False           False       NaN                                                    
+46  06/11 16:00  Euro Stoxx 50  call     open    NaN        5.05      2.63      0.69    27.00   4.34  0.68     avec        True          NaN          False           False       NaN                                                    
+47  09/11 08:15   Russell 2000   put     stop  -1.04        5.06      3.05      0.35     1.00   0.57  1.00     avec        True  09/11 09:15           True           False      8.71                 petit gain latent puis retournement
+48  09/11 09:30        S&P 500   put     stop  -1.04        1.67      2.00      0.35     2.75   0.61  1.00     avec        True  09/11 12:15          False           False      6.56                 petit gain latent puis retournement
+
+49 trades : 14 OK, 30 KO, 5 ouverts | net +13.20R, plafonne 5R +9.14R
+Concentration : les 2 meilleurs +14.06R, les 4 meilleurs +21.97R, les 40 autres -8.77R
+Gain moyen d'un OK +3.16R (objectif moyen 3.2R) ; objectif moyen des KO 3.5R (median 2.6R) ; seuil d'equilibre 24%, reel 32%
+
+Causes des KO :
+cause
+petit gain latent puis retournement                   14
+parti dans le bon sens (>= 1R) puis retour au stop     9
+faux des le depart                                     7
+
+KO stoppes sur une bougie d'ouverture (9h00, 9h15, 15h30, 15h45) : 7/30
+KO dont l'objectif est atteint dans les 48 h apres le stop : 15/30
+KO ou le prix va au moins 1R plus loin contre le trade dans les 24 h (signal vraiment faux) : 22/30
+Stop minimal (<= 2,05 ATR 15m) : KO 12/30, OK 6/14 ; stop median KO 0.35 %, OK 0.36 %
+MFE des KO : median 0.56R ; >= 1R : 9 ; >= 2R : 2
+MAE des OK (pire latent avant le gain) : median 0.50R ; >= 0,5R : 7/14
+
+Par sens :
+       n  OK  net_R  plafonne_5R
+sens                            
+call  17   6   6.01         4.95
+put   27   8   7.19         4.19
+
+Par tendance :
+           n  OK  net_R  plafonne_5R
+tendance                            
+avec      22   8  14.86        10.80
+contre    22   6  -1.66        -1.66
+
+Par executable :
+             n  OK  net_R  plafonne_5R
+executable                            
+False        9   3   6.33         3.33
+True        35  11   6.87         5.81
+
+Par tranche :
+          n  OK  net_R  plafonne_5R
+tranche                            
+0-7h      7   1  -3.73        -3.73
+8-11h    13   5   6.21         5.15
+12-15h    8   2  -1.45        -1.45
+16-19h   11   3   0.21         0.21
+20-23h    5   3  11.97         8.97
+
+Par marche :
+                n  OK  net_R  plafonne_5R
+marche                                   
+CAC 40          6   3   7.10         6.04
+DAX             4   2   2.34         2.34
+Dow Jones       4   0  -4.17        -4.17
+Euro Stoxx 50   3   1   1.91         1.91
+FTSE 100        3   1  -0.40        -0.40
+FTSE MIB        4   1  -1.10        -1.10
+Russell 2000   16   4  -0.42        -0.42
+S&P 500         3   1   5.93         2.93
+SMI             1   1   2.01         2.01
+
+Par jour :
+       n  OK  net_R  plafonne_5R
+jour                            
+02/11  6   1  -3.18        -3.18
+03/11  6   2   1.05         1.05
+04/11  5   3  14.56        10.49
+05/11  5   2   2.11         2.11
+06/11  1   0  -1.02        -1.02
+09/11  2   0  -2.08        -2.08
+28/10  6   1  -3.53        -3.53
+29/10  9   4   6.74         6.74
+30/10  4   1  -1.44        -1.44
