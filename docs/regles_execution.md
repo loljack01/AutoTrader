@@ -143,3 +143,9 @@
     (commit `Freeze test 7`) : **rejeté** (425 trades, +4,0R à 1 pt, −13,5R à 3 pts, t = 0,35, sous le 95e centile
     du hasard). Aucun autre test d'écart d'ouverture. Le moratoire reste en vigueur pour toute autre idée jusqu'au
     verdict du test 4.
+21. **Audit trade par trade de la principale (10/11/2026)** : `docs/audit_trades_principale_2026-11-10.md`
+    (49 trades : 14 OK, 30 KO, 5 ouverts ; +13,2R dont +22,0R sur 4 trades). Recommandation appliquée à la
+    demande de l'utilisateur : **aucune règle modifiée** ; la seule piste jamais testée (stop suiveur structurel)
+    est figée comme test 8 (`docs/test_8_stop_suiveur_fige_2026-11-10.md`), **non lancée**, à lancer un
+    dimanche sur ordre explicite. Les autres pistes sont déjà rejetées (sorties du 26/10, filtres de
+    direction, entrée sur repli) ou déjà en suivi (variantes A, B, D, filtre delta).

@@ -50,3 +50,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 49,frozen_rsi15,"test 5 swing : seuil RSI(2) < 15 (plus de signaux), fige non lance (moratoire)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 2,06 pour 2,33)",60,3.14
 50,frozen_rsi20,"test 6 swing : seuil RSI(2) < 20, fige non lance, propose apres le resultat du test 5 (non independant)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 1,83 pour 2,39)",61,3.15
 51,frozen_small_gap,"test 7 : petit ecart d'ouverture dans le sens de la tendance (post-hoc), fige non lance",1,1,"rejete (425 trades: +4,0R a 1pt, -13,5R a 3pt, t 0,35, sous le 95e centile du hasard)",62,3.15
+52,frozen_trailing,"test 8 : stop suiveur structurel sur la principale (post-hoc, juge sur l'historique avant le 28/10), fige non lance",1,1,"fige, lancement un dimanche sur ordre",63,3.16
