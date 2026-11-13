@@ -155,3 +155,9 @@
     uniquement** (trades entrés dès le 13/11 11h00), aucun résultat passé calculé ; verdict à 100 trades clos de
     la référence. **La principale n'est pas modifiée.** Le moratoire reste en vigueur pour toute autre idée
     jusqu'au verdict du test 4.
+23. **Test 10 figé et lancé le 13/11/2026 (sur l'ordre explicite de l'utilisateur, moratoire levé pour ce seul
+    test)** : les durées du test 9 refaites sur bougies de 5 et de 30 minutes (10 combinaisons face à la
+    principale 15 minutes / 4 h), `docs/test_10_fenetre_unites_fige_2026-11-13.md`,
+    `scripts/frozen_window_units.py`. **Suivi en avant uniquement** (trades entrés dès le 13/11 14h00), aucun
+    résultat passé calculé ; verdict à 100 trades clos de la référence, seuil t ≥ 2,84. **La principale n'est
+    pas modifiée.** Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.
