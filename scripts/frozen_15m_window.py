@@ -81,7 +81,8 @@ def main():
     done = len(ref) >= VERDICT_TRADES
     cutoff = ref.exit_time.iloc[VERDICT_TRADES - 1] if done else None
     upto = lambda t: closed(t)[closed(t).exit_time <= cutoff] if done else closed(t)
-    day = lambda t: t.groupby(t.entry_time.dt.tz_convert("Europe/Paris").dt.date).net_r.sum()
+    day = lambda t: t.net_r.astype(float).groupby(
+        pd.to_datetime(t.entry_time, utc=True).dt.tz_convert("Europe/Paris").dt.date).sum()
 
     print(f"Test 9 - duree de la fenetre balayage -> CHoCH, suivi en avant depuis le {paris(FORWARD_START)} (Paris)")
     rows, stats = [], {}
