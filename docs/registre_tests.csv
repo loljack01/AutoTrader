@@ -51,3 +51,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 50,frozen_rsi20,"test 6 swing : seuil RSI(2) < 20, fige non lance, propose apres le resultat du test 5 (non independant)",1,1,"non adopte (dev: 117 % du R/an pour 120 % exiges, t 1,83 pour 2,39)",61,3.15
 51,frozen_small_gap,"test 7 : petit ecart d'ouverture dans le sens de la tendance (post-hoc), fige non lance",1,1,"rejete (425 trades: +4,0R a 1pt, -13,5R a 3pt, t 0,35, sous le 95e centile du hasard)",62,3.15
 52,frozen_trailing,"test 8 : stop suiveur structurel sur la principale (post-hoc, juge sur l'historique avant le 28/10), fige non lance",1,1,"fige, lancement un dimanche sur ordre",63,3.16
+53,frozen_15m_window,"test 9 : duree de la fenetre balayage -> CHoCH de la principale (1h, 2h, 6h, 8h face a 4h), suivi en avant des le 13/11 11h, sur ordre de l'utilisateur",4,4,en cours,67,3.18

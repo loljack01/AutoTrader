@@ -149,3 +149,9 @@
     est figée comme test 8 (`docs/test_8_stop_suiveur_fige_2026-11-10.md`), **non lancée**, à lancer un
     dimanche sur ordre explicite. Les autres pistes sont déjà rejetées (sorties du 26/10, filtres de
     direction, entrée sur repli) ou déjà en suivi (variantes A, B, D, filtre delta).
+22. **Test 9 figé et lancé le 13/11/2026 (sur l'ordre explicite de l'utilisateur, moratoire levé pour ce seul
+    test)** : durée de la fenêtre balayage → retournement de la principale (1 h, 2 h, 6 h, 8 h face aux 4 h de
+    référence), `docs/test_9_fenetre_fige_2026-11-13.md`, `scripts/frozen_15m_window.py`. **Suivi en avant
+    uniquement** (trades entrés dès le 13/11 11h00), aucun résultat passé calculé ; verdict à 100 trades clos de
+    la référence. **La principale n'est pas modifiée.** Le moratoire reste en vigueur pour toute autre idée
+    jusqu'au verdict du test 4.
