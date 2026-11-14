@@ -246,6 +246,45 @@ de calls de plus dans la version actuelle. Le filtre a été retenu le 27/10 par
 filtre ne gagnaient rien sur cinq mois. Les deux semaines depuis vont dans l'autre sens, mais elles ne
 suffisent pas à l'annuler (t entre 1,0 et 2,0, seuil du registre 3,22).
 
+## 7. Suite : le filtre de tendance aussi sur les puts
+
+Demande de l'utilisateur : « La même chose pour les puts ». Les six versions ont été recalculées avec le
+filtre appliqué aux deux sens : calls seulement si la clôture de la veille est au-dessus de sa moyenne
+20 jours, puts seulement dans le cas contraire (mesure fixée et poussée avant le calcul, commit `Freeze:
+trend filter on puts too`). Reproduire : `python3 -W ignore audit/2026-11-14/alternance.py --filtre-puts`
+(sortie brute : `out_alternance_filtre_puts.txt`). Contrôle : 40 configurations sur 40 identiques au
+moteur lancé avec ce filtre.
+
+Avec ce filtre, la base ne garde que 134 puts sur 261 : tous les puts pris au-dessus de la moyenne
+disparaissent.
+
+**Version actuelle (sans alternance), frais de 1 point :**
+
+| Filtre | Avant le 28/10 | Depuis le 28/10 |
+|---|---|---|
+| Sur les calls seulement (actuel) | 299 trades, +97,90R | 66 trades, +7,43R |
+| Sur les calls et les puts | 208 trades, +32,08R | 34 trades, +14,34R |
+
+**Alternance stricte avec retournement (A+R) :**
+
+| Version, frais | Avant le 28/10, filtre calls | Avant le 28/10, filtre calls et puts | Depuis le 28/10, filtre calls | Depuis le 28/10, filtre calls et puts |
+|---|---|---|---|---|
+| Principale, 1 pt | 138 trades, +53,52R | 53 trades, +10,70R | 49 trades, +16,36R | 11 trades, +6,41R |
+| Principale, 3 pts | 119 trades, +41,19R | 53 trades, +0,49R | 45 trades, +17,17R | 11 trades, +5,70R |
+| Turbo (D), 3 pts | 94 trades, +12,46R | 46 trades, −13,18R | 40 trades, +13,21R | 9 trades, −1,52R |
+
+Constats :
+
+- **Filtrer les puts retire l'essentiel du résultat historique** : la version actuelle perd les deux tiers
+  de son gain d'avant le 28/10 (+32,1R contre +97,9R). Les puts pris au-dessus de la moyenne 20 jours,
+  c'est-à-dire contre une tendance haussière, étaient ceux qui rapportaient.
+- **Avec l'alternance, la stratégie ne trade presque plus** : 53 trades en cinq mois, 11 depuis le 28/10.
+  Le filtre n'autorise qu'un sens à la fois sur un indice, alors que l'alternance exige de changer de
+  sens : il faut attendre que la tendance journalière bascule.
+- **La forme turbo est négative sur les deux périodes à 3 points** (−13,2R puis −1,5R).
+- Depuis le 28/10, la version actuelle fait mieux avec le double filtre (+14,3R contre +7,4R), sur
+  34 trades : même remarque que pour la section 6, deux semaines et demie ne pèsent pas face à cinq mois.
+
 ## Conclusion
 
 | Piste | Verdict de l'audit |
@@ -256,6 +295,7 @@ suffisent pas à l'annuler (t entre 1,0 et 2,0, seuil du registre 3,22).
 | Alternance du jour, retournement seul | ne ressortent pas |
 | **Alternance stricte avec retournement (A+R)** | **ressort sur les huit découpages, avec moins de trades et un creux réduit de moitié ; non prouvée (t ≤ 2,27)** |
 | A+R sans le filtre des calls | meilleure depuis le 28/10 seulement ; nettement moins bonne sur les cinq mois d'avant ; ne ressort pas |
+| A+R avec le filtre aussi sur les puts | ne ressort pas : presque plus de trades, résultat historique effondré, forme turbo négative |
 
 Empiler des ordres du même sens ne règle rien : cela multiplie le même pari. La règle d'alternance de
 l'utilisateur, dans sa version stricte, est en revanche la première variante de la principale qui ne se
