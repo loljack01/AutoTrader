@@ -176,3 +176,7 @@
     `scripts/frozen_15m_alternance.py`. **Suivi en avant uniquement** (trades entrés dès le dimanche 15/11 à
     23h00), verdict à 100 trades clos par version, frein à −15R. **La principale n'est pas modifiée** et rien
     ne passe en argent réel. Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.
+27. **Test 11 amendé le 14/11/2026, avant le départ du suivi (demande de l'utilisateur : « La même chose pour
+    les puts »)** : version E3 ajoutée (alternance avec le filtre de tendance sur les calls ET sur les puts :
+    puts seulement sous la moyenne 20 jours), même verdict ; E1 reste la version par défaut. Aucun trade en
+    avant n'existait au moment de l'amendement.

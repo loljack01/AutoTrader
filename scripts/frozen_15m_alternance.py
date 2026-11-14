@@ -35,6 +35,17 @@ Emergency brake: a version whose capped cumulative R (1pt) is <= -15R at any tim
 A kept version does not go to real money: it would start its own sequential test (05/11 rule)
 from zero. The main strategy is NOT changed.
 
+Amended on 2026-11-14 at the user's request ("La meme chose pour les puts"), BEFORE the start
+of the tracking (no forward trade exists), stricter choice rule only:
+  E3  A+R with the trend filter on BOTH sides: calls only if the previous daily close is above
+      its 20-day SMA, puts only otherwise (the "both" definition of scripts/ma_grid_test.py),
+      also in its turbo-executable form ("E3 turbo").
+E3 has the same verdict (100 closed forward trades, the three conditions, the brake). Choice
+among the versions that pass, replacing the E1 / E2 sentence above: E1 is the default; E2 or E3
+is preferred to E1 only if, at its own cut-off, it is above E1 on BOTH the capped net R (1pt)
+and the net R at 3pt; if E1 does not pass, or if both E2 and E3 are preferred to E1, the one
+with the highest capped net R (1pt) at its own cut-off.
+
 Check at each run: the simulator (audit/2026-11-14) without alternation must give the engine's
 trades for the main strategy at 1pt on the 10 markets.
 
@@ -63,10 +74,12 @@ from ordres_multiples import D_KW, prepare, set_engine
 FORWARD_START = pd.Timestamp("2026-11-15 22:00", tz="UTC")  # Sunday 23:00 Paris
 VERDICT_TRADES = 100
 BRAKE = -15.0
-# name: (alternate, reverse, calls filter, turbo-executable form)
-VERSIONS = {"principale": (None, False, True, False), "E1 avec filtre": ("strict", True, True, False),
-            "E1 turbo": ("strict", True, True, True), "E2 sans filtre": ("strict", True, False, False),
-            "E2 turbo": ("strict", True, False, True)}
+# name: (alternate, reverse, filter: "calls" = calls above the SMA20 / "none" / "both" = puts below it too, turbo form)
+VERSIONS = {"principale": (None, False, "calls", False), "E1 avec filtre": ("strict", True, "calls", False),
+            "E1 turbo": ("strict", True, "calls", True), "E2 sans filtre": ("strict", True, "none", False),
+            "E2 turbo": ("strict", True, "none", True), "E3 double filtre": ("strict", True, "both", False),
+            "E3 turbo": ("strict", True, "both", True)}
+FULL = {"E1": "E1 avec filtre", "E2": "E2 sans filtre", "E3": "E3 double filtre"}
 OUT = ROOT / "data" / "backtests" / "frozen_15m_alternance_trades.csv"
 
 
@@ -79,7 +92,8 @@ def job(symbol):
     out = {}
     for name, (alt, rev, filt, turbo) in VERSIONS.items():
         for cost in (1.0, 3.0):
-            t = simulate_joint(P, up if filt else None, k, cost, alt, rev, **(D_KW if turbo else {}))
+            t = simulate_joint(P, None if filt == "none" else up, k, cost, alt, rev,
+                               mask_put=~up if filt == "both" else None, **(D_KW if turbo else {}))
             if name == "principale" and cost == 1.0:
                 set_engine(k, cost)
                 ref = pd.concat([bt.backtest(d, True, False, direction="buy", entry_mask=up).assign(side=1),
@@ -121,7 +135,7 @@ def main():
         t1 = fw[name, 1.0]
         cum = capped(closed(t1)).cumsum()
         brake = f" | FREIN atteint ({cum.min():+.1f}R) : version abandonnee" if len(cum) and cum.min() <= BRAKE and name != "principale" else ""
-        print(f"  {name:15s} : {n} trades clos, net {net:+.2f}R, 3pt {net3:+.2f}R, plafond 5R {cap:+.2f}R, "
+        print(f"  {name:16s} : {n} trades clos, net {net:+.2f}R, 3pt {net3:+.2f}R, plafond 5R {cap:+.2f}R, "
               f"{int((t1.result == 'open').sum())} ouverts{brake}")
         for x in t1.sort_values("entry_time").itertuples():
             end = "OUVERT" if x.result == "open" else f"{x.result} {paris(x.exit_time)} {x.net_r:+.2f}R"
@@ -137,8 +151,7 @@ def main():
                                 "sortie_paris", "net_r"]).to_csv(OUT, index=False)
 
     passed = {}
-    for v in ("E1", "E2"):
-        name = next(k for k in VERSIONS if k.startswith(v) and "turbo" not in k)
+    for v, name in FULL.items():
         c = closed(fw[name, 1.0])
         if len(c) < VERDICT_TRADES:
             print(f"{name} : verdict a {VERDICT_TRADES} trades clos (encore {VERDICT_TRADES - len(c)})")
@@ -152,19 +165,20 @@ def main():
         passed[v] = (good, cutoff)
         print(f"VERDICT {name} (coupure {paris(cutoff)}) : plafond 5R {cap:+.2f}R contre {cap_ref:+.2f}R pour la principale, "
               f"3pt {net3:+.2f}R, forme turbo a 3pt {turbo3:+.2f}R -> {'PASSE' if good else 'ne passe pas'}")
-    if len(passed) == 2:
-        if passed["E1"][0] and passed["E2"][0]:
-            cut = passed["E2"][1]
-            _, _, e1_3, e1_cap = line("E1 avec filtre", cut)
-            _, _, e2_3, e2_cap = line("E2 sans filtre", cut)
-            print("  -> nouvelle candidate : " + ("E2 sans filtre" if e2_cap > e1_cap and e2_3 > e1_3 else "E1 avec filtre")
-                  + " (la principale n'est pas modifiee ; test sequentiel a zero avant tout argent reel)")
-        elif passed["E1"][0] or passed["E2"][0]:
-            print("  -> nouvelle candidate : " + ("E1 avec filtre" if passed["E1"][0] else "E2 sans filtre")
-                  + " (la principale n'est pas modifiee ; test sequentiel a zero avant tout argent reel)")
-        else:
-            print("  -> aucune version ne passe ; l'alternance est abandonnee")
+    if len(passed) == len(FULL):
+        ok = [v for v in FULL if passed[v][0]]
+        own = {v: line(FULL[v], passed[v][1]) for v in ok}  # each at its own cut-off
 
+        def beats_e1(v):
+            if "E1" not in ok:
+                return True
+            _, _, e1_3, e1_cap = line(FULL["E1"], passed[v][1])
+            return own[v][3] > e1_cap and own[v][2] > e1_3
+
+        better = [v for v in ok if v != "E1" and beats_e1(v)]
+        winner = max(better, key=lambda v: own[v][3]) if better else ("E1" if "E1" in ok else None)
+        print(f"  -> nouvelle candidate : {FULL[winner]} (la principale n'est pas modifiee ; test sequentiel a zero avant "
+              "tout argent reel)" if winner else "  -> aucune version ne passe ; l'alternance est abandonnee")
 
 if __name__ == "__main__":
     main()

@@ -32,7 +32,14 @@ toujours autorises), sur la principale et sur D, memes frais, memes periodes. 12
 plus, inscrites au registre comme AUDIT (information). Le controle compare alors au moteur
 lance sans filtre.
 
-Usage : python3 -W ignore audit/2026-11-14/alternance.py [--controle] [--sans-filtre]
+Second ajout du 14/11 (demande de l'utilisateur : "La meme chose pour les puts"), fixe AVANT
+son calcul : avec --filtre-puts, les memes six versions sont mesurees avec le filtre de
+tendance applique AUSSI aux puts (calls seulement si la cloture de la veille est au-dessus de
+sa moyenne 20 jours, puts seulement sinon : la definition "both" de scripts/ma_grid_test.py),
+sur la principale et sur D, memes frais, memes periodes. 12 hypotheses de plus, inscrites au
+registre comme AUDIT (information). Le controle compare alors au moteur lance avec ce filtre.
+
+Usage : python3 -W ignore audit/2026-11-14/alternance.py [--controle] [--sans-filtre | --filtre-puts]
 """
 
 import sys
@@ -46,13 +53,16 @@ import pandas as pd
 from ordres_multiples import D_KW, MARKETS, START, bt, load, net_rr, prepare, set_engine, stats, trend_up
 
 NO_FILTER = "--sans-filtre" in sys.argv
-OUT = Path(__file__).resolve().parent / ("alternance_sans_filtre_trades.csv" if NO_FILTER else "alternance_trades.csv")
+PUT_FILTER = "--filtre-puts" in sys.argv
+OUT = Path(__file__).resolve().parent / ("alternance_sans_filtre_trades.csv" if NO_FILTER else
+                                         "alternance_filtre_puts_trades.csv" if PUT_FILTER else "alternance_trades.csv")
 COLS = ["side", "entry_i", "entry_time", "sweep_time", "entry", "stop", "take", "exit_i", "exit_time", "result", "net_r"]
 VARIANTS = {"base": (None, False), "A alternance stricte": ("strict", False), "Aj alternance du jour": ("day", False),
             "R retournement": (None, True), "A+R": ("strict", True), "Aj+R": ("day", True)}
 
 
-def simulate_joint(P, mask, k, cost, alternate=None, reverse=False, entry_hours=None, session_exit=None):
+def simulate_joint(P, mask, k, cost, alternate=None, reverse=False, entry_hours=None, session_exit=None,
+                   mask_put=None):
     """Calls and puts of one market in a single loop, with the alternation / reversal rules."""
     rt, margin = cost * k, 8.0 * k
     A = P[1]
@@ -106,6 +116,8 @@ def simulate_joint(P, mask, k, cost, alternate=None, reverse=False, entry_hours=
                 continue
             if s == 1 and mask is not None and not mask[i]:
                 continue
+            if s == -1 and mask_put is not None and not mask_put[i]:
+                continue
             c = float(C[i])
             risk = max((c - (sx - s * margin)) * s, 2.0 * atr[i] if not np.isnan(atr[i]) else 0.0)
             stop = c - s * risk
@@ -146,10 +158,11 @@ def controle(data):
         for cost in (1.0, 3.0):
             for kw in ({}, D_KW):
                 set_engine(k, cost)
+                down = ~up if PUT_FILTER else None
                 ref = pd.concat([bt.backtest(d, True, False, direction="buy", entry_mask=up, **kw).assign(side=1),
-                                 bt.backtest(d, True, False, direction="sell", **kw).assign(side=-1)])
+                                 bt.backtest(d, True, False, direction="sell", entry_mask=down, **kw).assign(side=-1)])
                 ref = ref.sort_values(["entry_time", "side"]).reset_index(drop=True)
-                got = simulate_joint(P, up, k, cost, **kw)
+                got = simulate_joint(P, up, k, cost, mask_put=down, **kw)
                 same = (len(ref) == len(got) and (ref.side.to_numpy() == got.side.to_numpy()).all()
                         and (ref.result.to_numpy() == got.result.to_numpy()).all()
                         and all((when(ref, c) == when(got, c)).all() for c in ("entry_time", "exit_time"))
@@ -176,7 +189,8 @@ def main():
         for cost in (1.0, 3.0):
             for cfg, kw in (("principale", {}), ("D", D_KW)):
                 for name, (alt, rev) in VARIANTS.items():
-                    t = simulate_joint(P, up, k, cost, alt, rev, **kw).assign(marche=MARKETS[s][0])
+                    t = simulate_joint(P, up, k, cost, alt, rev, mask_put=~up if PUT_FILTER else None,
+                                       **kw).assign(marche=MARKETS[s][0])
                     runs.setdefault((cfg, name, cost), []).append(t)
     runs = {key: pd.concat(v, ignore_index=True) for key, v in runs.items()}
     periods = (("avant le 28/10 (historique, information)", lambda t: t[t.entry_time < START]),
@@ -185,6 +199,8 @@ def main():
     base = runs["principale", "base", 1.0]
     if NO_FILTER:
         print("\n#### SANS le filtre de tendance des calls (calls et puts toujours autorises) ####")
+    if PUT_FILTER:
+        print("\n#### Filtre de tendance AUSSI sur les puts (calls au-dessus de la moyenne 20 jours, puts en dessous) ####")
     print("\n== 1. Etat des lieux (base, frais 1 pt) ==")
     b = base.sort_values(["marche", "entry_time"])
     prev = b.groupby("marche").side.shift()

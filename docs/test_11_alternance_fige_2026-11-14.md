@@ -51,6 +51,20 @@ E2 ; sinon E1.
 Une version retenue **ne passe pas en argent réel** : elle commencerait son propre test séquentiel (règle
 du 05/11) à zéro. La principale n'est pas modifiée.
 
+## Amendement du 14/11/2026, avant le départ du suivi : version E3
+
+Demande de l'utilisateur (« La même chose pour les puts »), le jour du gel, alors qu'aucun trade en avant
+n'existe encore (départ le dimanche 15/11 à 23h00).
+
+- **E3** : alternance avec le filtre de tendance **sur les deux sens** : calls seulement si la clôture de
+  la veille est au-dessus de sa moyenne 20 jours, puts seulement dans le cas contraire. Suivie aussi dans
+  sa forme exécutable en turbo.
+- Même verdict que E1 et E2 : 100 trades clos, les trois conditions, le frein à −15R.
+- **Choix entre les versions qui passent** (remplace la phrase E1 contre E2 ci-dessus) : E1 est la version
+  par défaut ; E2 ou E3 ne lui est préférée que si, à sa propre coupure, elle est au-dessus de E1 **à la
+  fois** sur le résultat plafonné (1 pt) et sur le résultat à 3 pts. Si E1 ne passe pas, ou si E2 et E3
+  sont toutes deux préférées à E1, c'est celle au résultat plafonné le plus élevé à sa propre coupure.
+
 ## Limites annoncées
 
 - L'alternance prend environ 40 à 65 trades en deux semaines et demie : le verdict demandera cinq à six
