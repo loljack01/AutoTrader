@@ -1,0 +1,247 @@
+5a2c075 260907 17:26 feat(rl): add Gymnasium-compatible trading environment
+d7853fb 260908 20:11 feat(strategy): add premium/discount zone trading strategy
+738a9cf 260908 21:10 fix(strategy): correct OTE zone placement, add sweep-resistant stop, gate re-entries
+0ddc39a 260908 21:18 fix(strategy): guard against NaN ATR stops and duplicate entries
+71fac18 260909 09:28 feat(strategy): add BOS/CHoCH market structure filter
+66e30ba 260909 15:47 feat(strategy): add liquidity sweep as an alternative entry trigger
+db50c62 260909 15:55 feat(strategy): add higher-timeframe structure veto (use_htf_filter)
+8c23bd1 260912 04:13 fix(strategy): correct htf_resample default and harden resample_ohlc
+88eb088 260912 04:19 refactor(strategy): expert consolidation pass - pick defaults, add session filter
+0f4dceb 260919 13:55 feat(ib): implement get_candles via reqHistoricalData
+1d53c37 260924 06:07 docs(strategy): reverse structure-over-EMA default based on real backtest
+71fdc57 260924 07:12 Anchor premium/discount range on a resampled higher timeframe
+92d0b97 260924 07:33 Demote zone_resample default after real-data backtest evidence
+dddba35 260924 08:18 Seed a growable 1-minute CAC40 backtest dataset
+1df89d3 260924 15:55 Add /data module: cumulative OHLCV cache + contract-roll detection
+c2937b6 260924 16:02 Add /levels module: structure, liquidity, FVG, order blocks, premium/discount
+ac364db 260924 16:09 Add /setups module: entry conditions, stops, targets, invalidation, session filters
+254d3a9 260924 16:12 Cache FCE1! 4h and 15m OHLCV used for the /levels+/setups validation
+dda76c2 260924 17:01 Extend cached FCE1! 1h history to ~16.5 months
+bd23f9b 260925 05:05 Accumulate 1-minute CAC40 data (+432 bars)
+4c7c0a3 260926 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+a724c42 260928 06:03 Cache FDAX1! (DAX futures) 4h and 15m OHLCV
+91d163e 260928 10:09 Accumulate FCE1! 1-minute data (+180 bars, gap-filled to Sep 28)
+f7ac956 260928 11:44 Accumulate FCE1! 1m/4h data from live analysis session
+057fd52 260928 20:51 Add multi-confirmation checklist framework (setups/checklist.py)
+bfe32db 260929 05:09 Accumulate FCE1! 1-minute data (+1740 bars)
+ae7a9d9 260929 05:09 Accumulate 1-minute CAC40 data (+510 bars)
+78fbd02 260929 05:33 Add checklist.pullback_extreme for a sound stop reference
+4164918 260929 10:47 Add EURONEXT:SOI 15m cache (5000 bars, ~6.5 months)
+f877443 260930 05:09 Accumulate 1-minute CAC40 data (+510 bars)
+8caa9d8 260930 05:09 Accumulate FCE1! 1-minute data (+839 bars)
+a5f56d3 261001 05:09 Accumulate 1-minute CAC40 data (+510 bars)
+8b558d2 261001 05:09 Accumulate FCE1! 1-minute data (+838 bars)
+bc96264 261002 05:09 Accumulate 1-minute CAC40 data (+510 bars)
+83fcbae 261002 05:10 Accumulate FCE1! 1-minute data (+840 bars)
+62c5340 261003 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+718cd6b 261003 05:09 Accumulate FCE1! 1-minute data (+837 bars)
+4e58826 261006 05:08 Accumulate 1-minute CAC40 data (+506 bars)
+8a24c94 261006 05:09 Accumulate FCE1! 1-minute data (+827 bars)
+13e9a3a 261007 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+c5a0412 261007 05:09 Accumulate FCE1! 1-minute data (+839 bars)
+d33e895 261007 06:21 Refresh FCE1! 15m/1h/4h caches before full re-analysis
+6b2cfff 261007 07:02 Extend FCE1! 1m cache with 6-7 Oct session for screenshot verification
+c0d13dc 261007 09:34 Add FCE1! 5m cache (5404 bars, ~6.5 weeks)
+f02e58f 261007 09:59 Extend FCE1! 5m cache to 2026-10-07 09:40 UTC
+ca280f9 261007 10:11 Add frozen buy-side Liquidity Sweep backtest with one trade per sweep
+b4cada8 261007 10:23 Record the triggering sweep on each buy-side backtest trade
+3013682 261007 10:26 Support 1m and report still-open trade in buy-side sweep backtest
+7c118cb 261007 10:32 Measure the sweep-to-CHoCH window in clock time, not bars
+d715b30 261007 10:38 Add exhaustive indicator-combination search with selection/check split
+cfa6d9a 261008 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+56fca19 261008 05:09 Accumulate FCE1! 1-minute data (+582 bars)
+4b71ec6 261009 16:58 Extend FCE1! 1m/5m/15m caches to 2026-10-09 16:56 UTC
+c532857 261010 05:08 Accumulate 1-minute CAC40 data (+1020 bars)
+54fc149 261010 05:09 Accumulate FCE1! 1-minute data (+179 bars)
+28523e4 261010 06:48 Extend FCE1! 5m/15m caches to the 2026-10-09 close
+7e4e603 261010 07:00 Add daily-trend entry filter check for the buy-side sweep strategy
+7b8171e 261010 07:05 Add sell-side mirror to the sweep backtest and its daily trend check
+977de41 261010 08:47 Freeze the 5m puts-only sweep strategy with a 2x ATR stop floor
+c1b2a69 261010 12:31 Add 5m calls+puts trend-filter comparison (1D, 4h, 1h)
+f35c127 261010 12:33 Let the trend-filter comparison take interval, ATR floor and filter list
+c78be96 261010 12:37 Compare faster daily trend filters (live SMA20, EMA20, SMA10)
+a880a29 261010 13:37 Freeze the 15m calls+puts daily-trend strategy (SMA20 main, EMA20 candidate)
+dbd7a6d 261010 13:37 Add empty scorecard log for the frozen 15m daily-trend strategy
+a8c1284 261010 13:59 Add audit of the frozen sweep strategies and opt-in audit options
+f406c4d 261012 05:09 Accumulate FCE1! 1-minute data (+0 bars, 3 revised bars)
+44c2d69 261012 07:31 Frozen strategies: morning update 2026-10-12
+687cfa7 261012 20:16 Frozen strategies: evening update
+cc25d32 261013 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+03c0cee 261013 05:09 Accumulate FCE1! 1-minute data
+accc52e 261013 06:44 Frozen strategies: morning update 2026-10-13
+8a48459 261013 07:03 Frozen strategies: update 2026-10-13 09:00 Paris
+5732324 261013 09:21 Frozen strategies: update 2026-10-13 11:15 Paris (first put stopped)
+22b6d6f 261013 10:00 Track an unfiltered 15m calls+puts variant next to the daily-filter ones
+7883fa6 261013 20:17 Frozen strategies: evening update
+6daa814 261014 05:09 Accumulate 1-minute CAC40 data (+510 bars)
+047c266 261014 05:09 Accumulate FCE1! 1-minute data (+828 bars)
+3eca2ea 261014 16:44 Frozen strategies: update 14/10 afternoon
+4d12ff6 261014 20:17 Frozen strategies: evening update
+b5116bb 261016 05:09 Accumulate 1-minute CAC40 data (+1020 bars)
+281794c 261016 05:09 Accumulate FCE1! 1-minute data (+1538 bars)
+4b8161c 261016 20:17 Frozen strategies: evening update
+b57a411 261017 05:08 Accumulate 1-minute CAC40 data (+510 bars)
+cc90ef6 261017 05:09 Accumulate FCE1! 1-minute data (+839 bars)
+12c6652 261019 05:02 Accumulate FCE1! 1-minute data (+0 bars, 1 volume revision)
+99b0f08 261019 20:17 Frozen strategies: evening update
+e40ed1e 261020 05:02 Accumulate FCE1! 1-minute data (+838 bars)
+db8a204 261020 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+da7db62 261020 06:09 Frozen strategies: morning update 20/10
+650712f 261020 20:17 Frozen strategies: evening update
+3094d3c 261021 05:02 Accumulate FCE1! 1-minute data (+831 bars)
+1ede0f0 261021 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+fdb73d8 261021 10:19 Frozen strategies: midday update 21/10
+71d58f6 261021 10:25 Track user-requested manual trades outside the frozen strategies
+eae9ea7 261021 10:30 Add live sweep signal watcher (alerts only, frozen rules, 5m and 15m)
+6a578c3 261021 10:31 Update FCE1! 5m/15m cache
+4673841 261021 20:17 Frozen strategies: evening update
+9c7fd4a 261022 05:02 Accumulate FCE1! 1-minute data (+838 bars)
+59f913d 261022 05:12 Accumulate 1-minute CAC40 data (+505 bars)
+34534b5 261022 12:15 Update FCE1! 1m/5m/15m cache (22/10 midday)
+ba2fe81 261022 13:31 Update FCE1! 1m/5m/15m cache (22/10 afternoon)
+321adb5 261022 13:36 Test session-extreme sweep filter (not retained)
+6f42ca5 261022 13:51 Test trend-continuation setups drawn from the 22/10 session (no edge)
+705564c 261022 14:00 Accumulate 1-minute CAC40 data (22/10 afternoon)
+274ede7 261022 14:08 Update FCE1! 1m cache (22/10 16:08)
+9924e3b 261022 14:53 Live signal watcher: add 1m (last 3000 bars)
+805b448 261022 20:17 Frozen strategies: evening update
+d3fc632 261023 05:03 Accumulate FCE1! 1-minute data (+349 bars)
+669bbd5 261023 05:12 Accumulate 1-minute CAC40 data (+90 bars)
+5bdb77b 261023 20:17 Frozen strategies: evening update
+0307e69 261024 05:02 Accumulate FCE1! 1-minute data (+839 bars)
+94df66c 261024 05:12 Accumulate 1-minute CAC40 data (+506 bars)
+37c8f03 261026 16:58 live_signals: include the last bar closed at watch start
+f66b1ad 261026 17:07 Test two exit variants (target at 80%, stop to entry at +1R): neither kept
+2e6c8b1 261026 17:23 Exit variants in euros: 500 EUR risk per trade, full trade list
+5c630a2 261026 21:17 Frozen strategies: evening update
+727f025 261027 05:03 Accumulate FCE1! 1-minute data (+210 bars)
+fc7f496 261027 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+05d6792 261027 06:20 Test three direction filters (daily SMA20, 1h structure, session VWAP): none kept
+7985e51 261027 07:02 Test frozen 15m rules on DAX, Euro Stoxx 50, S&P 500, Nasdaq: not confirmed
+db689f8 261027 07:10 Freeze the 15m rules on DAX, Euro Stoxx 50, S&P 500, Nasdaq for tracking
+0933b45 261027 07:23 Test improved 15m version (5 fixes) on 5 new markets: not kept
+1f0828e 261027 07:39 Add SMA/EMA length grid test for the daily trend filter (train/validation)
+91ec837 261027 11:01 Freeze candidate 15m 'calls with the daily trend, puts always' on 10 markets
+97239b2 261027 11:37 Add intraday trend-following test 'Escalier intraday' (rules fixed before running)
+752b631 261027 12:06 Add gap-fill and Bollinger squeeze breakout tests (rules fixed before running)
+152701c 261027 12:07 Fix squeeze column access in squeeze breakout test (no rule change)
+c6efe40 261027 12:46 Freeze post-hoc candidate 'gap continuation' for live tracking from 28/10
+50a608b 261027 16:07 Update FCE1! 1m/5m/15m cache (27/10 session scan)
+8762eab 261027 16:31 Add fresh-CHoCH entry test (rules fixed before running)
+374be7b 261027 16:38 Freeze candidate 'CHoCH frais' (fix A+B) for live tracking from 28/10
+5809a46 261027 21:24 Frozen strategies: evening update
+e81a227 261028 05:02 Accumulate FCE1! 1-minute data (+260 bars)
+c779126 261028 05:11 Accumulate 1-minute CAC40 data (+510 bars)
+f2bcfdf 261028 07:36 Frozen strategies: morning run 28/10
+c55b246 261028 08:20 Update FCE1! 1m/5m/15m cache (28/10 live watch)
+6710897 261028 08:21 Update FCE1! cache (28/10 live watch)
+2e829ba 261028 08:24 Update FCE1! cache (28/10 live watch)
+e1faf8e 261028 08:27 Update FCE1! cache (28/10 live watch)
+115759c 261028 08:31 Update FCE1! cache (28/10 live watch)
+b017c41 261028 08:33 Update FCE1! cache (28/10 live watch)
+39259dd 261028 16:50 Add limit-entry-on-pullback test (rules fixed before running)
+306b5d5 261028 17:04 Add robustness check of tracked versions to outsized winners (rules fixed before running)
+c4363d2 261028 17:15 Promote 'calls with trend' (sma20, 10 markets) to main strategy with go-live rule
+c724772 261028 17:31 Frozen strategies: run 28/10 18h30
+54d1323 261028 21:23 Frozen strategies: evening update
+fdb2223 261029 05:02 Accumulate FCE1! 1-minute data (+714 bars)
+f067c68 261029 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+df18636 261029 07:36 Frozen strategies: morning run 29/10
+3910b9c 261029 08:24 Frozen strategies: morning run 29/10 after the 9:15 close
+94e2b88 261029 09:02 Frozen strategies: main strategy run 29/10 10:00
+daf3e25 261029 09:08 Opening range breakout test: rules fixed before running
+3fe82f1 261029 10:46 Opening pullback to VWAP test: rules fixed before running
+175bd05 261029 11:33 Supertrend test (strategy, range filter, main-strategy exit): rules fixed before running
+4e4ac36 261029 12:29 Frozen strategies: main strategy run 29/10 13:30
+d2c90c7 261029 15:28 Freeze single-swing sweep candidate (live tracking only, no money)
+9aa4bbf 261029 16:28 TradingView risk panel for CAC turbos (from the Fiche gruyère)
+780aa8e 261029 16:34 Main strategy go-live rule: calls and puts judged separately (stricter, fixed 29/10)
+b30e91f 261029 16:54 Day plan script: CAC levels and reaction scenarios before the open (no signal)
+ce89557 261029 17:02 Daily trend-following test (TSMOM 12m, SMA200, buy and hold): rules fixed before running
+060853a 261029 17:14 Diversified trend-following test (4 asset classes): rules fixed before running
+0a5253a 261029 17:55 Turbo panel: bid/ask spread entered in euros, converted to CAC points with the parity
+8b700a5 261029 21:25 Frozen strategies: evening update
+1f589fd 261030 05:02 Accumulate FCE1! 1-minute data (+830 bars)
+a3fd8a8 261030 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+ee9e6ee 261030 07:11 Oil (WTI, Brent): main strategy out-of-sample check and live tracking, rules fixed before running
+36c5447 261030 07:12 Oil tracking: record reference controls
+cf7cfd5 261030 07:21 Day plan: oil (WTI, Brent) levels and scenarios, previous session from closed daily bars
+c13a232 261030 07:35 France risk block for the day plan (OAT-Bund spread, France vs Italy)
+189844b 261030 07:45 Frozen strategies: morning run 30/10
+0746bc4 261030 11:36 Fige le test 1m avec contexte (niveau du plan, annonces, tiers du range) avant execution
+a221317 261030 11:43 Test 1m avec contexte : REJETEE (N+A+C -9.2R a 1pt, -40.2R a 3pt sur 150 trades)
+ff107fa 261030 12:11 Fige le test 1m contexte + un seul sens a la fois avant execution
+a26a568 261030 12:17 Test 1m contexte + un seul sens : REJETEE (+5.5R a 1pt, -17.7R a 3pt, 2e moitie -14.9R)
+bccba12 261030 12:21 Fige le test 1m marge de stop 16 pts (une seule valeur) avant execution
+52eb209 261030 12:26 Test 1m marge 16 : REJETEE (sous le 95e centile du hasard), le 1 minute est clos
+8191138 261030 14:21 Fige le test d'enchere ratee a l'Initial Balance (jours d'equilibre) avant execution
+c0a3cb7 261030 14:22 test_ib_rotation : corrige un bug (puts geres comme des calls a la sortie), regles inchangees
+6f996b2 261030 14:22 Test enchere ratee a l'Initial Balance : REJETEE (CAC -6.1R a 1pt, -8.4R a 3pt ; DAX+ESX -38.1R)
+226c296 261030 15:51 Fige le test de divergence SMT (CAC/DAX/Euro Stoxx 50) sur la principale avant execution
+d9ea730 261030 15:52 Test divergence SMT : REJETE (-0.7R a 3pt, moins bon par trade que la principale seule)
+7147598 261030 16:07 Ajoute la version corrigee de l'indicateur Delta Volume (BigBeluga) apres audit
+1d182f5 261030 16:28 Delta Volume corrige : range calcule sur les bougies closes, position du prix affichee
+2d20a07 261030 16:28 Delta Volume corrige : libelle exact pour une bougie en cours
+9c227a9 261030 16:41 Delta Volume corrige v3 : delta calcule sur les bougies d'une minute quelle que soit l'unite de temps
+533e864 261030 17:16 Delta Volume corrige v4 : deltas ancres sur les seances (seance en cours et N seances)
+70077ae 261030 17:43 Fige le test du delta corrige (sens du delta, seuil 10 %) sur la principale avant toute donnee
+ce61e44 261030 17:46 Accumulate 1-minute data, 10 markets (premiere collecte des 9 autres marches)
+030057d 261030 20:59 day_plan : libelle 'depuis 8h00' exact apres l'ouverture (n'etait juste qu'avant 9h00)
+0bc8663 261030 21:03 Principale 30/10 soir : 10 marches 15m mis a jour, 20/20 controles OK
+74071d9 261030 21:07 Cache : FCE1 1m/5m et petrole 15m au 30/10 soir
+2cbfa5a 261030 21:10 Scripts figes 30/10 soir : tous les controles OK
+f609858 261030 21:16 Frozen strategies: evening update (bougies journalieres du 30/10)
+16435d9 261031 05:04 Accumulate 1-minute data, 10 markets
+14f1e2f 261031 05:11 Accumulate 1-minute CAC40 data
+5d4a0eb 261031 12:10 Fige le test de l'indicateur simple scalping (papamallis) avant execution
+a0ee070 261031 12:11 Test indicateur papamallis : REJETE (-284.9R a 1pt sur 2167 trades, 3/10 marches positifs)
+666e0d5 261102 05:04 Accumulate 1-minute data, 10 markets
+aad527f 261102 21:20 Frozen strategies: evening update
+b892cf4 261103 05:05 Accumulate 1-minute data, 10 markets
+cd6a2ee 261103 05:12 Accumulate 1-minute CAC40 data (+506 bars)
+265b14b 261103 11:05 Freeze rules: 5m reaction trades in the direction of the structure (17th idea)
+c7d773e 261103 11:06 Record result: 5m structure reaction trades REJETE
+ed6b223 261103 16:44 Freeze rules: monthly S&P 500 sector momentum rotation (18th idea, swing)
+92e43ec 261103 16:45 Fix sector momentum test: compute 3-month returns on full history (bug)
+3f7eee8 261103 16:48 Record result: sector momentum rotation REJETE
+a64bcd2 261103 21:26 Frozen strategies: evening update
+853c0ef 261104 05:04 Accumulate 1-minute data, 10 markets
+5243634 261104 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+75c5727 261104 14:14 Add TradingView alert indicator for the main strategy, verified engine port
+e8842f6 261104 21:27 Frozen strategies: evening update
+0e5b6db 261105 05:04 Accumulate 1-minute data, 10 markets
+4c42dad 261105 05:12 Accumulate 1-minute CAC40 data (+510 bars)
+6244c0b 261105 16:33 Day plan: add Nasdaq 100 (NQ1!) with the main strategy's signals and positions
+f170711 261105 19:12 Freeze two new strategy tests before running: swing RSI(2) pullback in trend, intraday end-of-session momentum
+143fd59 261105 19:13 Swing RSI(2) test: fix a crash (undefined name in the exit loop), rules unchanged
+2cceb3b 261105 19:13 Record results: swing RSI(2) calls pass (puts rejected), intraday end-of-session momentum rejected
+d1abab6 261105 19:39 Freeze live tracking of the swing RSI(2) calls and the NR7 breakout intraday test (rules fixed before running)
+21aa266 261105 19:39 Record result: NR7 breakout intraday test rejected
+7d60f61 261105 19:40 Swing RSI(2) live tracking: empty trades file
+77181f2 261105 19:44 Freeze swing RSI(2) validation (8 unseen indices + 27-version plateau) before fetching data
+7799afb 261105 19:45 Swing RSI(2) validation: confirmed on 8 unseen indices and 27/27 neighbouring versions
+349805f 261105 19:46 Swing RSI(2) in euros with turbos: brokerage fees decide everything at 10 EUR risk
+117745c 261105 19:56 Freeze turn-of-the-month test (18 indices, decision 2012-2021, reserved confirmation 2022+) before running
+3e4e267 261105 19:56 Turn-of-month test: month boundaries in each exchange's local time (fix before any run, rules unchanged)
+77f0489 261105 19:56 Record result: turn-of-the-month rejected (worse than ordinary days, in development and in the reserved period)
+fad8c5b 261105 19:57 Freeze account-sized swing test (6 indices, 2 positions max, reserved period) before running
+259b281 261105 19:57 Record result: account-sized swing (2 positions, 6 indices) rejected in development
+0132b4c 261105 20:06 Quantitative audit of the main strategy and the swing rule (descriptive, no rule changed)
+e59adca 261105 20:16 After the audit: shadow variants of the main strategy (forward only), risk guard-rails, execution rules
+8328601 261105 20:37 Freeze out-of-time test of the swing rule on 1991-2011 before fetching the data
+adc9c3c 261105 20:38 Swing RSI(2): confirmed out of time on 1991-2011 (weekly t 2.72, +0.066R/trade)
+2c2d347 261105 20:46 Freeze 5-position cap test for the swing rule (both periods) before running
+332f1a0 261105 20:50 Apply the working group's decisions: sequential go-live rule for the main strategy, 0.5 % sizing on 5 000 EUR, swing ex
+7b4971f 261105 20:51 Swing pre-close check (the rule trades at the close: decision a few minutes before)
+d261698 261105 20:52 Cash index cache: US daily bars up to 04/11
+bfade5d 261105 22:22 Frozen strategies: evening update
+3f81f0b 261106 05:04 Accumulate 1-minute data, 10 markets
+cc6f9d8 261106 05:11 Accumulate 1-minute CAC40 data (+510 bars)
+24421f3 261106 07:44 Execution rules: user's loss tolerance, availability and spread (06/11)
+fe5b2dc 261106 07:49 Swing: capital 10 000 EUR (option D), risk per trade capped by the 500 EUR / 3 months tolerance
+e5c4103 261106 07:56 Freeze the working group's tests (06/11) before any run: test 0 (executable-turbo condition, variant D) and tests 1-4
+b808b85 261106 10:13 Tests 1-3 of 06/11 written with their frozen rules, before any run (+ VIX daily data)
+ff2fe9a 261106 10:13 Tests 1-3 (06/11): results on 2012-2021, none adopted
+cb43182 261106 11:14 Test 4 (P2, previous day's high/low rejection): forward tracker frozen before 09/11
+f9c46a5 261106 18:45 Execution rules: user's answers to the discipline coach, no reverse trade after a stop without a system signal
+b61d379 261106 18:46 Execution rules: turbo sell fees confirmed at 0 EUR

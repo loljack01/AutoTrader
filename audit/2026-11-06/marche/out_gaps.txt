@@ -1,0 +1,67 @@
+
+=== FCE1 (2012-01-02 -> 2026-11-05, 2915 seances hors roulement)
+  en %
+    lundi (week-end)       n= 576 |ecart| median 0.31% p95 1.63% p99 3.06% max 6.75%
+    mardi-vendredi         n=2339 |ecart| median 0.26% p95 1.12% p99 2.13% max 9.13%
+    lendemain NFP          n= 147 |ecart| median 0.31% p95 2.04% p99 3.60% max 6.75%
+    lendemain CPI          n=  72 |ecart| median 0.30% p95 1.91% p99 3.47% max 6.22%
+    lendemain FOMC         n=  76 |ecart| median 0.32% p95 1.52% p99 2.17% max 2.37%
+    lendemain BCE          n= 113 |ecart| median 0.31% p95 1.18% p99 1.66% max 3.73%
+  en ATR
+    lundi (week-end)       n= 576 |ecart| median 0.23 p95 0.89 p99 1.58 max 2.16
+    mardi-vendredi         n=2339 |ecart| median 0.18 p95 0.62 p99 1.16 max 4.89
+    lendemain NFP          n= 147 |ecart| median 0.21 p95 0.94 p99 1.59 max 2.16
+    lendemain CPI          n=  72 |ecart| median 0.20 p95 0.82 p99 1.40 max 1.41
+    lendemain FOMC         n=  76 |ecart| median 0.24 p95 0.85 p99 1.06 max 1.06
+    lendemain BCE          n= 113 |ecart| median 0.21 p95 0.57 p99 0.97 max 1.48
+  en points CAC-eq : |ecart| du lundi > 26 pts (stop median principale) 34%, > 40 pts 20% ; autres jours > 26 pts 26%
+  lundis : ecart > 2,5 ATR (stop swing) 0 ; baisse > 1 ATR 3.1% ; baisse > 2 % 15
+  5 pires ecarts du lundi : 2020-03-09 -6.75% (-2.2 ATR), 2020-03-23 -4.99% (-0.7 ATR), 2020-05-04 -3.73% (-1.0 ATR), 2025-04-07 -3.36% (-1.6 ATR), 2015-06-29 -3.06% (-1.5 ATR)
+  5 pires ecarts tous jours : 2016-06-24 -9.13% (-4.9 ATR), 2020-03-09 -6.75% (-2.2 ATR), 2020-03-12 -6.22% (-1.4 ATR), 2020-03-23 -4.99% (-0.7 ATR), 2018-02-06 -4.62% (-3.2 ATR)
+  levier  1.5 : lundis avec baisse > 66.7% : 0 sur 576
+  levier    3 : lundis avec baisse > 33.3% : 0 sur 576
+  levier    5 : lundis avec baisse > 20.0% : 0 sur 576
+  levier   10 : lundis avec baisse > 10.0% : 0 sur 576
+
+=== ES1 (2012-01-04 -> 2026-11-05, 3161 seances hors roulement)
+  en %
+    lundi (week-end)       n= 646 |ecart| median 0.09% p95 0.77% p99 1.43% max 2.98%
+    mardi-vendredi         n=2515 |ecart| median 0.05% p95 0.31% p99 0.64% max 2.83%
+    lendemain NFP          n= 115 |ecart| median 0.07% p95 0.80% p99 1.23% max 2.02%
+    lendemain CPI          n= 120 |ecart| median 0.04% p95 0.45% p99 0.95% max 1.10%
+    lendemain FOMC         n=  73 |ecart| median 0.10% p95 0.35% p99 0.55% max 0.61%
+    lendemain BCE          n=  90 |ecart| median 0.05% p95 0.57% p99 1.07% max 1.10%
+  en ATR
+    lundi (week-end)       n= 646 |ecart| median 0.08 p95 0.52 p99 0.89 max 1.57
+    mardi-vendredi         n=2515 |ecart| median 0.04 p95 0.22 p99 0.44 max 1.48
+    lendemain NFP          n= 115 |ecart| median 0.05 p95 0.51 p99 1.13 max 1.29
+    lendemain CPI          n= 120 |ecart| median 0.04 p95 0.24 p99 0.67 max 0.81
+    lendemain FOMC         n=  73 |ecart| median 0.07 p95 0.28 p99 0.50 max 0.70
+    lendemain BCE          n=  90 |ecart| median 0.04 p95 0.34 p99 0.52 max 0.56
+  en points CAC-eq : |ecart| du lundi > 26 pts (stop median principale) 7%, > 40 pts 3% ; autres jours > 26 pts 1%
+  lundis : ecart > 2,5 ATR (stop swing) 0 ; baisse > 1 ATR 0.5% ; baisse > 2 % 3
+  5 pires ecarts du lundi : 2020-03-23 -2.98% (-0.4 ATR), 2020-03-30 -2.58% (-0.4 ATR), 2025-04-07 -2.02% (-0.7 ATR), 2022-02-28 -1.84% (-0.7 ATR), 2020-03-02 -1.73% (-0.8 ATR)
+  5 pires ecarts tous jours : 2020-03-23 -2.98% (-0.4 ATR), 2025-04-03 -2.83% (-1.5 ATR), 2020-03-30 -2.58% (-0.4 ATR), 2025-04-07 -2.02% (-0.7 ATR), 2022-02-28 -1.84% (-0.7 ATR)
+
+=== NQ1 (2012-01-04 -> 2026-11-05, 3160 seances hors roulement)
+  en %
+    lundi (week-end)       n= 646 |ecart| median 0.09% p95 0.76% p99 1.31% max 2.50%
+    mardi-vendredi         n=2514 |ecart| median 0.06% p95 0.46% p99 1.04% max 3.74%
+    lendemain NFP          n= 114 |ecart| median 0.07% p95 0.78% p99 1.10% max 2.50%
+    lendemain CPI          n= 120 |ecart| median 0.05% p95 0.37% p99 0.97% max 1.19%
+    lendemain FOMC         n=  73 |ecart| median 0.16% p95 0.60% p99 0.88% max 0.96%
+    lendemain BCE          n=  90 |ecart| median 0.09% p95 1.02% p99 1.61% max 1.92%
+  en ATR
+    lundi (week-end)       n= 646 |ecart| median 0.06 p95 0.41 p99 0.72 max 0.98
+    mardi-vendredi         n=2514 |ecart| median 0.04 p95 0.25 p99 0.57 max 1.49
+    lendemain NFP          n= 114 |ecart| median 0.04 p95 0.38 p99 0.82 max 0.95
+    lendemain CPI          n= 120 |ecart| median 0.03 p95 0.23 p99 0.57 max 0.64
+    lendemain FOMC         n=  73 |ecart| median 0.10 p95 0.34 p99 0.51 max 0.88
+    lendemain BCE          n=  90 |ecart| median 0.07 p95 0.44 p99 0.67 max 0.68
+  en points CAC-eq : |ecart| du lundi > 26 pts (stop median principale) 5%, > 40 pts 3% ; autres jours > 26 pts 3%
+  lundis : ecart > 2,5 ATR (stop swing) 0 ; baisse > 1 ATR 0.0% ; baisse > 2 % 3
+  5 pires ecarts du lundi : 2025-04-07 -2.50% (-0.7 ATR), 2020-03-23 -2.45% (-0.3 ATR), 2020-03-30 -2.28% (-0.3 ATR), 2022-02-28 -1.98% (-0.6 ATR), 2025-02-03 -1.80% (-0.9 ATR)
+  5 pires ecarts tous jours : 2025-04-03 -3.74% (-1.5 ATR), 2025-04-07 -2.50% (-0.7 ATR), 2020-03-23 -2.45% (-0.3 ATR), 2020-03-30 -2.28% (-0.3 ATR), 2019-01-03 -2.01% (-0.6 ATR)
+
+=== Principale : 44 trades passent un week-end, +69.2R (plafonne +29.7R), stops 27 ; stop median 32.5 pts CAC-eq
+  dont trades sortis le lundi : 20

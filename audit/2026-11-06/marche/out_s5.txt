@@ -1,0 +1,14 @@
+signaux sma20 depuis le 28/10 : 40 clos + 4 ouverts au CSV (CAC 40 05/11 16:45, DAX 05/11 15:45, FTSE 100 05/11 09:45, SMI 05/11 09:15)
+  nuit 22h-8h                         7/40 trades,  -3.7R ; reste 33 trades +17.5R
+  nuit 21h30-8h (test 0)              9/40 trades,  +6.3R ; reste 31 trades  +7.5R
+  entree a +/-30 min d'une annonce    2/40 trades,  -2.1R ; reste 38 trades +15.9R
+  annonce pendant le trade            5/40 trades,  -2.5R ; reste 35 trades +16.3R
+  stop < 40 pts CAC-eq               31/40 trades, +18.0R ; reste  9 trades  -4.2R
+  stop < 20 pts CAC-eq                4/40 trades,  -0.4R ; reste 36 trades +14.2R
+  RETIRE nuit 22h-8h + entree pres annonce                    : retires  9, reste 31 trades +19.6R (1 pt) +17.6R (3 pt)
+  RETIRE nuit 22h-8h + annonce (entree ou pendant) + stop<40  : retires 33, reste  7 trades  -2.1R (1 pt)  -2.4R (3 pt)
+  RETIRE nuit 22h-8h + entree pres annonce + stop<20          : retires 11, reste 29 trades +17.9R (1 pt) +16.1R (3 pt)
+  entree a +/-15 min d'une annonce (regle SPEC 3.5, jamais appliquee par le moteur) : historique 5 trades -2.7R ; suivi 0
+  entree a +/-30 min d'une annonce (regle SPEC 3.5, jamais appliquee par le moteur) : historique 11 trades -6.4R ; suivi 2
+  stop CAC-eq du suivi : mediane 27.5, min 16.7, max 90.9
+  ouverts : stops CAC-eq CAC 40 78, DAX 74, FTSE 100 32, SMI 25

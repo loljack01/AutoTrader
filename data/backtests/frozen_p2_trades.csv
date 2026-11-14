@@ -1,0 +1,3 @@
+marche,jour,sens,entree_paris,entree,stop,cible,pdh,pdl,resultat,sortie_paris,prix_sortie,net_r_3pt,net_r_1pt
+DAX,2026-11-09,put,09/11 12:00,26139,26206.5,25920.5,26146.0,25695.0,stop,09/11 14:30,26206.5,-1.144,-1.048
+DAX,2026-11-11,put,11/11 09:30,26720,26789.57,26591.5,26721.0,26462.0,take,11/11 10:30,26591.5,1.707,1.801

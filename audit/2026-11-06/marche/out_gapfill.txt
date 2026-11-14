@@ -1,0 +1,5 @@
+appariement : 339/339 trades
+  tous               n=339 R officiel +111.7 | R avec remplissage a l'ouverture +108.6 | ecart -3.1R ; pire trade -2.23R
+  passe un week-end  n= 44 R officiel  +69.2 | R avec remplissage a l'ouverture  +66.9 | ecart -2.3R ; pire trade -2.23R
+  sans week-end      n=295 R officiel  +42.5 | R avec remplissage a l'ouverture  +41.6 | ecart -0.9R ; pire trade -1.79R
+  stops des trades de week-end : 27, perte moyenne -1.14R avec remplissage (officiel -1.04R)

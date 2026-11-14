@@ -1,0 +1,5 @@
+A (depuis le 2e membre) : 61.9% (210/339)
+B (depuis le 1er membre) : 64.9% (220/339)
+C (trades absents avec consumed_pools=True) : 56.6% (192/339)
+A sur les trades entres avant le 05/11 : 62.1% (208/335)
+suivi : CSV officiel 40 trades clos (+13.8R) ; reproduction 40 (+13.8R) ; communs 40 ; seulement CSV [] ; seulement reproduction []
