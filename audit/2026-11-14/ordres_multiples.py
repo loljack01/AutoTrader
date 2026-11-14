@@ -172,21 +172,22 @@ def split_orders(t, P, side, k, cost):
         cr = cost * k / risk
         lvl = x.entry + side * risk
         a, b, add_i = x.net_r, 0.0, None
-        for j in range(x.entry_i + 1, x.exit_i + 1):
+        ei, xi = int(x.entry_i), int(x.exit_i)
+        for j in range(ei + 1, xi + 1):
             stop_hit = L[j] <= x.stop if side == 1 else H[j] >= x.stop
             if stop_hit:
                 break
             if (H[j] >= lvl) if side == 1 else (L[j] <= lvl):
                 a = 1.0 - cr
                 break
-        for j in range(x.entry_i + 1, x.exit_i):
+        for j in range(ei + 1, xi):
             if (C[j] - lvl) * side >= 0 and (x.take - C[j]) * side > 0:
                 add_i = j
                 break
         if add_i is not None:
             eb = C[add_i]
             pnl = None
-            for j in range(add_i + 1, x.exit_i + 1):
+            for j in range(add_i + 1, xi + 1):
                 if (L[j] <= x.entry) if side == 1 else (H[j] >= x.entry):
                     pnl = side * (x.entry - eb)
                     break
@@ -194,7 +195,7 @@ def split_orders(t, P, side, k, cost):
                     pnl = side * (x.take - eb)
                     break
             if pnl is None:
-                pnl = side * (C[x.exit_i] - eb)
+                pnl = side * (C[xi] - eb)
             b = pnl / risk - cr
         p1.append(0.5 * (a + x.net_r)), p2.append(x.net_r + b), added.append(add_i is not None)
     return p1, p2, added

@@ -161,3 +161,7 @@
     `scripts/frozen_window_units.py`. **Suivi en avant uniquement** (trades entrés dès le 13/11 14h00), aucun
     résultat passé calculé ; verdict à 100 trades clos de la référence, seuil t ≥ 2,84. **La principale n'est
     pas modifiée.** Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.
+24. **Audit du 14/11/2026 « plusieurs ordres sur un même indice » (à la demande de l'utilisateur)** :
+    `docs/audit_ordres_multiples_2026-11-14.md`, mesures fixées avant le calcul. Trades simultanés (2, 3,
+    sans limite), sortie partielle à +1R et renfort à +1R sur la principale : **aucune piste ne ressort, aucune
+    règle modifiée**. Sur la version exécutable en turbo (D), aucun cas de trades simultanés depuis le 28/10.
