@@ -25,7 +25,14 @@ adoptee sur ces chiffres.
 Controle : le simulateur a deux sens de cet audit, sans alternance ni retournement, doit
 redonner exactement les trades du moteur (bt.backtest, calls + puts).
 
-Usage : python3 -W ignore audit/2026-11-14/alternance.py [--controle]
+Ajout du 14/11 (question de l'utilisateur : "Et si on enleve la regle des calls interdits sous
+la moyenne 20 jours"), fixe AVANT son calcul : avec --sans-filtre, les memes six versions
+(base, A, Aj, R, A+R, Aj+R) sont mesurees SANS le filtre de tendance des calls (calls et puts
+toujours autorises), sur la principale et sur D, memes frais, memes periodes. 12 hypotheses de
+plus, inscrites au registre comme AUDIT (information). Le controle compare alors au moteur
+lance sans filtre.
+
+Usage : python3 -W ignore audit/2026-11-14/alternance.py [--controle] [--sans-filtre]
 """
 
 import sys
@@ -38,7 +45,8 @@ import pandas as pd
 
 from ordres_multiples import D_KW, MARKETS, START, bt, load, net_rr, prepare, set_engine, stats, trend_up
 
-OUT = Path(__file__).resolve().parent / "alternance_trades.csv"
+NO_FILTER = "--sans-filtre" in sys.argv
+OUT = Path(__file__).resolve().parent / ("alternance_sans_filtre_trades.csv" if NO_FILTER else "alternance_trades.csv")
 COLS = ["side", "entry_i", "entry_time", "sweep_time", "entry", "stop", "take", "exit_i", "exit_time", "result", "net_r"]
 VARIANTS = {"base": (None, False), "A alternance stricte": ("strict", False), "Aj alternance du jour": ("day", False),
             "R retournement": (None, True), "A+R": ("strict", True), "Aj+R": ("day", True)}
@@ -133,7 +141,7 @@ def controle(data):
     when = lambda t, c: pd.to_datetime(t[c], utc=True).fillna(pd.Timestamp(0, tz="UTC")).to_numpy()
     for s, d in data.items():
         k = MARKETS[s][1]
-        up = trend_up(s, d, "SMA", 20)
+        up = None if NO_FILTER else trend_up(s, d, "SMA", 20)
         P = {1: prepare(d, 1), -1: prepare(d, -1)}
         for cost in (1.0, 3.0):
             for kw in ({}, D_KW):
@@ -163,7 +171,7 @@ def main():
     runs = {}
     for s, d in data.items():
         k = MARKETS[s][1]
-        up = trend_up(s, d, "SMA", 20)
+        up = None if NO_FILTER else trend_up(s, d, "SMA", 20)
         P = {1: prepare(d, 1), -1: prepare(d, -1)}
         for cost in (1.0, 3.0):
             for cfg, kw in (("principale", {}), ("D", D_KW)):
@@ -175,6 +183,8 @@ def main():
                ("depuis le 28/10 (suivi)", lambda t: t[t.entry_time >= START]))
 
     base = runs["principale", "base", 1.0]
+    if NO_FILTER:
+        print("\n#### SANS le filtre de tendance des calls (calls et puts toujours autorises) ####")
     print("\n== 1. Etat des lieux (base, frais 1 pt) ==")
     b = base.sort_values(["marche", "entry_time"])
     prev = b.groupby("marche").side.shift()
