@@ -53,3 +53,4 @@ n,commit,idee,decisions,hypotheses,verdict,decisions_cumulees,seuil_t_bonferroni
 52,frozen_trailing,"test 8 : stop suiveur structurel sur la principale (post-hoc, juge sur l'historique avant le 28/10), fige non lance",1,1,"fige, lancement un dimanche sur ordre",63,3.16
 53,frozen_15m_window,"test 9 : duree de la fenetre balayage -> CHoCH de la principale (1h, 2h, 6h, 8h face a 4h), suivi en avant des le 13/11 11h, sur ordre de l'utilisateur",4,4,en cours,67,3.18
 54,frozen_window_units,"test 10 : durees de fenetre (1h, 2h, 4h, 6h, 8h) sur bougies de 5 et 30 minutes face a la principale 15m 4h, suivi en avant des le 13/11 14h, sur ordre de l'utilisateur",10,10,en cours,77,3.22
+55,audit_ordres_multiples,"audit du 14/11 : plusieurs ordres sur un meme indice (ordres simultanes S2, S3, Sx sur la principale et sur D ; sortie partielle P1 ; renfort P2), mesures fixees avant calcul, sur ordre de l'utilisateur",1,8,en cours,78,3.22
