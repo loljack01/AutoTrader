@@ -165,3 +165,8 @@
     `docs/audit_ordres_multiples_2026-11-14.md`, mesures fixées avant le calcul. Trades simultanés (2, 3,
     sans limite), sortie partielle à +1R et renfort à +1R sur la principale : **aucune piste ne ressort, aucune
     règle modifiée**. Sur la version exécutable en turbo (D), aucun cas de trades simultanés depuis le 28/10.
+25. **Audit du 14/11/2026, suite : règle d'alternance de l'utilisateur** (« après un call un put, après un put
+    un call », jamais deux trades du même sens à la suite sur un indice), section 5 de
+    `docs/audit_ordres_multiples_2026-11-14.md`. L'alternance stricte avec retournement (A+R) ressort sur les
+    huit découpages (moins de trades, pire creux réduit de moitié) mais **n'est pas prouvée** (t ≤ 2,27, seuil
+    3,22). **Aucune règle modifiée** ; à figer en suivi en avant seulement sur décision de l'utilisateur.

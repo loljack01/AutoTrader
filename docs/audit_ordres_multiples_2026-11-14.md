@@ -123,18 +123,95 @@ Constats :
 - L'historique d'avant le 28/10 a servi à construire les règles : ses chiffres ne valident rien.
 - Depuis le 28/10 il n'y a que 16 trades ajoutés : trop peu pour conclure, dans un sens comme dans l'autre.
 
-## Conclusion
+## 5. Suite : la règle d'alternance de l'utilisateur
 
-Prendre plusieurs ordres sur le même indice ne règle pas le problème de l'intraday. Ce qui manque à la
-principale est un avantage par trade, pas un nombre d'ordres : multiplier les ordres multiplie le même
-pari, avec des trades ajoutés moins bons que les autres et un risque qui grossit plus vite que le gain.
+Précision de l'utilisateur après lecture des sections 1 à 4 : « Il ne peut y avoir 2 calls en même temps et
+2 puts en même temps. Si on est en call, derrière on fait un put. Si on a un put, derrière on fait un
+call. » Les sections 1 et 2 mesuraient donc autre chose (des ordres du même sens empilés). Mesures de
+cette section fixées et poussées avant le calcul (commit `Freeze audit of 14/11 (continued)`).
+
+Reproduire : `python3 -W ignore audit/2026-11-14/alternance.py` (sortie brute : `out_alternance.txt`,
+détail : `alternance_trades.csv`). Contrôle : sans alternance ni retournement, le simulateur redonne les
+trades du moteur sur 40 configurations sur 40.
+
+Variantes, appliquées aux signaux de la principale sans rien changer d'autre :
+
+- **A, alternance stricte** : sur un indice, un signal n'est pris que s'il est de sens opposé au dernier
+  trade pris sur cet indice.
+- **Aj, alternance du jour** : même règle, remise à zéro chaque matin.
+- **R, retournement** : un signal de sens opposé pris pendant qu'un trade est ouvert ferme ce trade.
+- **A+R** et **Aj+R** : les deux ensemble (une seule position à la fois sur l'indice).
+
+État des lieux de la base : 60 % des trades (216 sur 360) sont de même sens que le trade précédent sur le
+même indice ; 261 puts pour 109 calls ; 60 fois un call et un put ont été ouverts en même temps.
+
+**Principale, depuis le 28/10 (suivi) :**
+
+| Version | Trades clos | Net à 1 pt | Net à 3 pts | Gains plafonnés à 5R | Pire creux | Jours à −3R ou pire |
+|---|---|---|---|---|---|---|
+| Base | 66 | +7,43R | +4,34R | +3,34R | −12,78R | 3 |
+| A alternance stricte | 40 | +8,55R | +8,03R | +4,46R | −7,98R | 1 |
+| Aj alternance du jour | 62 | +3,05R | +0,08R | −1,05R | −13,81R | 3 |
+| R retournement | 77 | +5,85R | +6,94R | +1,79R | −18,64R | 3 |
+| **A+R** | 49 | +16,36R | +17,17R | +12,29R | −7,53R | 1 |
+| Aj+R | 70 | +5,28R | +3,18R | +1,21R | −18,07R | 3 |
+
+**Principale, avant le 28/10 (historique, information), frais de 1 point :**
+
+| Version | Trades clos | Net | t par trade | Gains plafonnés à 5R | Pire creux |
+|---|---|---|---|---|---|
+| Base | 299 | +97,90R | 1,85 | +41,69R | −15,82R |
+| A alternance stricte | 132 | +51,47R | 2,03 | +37,97R | −9,12R |
+| Aj alternance du jour | 284 | +88,64R | 1,70 | +32,43R | −15,20R |
+| R retournement | 340 | +75,90R | 2,11 | +53,50R | −15,75R |
+| **A+R** | 138 | +53,52R | 2,27 | +42,34R | −8,71R |
+| Aj+R | 316 | +68,37R | 1,95 | +45,96R | −15,12R |
+
+**Version exécutable en turbo (D), frais de 3 points (la mesure de sa règle de passage) :**
+
+| Version | Avant le 28/10 | Pire creux | Depuis le 28/10 | Pire creux |
+|---|---|---|---|---|
+| Base | 314 trades, −13,83R | −36,68R | 74 trades, +10,90R | −14,44R |
+| A alternance stricte | 92 trades, +10,32R | −7,49R | 40 trades, +11,06R | −7,11R |
+| Aj alternance du jour | 290 trades, −8,46R | −30,42R | 67 trades, +11,08R | −14,23R |
+| R retournement | 316 trades, −10,20R | −35,32R | 74 trades, +10,00R | −13,97R |
+| **A+R** | 94 trades, +12,46R | −7,45R | 40 trades, +13,21R | −3,60R |
+| Aj+R | 293 trades, −4,86R | −29,59R | 67 trades, +10,18R | −13,61R |
+
+Constats :
+
+- **L'alternance stricte, surtout avec le retournement (A+R), est la seule variante de cet audit qui fait
+  au moins aussi bien que la base sur les huit découpages** (principale et D, 1 et 3 points, avant et
+  depuis le 28/10), avec deux à trois fois moins de trades et un pire creux à peu près divisé par deux.
+- **Elle prend moins de trades, pas plus** : 40 à 49 depuis le 28/10 contre 66. Elle n'attrape donc pas
+  davantage de hausses et de baisses ; elle évite de reprendre plusieurs fois le même sens.
+- **L'alternance remise à zéro chaque jour (Aj) n'apporte rien** : l'effet vient de la mémoire d'un jour
+  sur l'autre. Comme les calls sont interdits sous la moyenne 20 jours, l'alternance stricte revient en
+  pratique à ne prendre qu'un put par indice tant qu'aucun call n'est revenu : en tendance baissière,
+  l'indice est mis en sommeil.
+- **Le retournement seul (R) n'aide pas** : avant le 28/10, les trades retournés ont rendu +27,3R contre
+  +49,4R s'ils avaient été laissés courir (37 trades comparables) ; depuis le 28/10 c'est l'inverse
+  (+5,1R contre +2,8R sur 14 trades).
+- Dans la base, les trades de même sens que le précédent ne sont pas plus mauvais dans l'historique
+  (+0,330R en moyenne contre +0,324R) ; ils le sont depuis le 28/10 (−0,115R contre +0,280R, sur 28 et 38
+  trades), sans que l'écart soit significatif.
+
+Valeur statistique : le meilleur t est 2,27, sur l'historique déjà exploité ; depuis le 28/10, A+R est à
+t = 1,2 sur 45 à 49 trades. Le seuil du registre est 3,22 (79 décisions), et A+R est la meilleure de cinq
+variantes essayées ici : rien n'est prouvé.
+
+## Conclusion
 
 | Piste | Verdict de l'audit |
 |---|---|
-| Plusieurs trades ouverts à la fois (principale) | ne ressort pas : gain non distinguable du hasard, creux nettement plus profond |
-| Plusieurs trades ouverts à la fois (version turbo D) | sans objet : aucun cas depuis le 28/10 |
+| Plusieurs trades du même sens ouverts à la fois | ne ressort pas : gain non distinguable du hasard, creux nettement plus profond |
 | Sortie partielle à +1R | lisse mais retire 40 % du gain ; équivaut à réduire la taille |
 | Renfort à +1R | gain porté par quelques très gros trades ; ne tient pas avec les gains plafonnés |
+| Alternance du jour, retournement seul | ne ressortent pas |
+| **Alternance stricte avec retournement (A+R)** | **ressort sur les huit découpages, avec moins de trades et un creux réduit de moitié ; non prouvée (t ≤ 2,27)** |
 
-Aucune de ces pistes ne mérite d'être figée pour un suivi en avant sur la foi de ces chiffres. La décision
-reste à l'utilisateur.
+Empiler des ordres du même sens ne règle rien : cela multiplie le même pari. La règle d'alternance de
+l'utilisateur, dans sa version stricte, est en revanche la première variante de la principale qui ne se
+dégrade sur aucun découpage. Elle n'est pas validée pour autant : elle mérite seulement d'être figée et
+suivie en avant, à côté de la principale, avec un critère écrit d'avance. Cette décision revient à
+l'utilisateur (règle 12 : un dimanche). Aucune règle n'est modifiée par cet audit.
