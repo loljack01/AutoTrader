@@ -200,6 +200,52 @@ Valeur statistique : le meilleur t est 2,27, sur l'historique déjà exploité ;
 t = 1,2 sur 45 à 49 trades. Le seuil du registre est 3,22 (79 décisions), et A+R est la meilleure de cinq
 variantes essayées ici : rien n'est prouvé.
 
+## 6. Suite : sans la règle « calls interdits sous la moyenne 20 jours »
+
+Question de l'utilisateur : « Et si on enlève la règle des calls interdits sous la moyenne 20 jours ».
+Les six versions de la section 5 ont été recalculées avec les calls toujours autorisés (mesure fixée et
+poussée avant le calcul, commit `Freeze audit of 14/11 (continued): alternation without the calls trend
+filter`). Reproduire : `python3 -W ignore audit/2026-11-14/alternance.py --sans-filtre` (sortie brute :
+`out_alternance_sans_filtre.txt`). Contrôle : 40 configurations sur 40 identiques au moteur sans filtre.
+
+Sans le filtre, la base compte 278 calls pour 261 puts (109 calls avec le filtre).
+
+**Alternance stricte avec retournement (A+R), avec et sans le filtre :**
+
+| Version, frais | Avant le 28/10, avec filtre | Avant le 28/10, sans filtre | Depuis le 28/10, avec filtre | Depuis le 28/10, sans filtre |
+|---|---|---|---|---|
+| Principale, 1 pt | 138 trades, +53,52R | 321 trades, +25,25R | 49 trades, +16,36R | 64 trades, +31,82R |
+| Principale, 3 pts | 119 trades, +41,19R | 286 trades, +2,10R | 45 trades, +17,17R | 58 trades, +28,12R |
+| Turbo (D), 1 pt | 107 trades, +21,66R | 256 trades, +6,57R | 42 trades, +13,70R | 58 trades, +28,11R |
+| Turbo (D), 3 pts | 94 trades, +12,46R | 229 trades, −13,13R | 40 trades, +13,21R | 56 trades, +24,12R |
+
+**Version actuelle (sans alternance), avec et sans le filtre, frais de 1 point :**
+
+| | Avant le 28/10 | Depuis le 28/10 |
+|---|---|---|
+| Avec filtre | 299 trades, +97,90R (plafonné 5R +41,69R, creux −15,82R) | 66 trades, +7,43R |
+| Sans filtre | 455 trades, +61,78R (plafonné 5R −5,51R, creux −26,76R) | 76 trades, +19,83R |
+
+Constats :
+
+- **Depuis le 28/10, tout est meilleur sans le filtre** : les marchés ont monté, et les calls pris sous la
+  moyenne 20 jours ont gagné. A+R sans filtre atteint +31,8R sur 64 trades (t = 2,0), avec un pire creux
+  de −6,5R.
+- **Avant le 28/10, c'est l'inverse, et sur beaucoup plus de trades** : sans le filtre, A+R perd plus de
+  la moitié de son résultat à 1 point (+25,3R contre +53,5R), presque tout à 3 points (+2,1R contre
+  +41,2R), et la version turbo passe en perte (−13,1R contre +12,5R). Le pire creux fait plus que doubler
+  (−19,4R contre −8,7R sur la principale à 1 point).
+- **Sur les deux périodes réunies**, la version avec filtre reste devant avec deux fois moins de trades :
+  principale à 3 points +58,4R (164 trades) contre +30,2R (344 trades) ; turbo à 3 points +25,7R
+  (134 trades) contre +11,0R (285 trades).
+- Sans le filtre, A+R n'est plus positive sur les huit découpages : elle ne l'est nettement que depuis le
+  28/10.
+
+Lecture : l'avantage récent du « sans filtre » repose sur deux semaines et demie de hausse et une dizaine
+de calls de plus dans la version actuelle. Le filtre a été retenu le 27/10 parce que les calls sans
+filtre ne gagnaient rien sur cinq mois. Les deux semaines depuis vont dans l'autre sens, mais elles ne
+suffisent pas à l'annuler (t entre 1,0 et 2,0, seuil du registre 3,22).
+
 ## Conclusion
 
 | Piste | Verdict de l'audit |
@@ -209,6 +255,7 @@ variantes essayées ici : rien n'est prouvé.
 | Renfort à +1R | gain porté par quelques très gros trades ; ne tient pas avec les gains plafonnés |
 | Alternance du jour, retournement seul | ne ressortent pas |
 | **Alternance stricte avec retournement (A+R)** | **ressort sur les huit découpages, avec moins de trades et un creux réduit de moitié ; non prouvée (t ≤ 2,27)** |
+| A+R sans le filtre des calls | meilleure depuis le 28/10 seulement ; nettement moins bonne sur les cinq mois d'avant ; ne ressort pas |
 
 Empiler des ordres du même sens ne règle rien : cela multiplie le même pari. La règle d'alternance de
 l'utilisateur, dans sa version stricte, est en revanche la première variante de la principale qui ne se
