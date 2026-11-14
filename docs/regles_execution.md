@@ -170,3 +170,9 @@
     `docs/audit_ordres_multiples_2026-11-14.md`. L'alternance stricte avec retournement (A+R) ressort sur les
     huit découpages (moins de trades, pire creux réduit de moitié) mais **n'est pas prouvée** (t ≤ 2,27, seuil
     3,22). **Aucune règle modifiée** ; à figer en suivi en avant seulement sur décision de l'utilisateur.
+26. **Test 11 figé le 14/11/2026 (accord de l'utilisateur, moratoire levé pour ce seul test)** : règle
+    d'alternance de l'utilisateur (alternance stricte avec retournement) sur les signaux de la principale,
+    avec le filtre des calls (E1) et sans (E2), `docs/test_11_alternance_fige_2026-11-14.md`,
+    `scripts/frozen_15m_alternance.py`. **Suivi en avant uniquement** (trades entrés dès le dimanche 15/11 à
+    23h00), verdict à 100 trades clos par version, frein à −15R. **La principale n'est pas modifiée** et rien
+    ne passe en argent réel. Le moratoire reste en vigueur pour toute autre idée jusqu'au verdict du test 4.
