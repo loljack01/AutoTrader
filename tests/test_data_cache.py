@@ -105,3 +105,12 @@ def test_to_paris_converts_a_known_utc_summer_timestamp():
     df = cache.ingest("FCE1!", "1h", bars)
     paris = cache.to_paris(df)
     assert paris.index[0] == pd.Timestamp("2026-06-15 12:00", tz="Europe/Paris")
+
+
+def test_exchange_qualified_futures_name_reaches_the_bare_ticker_cache():
+    bars = [{"t": 1_700_000_000, "o": 1.0, "h": 2.0, "l": 0.5, "c": 1.5, "v": 10}]
+    cache.ingest("EURONEXT:FCE1!", "15m", bars)
+
+    assert cache.cache_path("EURONEXT:FCE1!", "15m") == cache.cache_path("FCE1!", "15m")
+    assert len(cache.load("FCE1!", "15m")) == 1
+    assert cache.canonical("ICEEUR:Z1!") == "ICEEUR:Z1!"

@@ -60,7 +60,7 @@ def load(files):
     frames = {"15m": cache.load(SYMBOL, "15m"), "1D": cache.load(SYMBOL, "1D")}
     for f in files:
         j = json.load(open(f))
-        if j.get("symbol") != SYMBOL or j.get("interval") not in frames:
+        if cache.canonical(j.get("symbol")) != SYMBOL or j.get("interval") not in frames:
             continue
         new = cache._bars_to_frame(j["bars"])
         d = pd.concat([frames[j["interval"]], new])

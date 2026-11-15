@@ -39,12 +39,26 @@ _INTERVAL_DURATIONS = {
 }
 
 
+# TradingView answers a bare continuous-futures ticker with its exchange-qualified listing
+# in the "symbol" field; the scripts key these markets on the bare ticker, so both names
+# must reach the same cache file.
+ALIASES = {
+    "EURONEXT:FCE1!": "FCE1!", "EUREX:FDAX1!": "FDAX1!", "EUREX:FESX1!": "FESX1!",
+    "CME_MINI:ES1!": "ES1!", "CME_MINI:NQ1!": "NQ1!", "EUREX:FSMI1!": "FSMI1!",
+    "CBOT_MINI:YM1!": "YM1!", "CME_MINI:RTY1!": "RTY1!", "EURONEXT:FIB1!": "FIB1!",
+}
+
+
+def canonical(symbol: str) -> str:
+    return ALIASES.get(symbol, symbol)
+
+
 def _safe_name(symbol: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", symbol).strip("_")
 
 
 def cache_path(symbol: str, interval: str) -> Path:
-    return CACHE_DIR / f"{_safe_name(symbol)}_{interval}.csv"
+    return CACHE_DIR / f"{_safe_name(canonical(symbol))}_{interval}.csv"
 
 
 def _bars_to_frame(bars) -> pd.DataFrame:
