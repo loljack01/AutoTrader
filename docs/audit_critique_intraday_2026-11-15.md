@@ -96,6 +96,11 @@ Depuis le 28/10, il y a une chance sur trois que la principale ne gagne rien, et
 | Forme turbo D, avant le 28/10 | 346 (173 000 EUR d'ordres) | +31 EUR | −65 EUR |
 | Principale, depuis le 28/10 | 66 (33 000 EUR d'ordres) | +35 EUR | +20 EUR |
 
+**Correction (même jour)** : le tableau ci-dessus multiplie le total en R par la valeur médiane d'un R. Avec des
+ordres de montant fixe, un R ne vaut pas la même chose d'un trade à l'autre (il dépend de la distance du
+stop). Calculé trade par trade (500 EUR × 2,8 × mouvement), la principale fait **+375 EUR** avant le 28/10
+(et non +460 EUR) et **+51 EUR** depuis (et non +35 EUR), à 1 pt.
+
 - Même en prenant l'historique pour argent comptant, la principale aurait rapporté 460 EUR en cinq mois
   pour 299 ordres, et sa forme exécutable 31 EUR.
 - **La règle de passage est hors d'atteinte** : elle demande +72R plafonnés à un contrôle, soit au moins
@@ -113,6 +118,31 @@ Depuis le 28/10, il y a une chance sur trois que la principale ne gagne rien, et
   son abandon.
 - **L'essentiel du temps de suivi va à l'intraday**, alors que la seule stratégie en argent réel est le
   swing.
+
+## 7. Les défauts relevés, du plus grave au moins grave
+
+Vérifiés dans le code, les sorties d'audit et l'historique Git (15/11/2026). Aucune règle n'a été testée.
+
+| # | Défaut | Constat vérifié |
+|---|---|---|
+| 1 | Pas d'avantage mesurable | t = 0,45 depuis le 28/10 ; une chance sur trois que la vraie moyenne soit nulle ou négative (deux sur cinq à 3 pts) |
+| 2 | Le résultat en R trompe pour des ordres à montant fixe | +97,9R avant le 28/10 ne valent que +375 EUR ; les 10 meilleurs trades font +320 EUR, les 289 autres environ +55 EUR. Le plus gros (+39R, put FTSE 100, stop à 0,1 % du cours, gardé 43 jours) vaut 64 EUR |
+| 3 | Le moteur trade la nuit | le filtre horaire ne bloque que 9h00-9h15 et le quart d'heure suivant l'ouverture américaine ; il laisse passer 22h-8h, 8h-9h (« peu fiable ») et après 17h30 (« dégradé »). 49 trades de nuit avant le 28/10, quand les turbos ne cotent pas ; stops de nuit plus serrés (0,24 % contre 0,34 %), qui gonflent les R |
+| 4 | Les annonces économiques ne sont pas filtrées | la règle « rien dans les 15 minutes autour d'une annonce » n'existe que pour l'exécution humaine : le moteur ne reçoit jamais le calendrier (`major_events` n'est passé nulle part). Le suivi compte des trades que la règle d'exécution interdit |
+| 5 | Pas de sortie dans le temps | un trade attend sa cible, parfois une poche lointaine : jusqu'à 43 jours, un sur quatre plus de 24 h. Ce n'est pas de l'intraday |
+| 6 | La plupart des « balayages » portent sur des niveaux déjà cassés | 62 % des balayages (210 sur 339) visent une poche que le prix avait déjà franchie en clôture avant (audit du 06/11) : ce n'est pas la liquidité intacte que décrit la théorie |
+| 7 | Une moitié de la stratégie n'a jamais rien rapporté | calls : +0,3R en 82 trades avant le 28/10 ; le filtre des calls a été choisi sur cette même période |
+| 8 | Positions contradictoires | un call et un put ouverts en même temps sur le même indice 60 fois : on paie des frais pour être couvert |
+| 9 | Réglages jamais justifiés | fenêtre de 4 h, marge de 8 points, stop à 2 ATR, rapport minimum de 1,3, pivots à 2 bougies ; des signaux se jouent au demi-point (13/11) |
+| 10 | Les frais décident de tout | la forme exécutable est à +6,5R à 1 pt et −13,8R à 3 pts sur l'historique ; le coût réel d'un aller-retour en turbo n'a pas été mesuré pour l'intraday |
+| 11 | Données courtes et partiellement fausses | 15 minutes disponibles depuis mai-août 2026 seulement (limite du fournisseur, impossible à allonger) ; ouvertures du FTSE 100 fausses dans 89 % des séances (concerne « l'écart continue ») ; 8 à 35 % de minutes manquantes en 1 minute (concerne le filtre delta) |
+| 12 | Processus | 84 décisions au registre sur les mêmes cinq mois ; tests 9 à 11 ajoutés sur une base dont la forme exécutable est à 0,6R de l'abandon |
+
+**Ce qui tient** : le suivi n'est pas réécrit après coup (21 versions du fichier de suivi comparées depuis le
+28/10 : aucun trade clos disparu ni modifié), et les contrôles de reproduction sont tous identiques.
+
+Les défauts 3 et 4 se corrigeraient dans le moteur, mais ce serait une règle nouvelle, donc le test d'un
+mois (règle 29), et sur une famille qui s'arrête si D est abandonnée (règle 30).
 
 ## Ce que j'en conclus
 
