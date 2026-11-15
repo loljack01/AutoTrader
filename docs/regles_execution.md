@@ -180,3 +180,31 @@
     les puts »)** : version E3 ajoutée (alternance avec le filtre de tendance sur les calls ET sur les puts :
     puts seulement sous la moyenne 20 jours), même verdict ; E1 reste la version par défaut. Aucun trade en
     avant n'existait au moment de l'amendement.
+28. **Contrôle du swing européen APRÈS la clôture (décision de l'utilisateur, dimanche 15/11/2026)** : la
+    routine « Swing avant clôture Europe » passe de 17h12 à **17h55**, avec les cours de clôture définitifs
+    (`scripts/swing_preclose.py --apres-cloture`). Raisons : le 13/11 la routine de 17h12 a tourné à 17h33,
+    après la clôture ; avant la clôture le signal n'est jamais certain (16 désaccords sur 41 au rejeu du
+    06/11) ; les cours du DAX et du SMI arrivent avec 15 minutes de retard chez TradingView, donc le
+    contrôle de 17h12 les lisait à 16h57 ; les turbos retenus cotent jusqu'à 22h. L'ordre se passe dès la
+    réponse de la routine. Journal : `prix_entree` = clôture de l'indice (le cours du signal), `heure_ordre`
+    renseignée, prix du turbo noté. Le stop affiché est provisoire (ATR de la veille) : le bilan de 22h15
+    donne le stop exact. La règle 17 (« À CONFIRMER ») ne concerne plus que les indices américains, dont le
+    contrôle reste avant la clôture (21h42), puisque les turbos cessent de coter à 22h. Limite : l'écart
+    entre la clôture et le cours réel au moment de l'achat n'est plus visible dans le cours d'indice du
+    journal ; il se lit sur le prix du turbo et l'heure.
+29. **Limite de recherche (décision de l'utilisateur, dimanche 15/11/2026 ; remplace le moratoire du
+    point 12)** : **au plus un nouveau test par mois calendaire**, décidé un dimanche. Compte comme test tout
+    calcul d'une règle ou d'une variante nouvelle, sur l'historique ou en suivi en avant, y compris dans un
+    « audit ». Ne comptent pas : relire ou décrire des trades existants, corriger l'outillage, lancer les
+    scripts déjà figés. Novembre 2026 est consommé (tests 9, 10, 11 et audits du 14/11) : prochain test
+    possible à partir du 1er décembre 2026. **Avant d'exécuter une demande qui dépasse la limite, Claude le
+    rappelle et n'exécute que si l'utilisateur confirme explicitement qu'il lève la limite pour ce test.** Le
+    test 8 (figé, non lancé) compte comme le test du mois où il est lancé. Les autres règles du point 12
+    restent : règle et critère dans un commit, résultat dans un autre, inscription au registre.
+30. **Arrêt de la famille de la principale si la condition D est abandonnée (décision de l'utilisateur,
+    dimanche 15/11/2026)** : si la variante D « exécutable turbo » est abandonnée selon sa règle
+    séquentielle (cumul plafonné à 5R ≤ −15R à un moment quelconque, ≤ 0 à partir de 200 trades, ou 600
+    trades sans passer), on arrête de lancer et de commenter : la principale (SMA20 et SMA10), les variantes
+    A à D, les tests 8 à 11, le filtre delta et le pétrole. Ne sont pas concernés : le swing, « l'écart
+    continue », P2, et le simple balayage (qui garde son verdict à 100 trades). `frozen_15m_variants.py`
+    affiche le rappel dès que D est abandonnée.

@@ -39,7 +39,14 @@ the lowest leverage available at Boursomarkets (CAC 40: strike 5 250,
 leverage 2.79). The loss at the stop is then 500 x 2.8 x stop distance
 (about 40-50 EUR, 1R), no longer 25 EUR; the script prints it per signal.
 
-Usage: python scripts/swing_preclose.py SYMBOL=PRICE [SYMBOL=PRICE ...]
+User's decision of 15/11/2026 (rule 28): for the European indices the check runs AFTER the
+close (17h55 Paris, once the closing auction and the 15-minute delay of the DAX and SMI quotes
+have passed), with the final closes, because the turbos quote until 22h. With --apres-cloture
+the prices given are final closes: no "A CONFIRMER", no "a surveiller", and the wording says
+the order is to be passed now. The stop still uses yesterday's ATR(14): the evening report
+gives the exact one. The US check stays before the close (the turbos stop quoting at 22h).
+
+Usage: python scripts/swing_preclose.py [--apres-cloture] SYMBOL=PRICE [SYMBOL=PRICE ...]
   e.g. EURONEXT:PX1=8205.4 XETR:DAX=26325
 """
 
@@ -105,7 +112,9 @@ def us_close_paris(today):
 
 
 def main():
-    prices = dict(a.split("=") for a in sys.argv[1:])
+    final = "--apres-cloture" in sys.argv
+    prices = dict(a.split("=") for a in sys.argv[1:] if "=" in a)
+    when = "maintenant (cloture definitive)" if final else "avant la cloture"
     today = pd.Timestamp.now(tz="Europe/Paris").normalize()
     t = read_csv(TRADES)
     if len(t):
@@ -131,11 +140,11 @@ def main():
             x = pos.iloc[0]
             days = int(np.busday_count(pd.Timestamp(x.entree).date(), today.date()))
             why = "cours > SMA5" if p > s5 else (f"{MAX_DAYS}e jour" if days >= MAX_DAYS else "")
-            near = abs(p - s5) / p < NEAR
+            near = not final and abs(p - s5) / p < NEAR
             if why:
                 exits += 1
             lines.append(f"  {name}: position ouverte (entree {x.prix_entree}), cours {p:.2f}, SMA5 {s5:.2f} -> "
-                         + (f"SORTIE avant la cloture ({why})" if why else "garder") + f", stop {x.stop}"
+                         + (f"SORTIE {when} ({why})" if why else "garder") + f", stop {x.stop}"
                          + (" -- A CONFIRMER (cours a moins de 0,3 % de la SMA5)" if near and why != f"{MAX_DAYS}e jour" else ""))
             continue
         if name in names_busy:
@@ -144,9 +153,11 @@ def main():
                              f"ignore, ou entree deja faite aujourd'hui) -> pas d'entree")
             continue
         p_rsi = rsi_threshold_price(d.Close)
-        near = abs(p - p_rsi) / p < NEAR or abs(p - s200) / p < NEAR
+        near = not final and (abs(p - p_rsi) / p < NEAR or abs(p - s200) / p < NEAR)
         if p > s200 and r < 10:
             signals.append((r, name, p, atr, near, p_rsi, s200))
+        elif final:
+            continue
         elif p > s200 and r < 20:
             lines.append(f"  {name}: a surveiller, RSI(2) {r:.1f} (signal sous 10 a la cloture, soit un cours sous "
                          f"{p_rsi:.2f})" + (f" -- A CONFIRMER (SMA200 a {s200:.2f})" if abs(p - s200) / p < NEAR else ""))
@@ -159,12 +170,13 @@ def main():
         take = k < free
         lev = LEV_BY_INDEX.get(name, LEV_TURBO)
         loss = MIN_ORDER * lev * risk / p
-        lines.append(f"  {name}: ENTREE {'a prendre' if take else 'ignoree (5 positions)'} avant la cloture, RSI(2) {r:.1f}, "
+        lines.append(f"  {name}: ENTREE {'a prendre' if take else 'ignoree (5 positions)'} {when}, RSI(2) {r:.1f}, "
                      f"cours {p:.2f}, stop {p - risk:.2f} ({risk / p:.1%}) -> ordre {MIN_ORDER:.0f} EUR en turbo call au levier "
                      f"le plus bas disponible (~{lev:.1f}, barriere ~{1 / lev:.0%} sous le cours) : exposition "
                      f"~{MIN_ORDER * lev:.0f} EUR, perte au stop ~{loss:.0f} EUR (= 1R ; moins si un turbo de levier plus "
                      f"bas existe)" + (f" -- A CONFIRMER (seuil RSI a {p_rsi:.2f}, SMA200 {s200:.2f})" if near else ""))
-    print(f"Swing, verification avant la cloture ({n_open} position(s) ouverte(s), {exits} sortie(s) du jour, "
+    head = "APRES la cloture europeenne, cours definitifs, stop provisoire (ATR de la veille)" if final else "avant la cloture"
+    print(f"Swing, verification {head} ({n_open} position(s) ouverte(s), {exits} sortie(s) du jour, "
           f"{max(free, 0)} place(s) libre(s)) ; cloture US aujourd'hui a {us_close_paris(today)} (heure de Paris) :")
     print("\n".join(lines) if lines else "  rien a faire")
 

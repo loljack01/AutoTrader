@@ -73,14 +73,14 @@ compte comme signal manqué au contrôle d'exécution).
 
 ## Horaires et calendriers
 
-| Indice | Clôture (heure de Paris) | Enchère de clôture | Contrôle avant clôture | Jours fériés propres (marché fermé) |
+| Indice | Clôture (heure de Paris) | Enchère de clôture | Contrôle du swing | Jours fériés propres (marché fermé) |
 |---|---|---|---|---|
-| CAC 40 | 17h30 | 17h30-17h35 | 17h12 | Euronext : 1er janvier, Vendredi saint, lundi de Pâques, 1er mai, 25 et 26 décembre |
-| DAX | 17h30 | 17h30-17h35 (Xetra) | 17h12 | Xetra : comme Euronext, plus 24 et 31 décembre |
-| Euro Stoxx 50 | 17h30 | — (indice calculé) | 17h12 | Eurex / STOXX : comme Euronext |
-| FTSE MIB | 17h30 | 17h30-17h35 | 17h12 | Borsa Italiana : comme Euronext, plus 24 et 31 décembre, 15 août |
-| FTSE 100 | 17h30 (16h30 Londres) | 17h30-17h35 | 17h12 | Royaume-Uni : lundis fériés (début mai, fin mai, fin août), 26 décembre |
-| SMI | 17h30 | 17h20-17h30 | 17h12 | Suisse : 2 janvier, Ascension, lundi de Pentecôte, 1er août, 24 et 31 décembre |
+| CAC 40 | 17h30 | 17h30-17h35 | 17h55, après la clôture (règle 28) | Euronext : 1er janvier, Vendredi saint, lundi de Pâques, 1er mai, 25 et 26 décembre |
+| DAX | 17h30 | 17h30-17h35 (Xetra) | 17h55, après la clôture (règle 28) | Xetra : comme Euronext, plus 24 et 31 décembre |
+| Euro Stoxx 50 | 17h30 | — (indice calculé) | 17h55, après la clôture (règle 28) | Eurex / STOXX : comme Euronext |
+| FTSE MIB | 17h30 | 17h30-17h35 | 17h55, après la clôture (règle 28) | Borsa Italiana : comme Euronext, plus 24 et 31 décembre, 15 août |
+| FTSE 100 | 17h30 (16h30 Londres) | 17h30-17h35 | 17h55, après la clôture (règle 28) | Royaume-Uni : lundis fériés (début mai, fin mai, fin août), 26 décembre |
+| SMI | 17h30 | 17h20-17h30 | 17h55, après la clôture (règle 28) | Suisse : 2 janvier, Ascension, lundi de Pentecôte, 1er août, 24 et 31 décembre |
 | S&P 500, Nasdaq 100, Dow Jones, Russell 2000 | **22h00** (16h00 New York) ; **21h00** les semaines de décalage d'heure d'été (environ 2e et 3e semaines de mars, dernière semaine d'octobre) | — | 21h42 (20h42 les semaines de décalage) | États-Unis : 1er janvier, Martin Luther King (3e lundi de janvier), Presidents' Day (3e lundi de février), Vendredi saint, Memorial Day (dernier lundi de mai), 19 juin, 4 juillet, Labor Day (1er lundi de septembre), Thanksgiving (4e jeudi de novembre), 25 décembre |
 
 **Clôtures anticipées aux États-Unis (13h00 New York = 19h00 Paris)** : lendemain de

@@ -136,6 +136,10 @@ def main():
             sn, scum, state = summary["_seqD"]
             print(f"Condition du passage en reel (D, regle sequentielle a 3pt) : {sn} trades, cumul plafonne 5R "
                   f"{scum:+.1f}R, objectif +{SEQ_PASS:.0f}R aux controles de 100 en 100, frein {SEQ_BRAKE:+.0f}R -> {state}")
+            if state.startswith("ABANDON"):  # tooling only, user's decision of 15/11/2026 (rule 30)
+                print("REGLE 30 (15/11) : la condition D est abandonnee -> ARRET de la famille de la principale "
+                      "(principale SMA20 et SMA10, variantes A a D, tests 8 a 11, filtre delta, petrole). "
+                      "Le swing, l'ecart continue, P2 et le simple balayage ne sont pas concernes.")
             continue
         if n >= VERDICT_TRADES:
             better = cap > base[3] and net3 > 0
