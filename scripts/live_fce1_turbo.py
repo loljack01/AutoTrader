@@ -65,7 +65,19 @@ def main():
     paris = lambda ts: ts.tz_convert("Europe/Paris").strftime("%d/%m %H:%M")
     d = bt.cache.closed_bars(bt.cache.load("FCE1!", "15m"), "15m", now)
     today = now.tz_convert("Europe/Paris").date()
-    t = run("FCE1!", d, 3.0, **D_KW)
+    # The engine flags the LAST bar of its input as the last bar of the day (end of data). Live, that bar is
+    # mid-session, so the engine would refuse an entry on the newest closed bar and close any open position
+    # "eod" on it (bug seen on 16/11 at 13h00). A flat sentinel bar at the last close is appended so that the
+    # newest real bar is judged like any intraday bar; the sentinel itself cannot touch a stop or target that
+    # the real bar did not already touch. Entries on the sentinel are dropped, exits on it mean "still open".
+    sentinel = d.index[-1] + pd.Timedelta(minutes=15)
+    c = float(d.Close.iloc[-1])
+    flat = pd.DataFrame({"Open": c, "High": c, "Low": c, "Close": c, "Volume": 0}, index=[sentinel])
+    t = run("FCE1!", pd.concat([d, flat[d.columns]]), 3.0, **D_KW)
+    t = t[t.entry_time < sentinel].copy()
+    still_open = t.exit_time == sentinel
+    t.loc[still_open, "result"] = "open"
+    t.loc[still_open, ["exit_time", "net_r"]] = [pd.NaT, float("nan")]
     t = t[(t.entry_time.dt.tz_convert("Europe/Paris").dt.date == today) | (t.result == "open")]
 
     path = Path(args.state)
