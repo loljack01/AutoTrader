@@ -208,3 +208,40 @@
     A à D, les tests 8 à 11, le filtre delta et le pétrole. Ne sont pas concernés : le swing, « l'écart
     continue », P2, et le simple balayage (qui garde son verdict à 100 trades). `frozen_15m_variants.py`
     affiche le rappel dès que D est abandonnée.
+31. **Règles de lecture du volume et de l'analyse de séance (décision de l'utilisateur, lundi 16/11/2026,
+    après l'analyse de la séance du FCE1 en 1, 5, 15 et 30 minutes)** : ce sont des règles de **lecture**
+    pour nos analyses et le suivi en direct. **Le volume n'entre dans aucune règle de stratégie** : aucune
+    règle figée n'est modifiée, et ces règles ne sont pas un test (règle 29).
+    1. **Le volume ne déclenche jamais un trade, il confirme ou il infirme.** Ordre de lecture fixe : le
+       niveau, puis la réaction du prix sur ce niveau, puis le volume. Un pic sans niveau ni réaction est
+       ignoré, quelle que soit sa taille.
+    2. **Le volume se compare à la normale de son heure, jamais aux bougies précédentes.** Référence : la
+       médiane du même créneau (heure de Paris) sur les séances passées (60 en 5 et 15 minutes, l'historique
+       disponible en 1 minute), avec le rang. **Anormal seulement au-delà du 90e rang (fort) ou en deçà du
+       10e (faible).** Raison : le 16/11, les « pics » lus à 9h00, 15h30 et 17h30 (dont un « climax de 11× »
+       à 17h34) étaient au niveau ou sous la normale de leur heure. Le suivi en direct affiche cette mesure
+       (ligne « Volume » de `scripts/live_fce1_turbo.py`).
+    3. **Minutes exclues de la lecture** (volume et mèches ne sont pas des signaux) : les enchères
+       d'ouverture (9h00) et de clôture (17h30 à 17h35) du cash, l'ouverture de Wall Street (15h30) et
+       les quelques minutes autour d'une publication macro du calendrier.
+    4. **Les niveaux clés sont listés avant 9h00** dans le plan de journée (plus haut et plus bas de la
+       veille, poches de liquidité, plus haut et plus bas sur 20 jours), puis complétés au fil de la séance
+       par le plus haut et le plus bas du jour. Un pic de volume ne compte que s'il se produit tout près
+       d'un de ces niveaux. Le 16/11, sur 8 épisodes de volume anormalement fort en 1 minute, les 3 utiles
+       étaient sur un niveau et les 5 autres au milieu du range ou du drapeau.
+    5. **Une réaction du prix est exigée dans la même minute ou la suivante** : une grande mèche contre le
+       mouvement au niveau (absorption) ou une clôture au-delà du niveau (initiative). Sinon, le volume ne
+       compte pas.
+    6. **On compte des épisodes, pas des minutes** : des pics à moins de 5 minutes d'écart forment un seul
+       épisode.
+    7. **Pour le jeu réel, le volume se lit sur les bougies de 15 minutes** (ligne « Volume » du suivi). La
+       bougie de 1 minute sert à comprendre une séance après coup, pas à décider : latence et écart de prix
+       d'un turbo.
+    8. **Le cache de 1 minute est rafraîchi** pour viser au moins 60 séances d'historique (43 au 16/11).
+    9. **Toute lecture de séance faite après coup le dit** : critères choisis en connaissant la fin, une
+       seule séance, aucune valeur de test. Les cibles et les bords de range utilisés sont ceux **connus au
+       moment de l'entrée**, jamais un sommet ou un creux apparu ensuite.
+    Une règle de trading tirée de ces lectures (par exemple « volume anormalement faible à l'approche d'un
+    bord du range, jouer le retour ») serait un nouveau test au sens de la règle 29 : définitions écrites
+    avant, décision un dimanche, au plus tôt en décembre 2026, jugement sur au moins une centaine
+    d'épisodes au seuil du registre.
