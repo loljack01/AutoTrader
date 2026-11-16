@@ -49,6 +49,37 @@ def day_extremes(now):
     return "Extremes : " + " | ".join(out) if out else "Extremes : pas encore de bougie aujourd'hui"
 
 
+AUCTION_SLOTS = {"09h00": "ouverture du cash", "17h30": "fixing de cloture"}
+
+
+def volume_line(d, sessions=60):
+    """Volume of the last closed 15m bar against the same Paris slot over the previous sessions (median and
+    rank), for display only: the variant's rules do not use it. Comparing with the previous bars instead would
+    flag the scheduled surges (9h00 cash open, 15h30 US open, 17h30 closing auction) as signals (see the
+    analysis of 16/11/2026). A bar is called abnormal only above the 90th or below the 10th percentile of its
+    slot; the 9h00 and 17h30 bars are auctions and are not read as signals at all."""
+    allb = bt.cache.load("FCE1!", "15m")
+    p = allb.index.tz_convert("Europe/Paris")
+    last = d.index[-1].tz_convert("Europe/Paris")
+    slot = last.strftime("%Hh%M")
+    hist = allb.Volume[(p.strftime("%Hh%M") == slot) & (p.date < last.date())].tail(sessions)
+    v = float(d.Volume.iloc[-1])
+    if len(hist) < 10:
+        return f"Volume : bougie de {slot} {v:.0f} contrats ; historique de ce creneau trop court ({len(hist)} seances)"
+    med = float(hist.median())
+    rank = (hist < v).mean() * 100
+    if slot in AUCTION_SLOTS:
+        verdict = f"{AUCTION_SLOTS[slot]} : volume toujours fort a cette heure, a ne pas lire comme un signal"
+    elif rank >= 90:
+        verdict = "ANORMALEMENT FORT pour cette heure"
+    elif rank <= 10:
+        verdict = "ANORMALEMENT FAIBLE pour cette heure"
+    else:
+        verdict = "normal pour cette heure"
+    return (f"Volume : bougie de {slot} {v:.0f} contrats ; normale du creneau {med:.0f} (mediane de {len(hist)} seances) ; "
+            f"{v / med:.1f}x la normale, {rank:.0f}e centile : {verdict}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--state", required=True)
@@ -105,6 +136,7 @@ def main():
                                                f"cible {x.take:.1f})" for x in opened.itertuples())) if len(opened) else "aucune position"
     print(f"FCE1 version turbo, derniere bougie close a {paris(last)} (Paris), dernier cours {d.Close.iloc[-1]:.1f} ; {state}")
     print(day_extremes(now))
+    print(volume_line(d))
     print("\n".join(out) if out else "rien de nouveau")
 
 
