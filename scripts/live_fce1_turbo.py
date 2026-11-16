@@ -29,6 +29,26 @@ D_KW = {"entry_hours": (8, 21.5), "session_exit": 21.75}
 ORDER, LEVERAGE = 500.0, 2.8
 
 
+def day_extremes(now):
+    """Running high / low of the day (from 8:00 and from the 9:00 cash open, forming bar included) and of the
+    previous session, for display only: the variant's rules do not use them."""
+    all_bars = bt.cache.load("FCE1!", "15m")
+    all_bars = all_bars[all_bars.index <= now]
+    p = all_bars.index.tz_convert("Europe/Paris")
+    today = now.tz_convert("Europe/Paris").date()
+    hhmm = lambda ts: ts.tz_convert("Europe/Paris").strftime("%Hh%M")
+    out = []
+    for label, m in (("depuis 8h", (p.date == today)), ("depuis 9h (cash)", (p.date == today) & (p.hour >= 9))):
+        x = all_bars[m]
+        if len(x):
+            out.append(f"{label} : haut {x.High.max():.1f} ({hhmm(x.High.idxmax())}), bas {x.Low.min():.1f} ({hhmm(x.Low.idxmin())})")
+    prev = sorted(set(d for d in p.date if d < today))
+    if prev:
+        y = all_bars[p.date == prev[-1]]
+        out.append(f"veille : haut {y.High.max():.1f}, bas {y.Low.min():.1f}")
+    return "Extremes : " + " | ".join(out) if out else "Extremes : pas encore de bougie aujourd'hui"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--state", required=True)
@@ -72,6 +92,7 @@ def main():
     state = ("position ouverte : " + ", ".join(f"{'CALL' if x.take > x.entry else 'PUT'} a {x.entry:.1f} (stop {x.stop:.1f}, "
                                                f"cible {x.take:.1f})" for x in opened.itertuples())) if len(opened) else "aucune position"
     print(f"FCE1 version turbo, derniere bougie close a {paris(last)} (Paris), dernier cours {d.Close.iloc[-1]:.1f} ; {state}")
+    print(day_extremes(now))
     print("\n".join(out) if out else "rien de nouveau")
 
 
