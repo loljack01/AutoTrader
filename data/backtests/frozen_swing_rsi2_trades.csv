@@ -1,2 +1,7 @@
 marche,entree,prix_entree,stop,pris,sortie,prix_sortie,r_brut,net_r_005,net_r_010
 S&P 500,2026-11-16,7416.59,7136.83,True,,,,,
+Euro Stoxx 50,2026-11-17,6212.12,6002.93,True,,,,,
+FTSE MIB,2026-11-17,50845.8,48980.5,True,,,,,
+DAX,2026-11-17,26045.37,25140.71,True,,,,,
+CAC 40,2026-11-17,8216.78,7976.68,True,,,,,
+FTSE 100,2026-11-17,10689.86,10392.54,False,,,,,
