@@ -257,3 +257,11 @@
     Le signal S&P 500 du 16/11/2026 (entrée 7416,59, stop 7136,83, transmis par le bilan du 16/11) n'a pas
     été acheté non plus (l'utilisateur, 19/11/2026 : « Non je n'ai rien acheté ») : même traitement, non
     exécuté, rien au journal, le modèle le garde. Au 19/11, aucune position réelle n'est ouverte.
+33. **Signal swing non exécuté le jour même : jamais acheté après coup (décision de l'utilisateur, jeudi
+    19/11/2026, « Oui, en faire la règle générale »)** : un signal d'entrée du swing qui n'est pas exécuté le
+    soir du signal (avant 22h, heure de fin de cotation des turbos), quelle qu'en soit la raison (signal non
+    transmis, données indisponibles, absence, choix de ne pas le prendre), n'est jamais acheté les jours
+    suivants. Il est compté comme manqué : rien au journal `data/journal_swing.csv`, non exécuté dans le
+    contrôle d'exécution à 30 trades. Le modèle figé n'est pas modifié : il garde la position, qui occupe
+    sa place (indice OCCUPÉ, limite de 5 positions) jusqu'à sa sortie selon ses règles. Les cas du 16/11
+    (S&P 500) et du 17/11 (règle 32) en sont la première application.
