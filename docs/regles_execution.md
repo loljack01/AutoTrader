@@ -254,3 +254,6 @@
     comptent comme non exécutées dans le contrôle d'exécution à 30 trades. Rien n'est écrit au journal
     `data/journal_swing.csv` pour ces signaux (aucune exécution). Cette décision vaut pour ces 4 signaux ;
     une règle générale pour les signaux manqués reste à décider par l'utilisateur.
+    Le signal S&P 500 du 16/11/2026 (entrée 7416,59, stop 7136,83, transmis par le bilan du 16/11) n'a pas
+    été acheté non plus (l'utilisateur, 19/11/2026 : « Non je n'ai rien acheté ») : même traitement, non
+    exécuté, rien au journal, le modèle le garde. Au 19/11, aucune position réelle n'est ouverte.
