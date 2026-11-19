@@ -245,3 +245,12 @@
     bord du range, jouer le retour ») serait un nouveau test au sens de la règle 29 : définitions écrites
     avant, décision un dimanche, au plus tôt en décembre 2026, jugement sur au moins une centaine
     d'épisodes au seuil du registre.
+32. **Signaux swing du 17/11/2026 non reçus à temps : comptés comme manqués (décision de l'utilisateur,
+    jeudi 19/11/2026, « Les compter comme manquer »)** : les 4 entrées à la clôture du 17/11 (Euro Stoxx 50
+    6212,12, FTSE MIB 50845,80, DAX 26045,37, CAC 40 8216,78) n'ont pas été transmises le soir même (quota
+    journalier de TradingView épuisé, contrôle de 17h55 et bilan de 22h15 sans données). Elles ne sont pas
+    achetées avec retard. Le modèle figé les garde comme positions prises (règles inchangées : elles
+    occupent leur place, l'indice reste OCCUPÉ, et la limite de 5 positions joue jusqu'à leur sortie) ; elles
+    comptent comme non exécutées dans le contrôle d'exécution à 30 trades. Rien n'est écrit au journal
+    `data/journal_swing.csv` pour ces signaux (aucune exécution). Cette décision vaut pour ces 4 signaux ;
+    une règle générale pour les signaux manqués reste à décider par l'utilisateur.
