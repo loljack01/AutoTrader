@@ -265,3 +265,12 @@
     contrôle d'exécution à 30 trades. Le modèle figé n'est pas modifié : il garde la position, qui occupe
     sa place (indice OCCUPÉ, limite de 5 positions) jusqu'à sa sortie selon ses règles. Les cas du 16/11
     (S&P 500) et du 17/11 (règle 32) en sont la première application.
+34. **Budget d'appels TradingView (décision de l'utilisateur, jeudi 19/11/2026, « Allège les routines pour
+    rester sous le quota »)** : l'abonnement autorise environ 50 appels par jour (et environ 25 par minute) ;
+    les 17 et 18/11, le quota épuisé a fait échouer les contrôles swing et le bilan du soir. Priorité aux
+    appels du swing en argent réel. Budget d'une journée de semaine : plan du matin 4 appels (CAC seul en
+    données fraîches, Nasdaq et pétrole depuis le cache de la veille, plus d'actualités ni de calendrier des
+    résultats), contrôles swing 1 appel chacun, bilan du soir 34 appels (par groupes de 10, swing d'abord),
+    données 1 minute 5 appels les mardi, mercredi et jeudi (US mardi et jeudi, Europe mercredi) et 10 le
+    samedi, CAC40 cash 1 minute le samedi seulement. Les demandes en direct (lecture minute par minute)
+    coûtent un appel par point : au plus 15 minutes, ou un point toutes les 5 minutes.
