@@ -34,3 +34,15 @@ date_seance,symbole,niveau,role,importance,raison,fixe_le
 2026-11-19,FCE1!,8138.5,support,forte,plus bas du 18/11 et de la semaine (17h25 juste avant le fixing),2026-11-19 12h10
 2026-11-19,FCE1!,8113.5,support,moyenne,plus bas du 09/11,2026-11-19 12h10
 2026-11-19,FCE1!,8100.0,support,moyenne,chiffre rond,2026-11-19 12h10
+2026-11-20,FCE1!,8202.0,resistance,forte,zone 8200-8203 : double rejet du 19/11 (9h00 et 9h38) sans acheteurs ; sommet du 18/11 a 16h30,2026-11-19 18h05
+2026-11-20,FCE1!,8183.0,resistance,moyenne,zone 8180-8185.5 : ouverture du 19/11 et rebond de 12h31 arrete a 8180,2026-11-19 18h05
+2026-11-20,FCE1!,8155.0,resistance,moyenne,zone 8149-8157.5 : ancien support (reglement du 18/11) ; rebond de 13h15 arrete a 8157.5 puis casse a 13h45,2026-11-19 18h05
+2026-11-20,FCE1!,8138.5,resistance,forte,plus bas de la semaine jusqu'au 19/11 ; a tenu de 14h28 a 16h00 puis casse a 16h05-16h06 avec le seul volume anormal du jour (100e rang),2026-11-19 18h05
+2026-11-20,FCE1!,8113.5,resistance,moyenne,plus bas du 09/11 ; casse a 16h15-16h30 le 19/11,2026-11-19 18h05
+2026-11-20,FCE1!,8105.0,resistance,forte,zone 8100-8109 : chiffre rond casse a 16h30 ; rebond de 16h45 arrete a 8109 ; recasse a 17h15,2026-11-19 18h05
+2026-11-20,FCE1!,8091.5,pivot,faible,cours a 17h49 le 19/11 (a remplacer par le dernier cours de 22h),2026-11-19 18h05
+2026-11-20,FCE1!,8077.0,support,forte,plus bas du 19/11 a 17h34 (fixing de cloture) ; rebond vers 8095 ensuite,2026-11-19 18h05
+2026-11-20,FCE1!,8050.0,support,moyenne,chiffre rond,2026-11-19 18h05
+2026-11-20,FCE1!,8031.5,support,moyenne,zone 8028-8035 : plus bas du 04/11 (8028) et du 15/09 (8035),2026-11-19 18h05
+2026-11-20,FCE1!,8002.0,support,forte,zone 8000-8004.5 : chiffre rond et plus bas du 06/11 (8004.5) ; support majeur,2026-11-19 18h05
+2026-11-20,FCE1!,7920.0,support,moyenne,zone 7910-7929.5 : plus bas des 29/10 (7910.5) et 30/10 (7929) ; a environ 1 ATR sous le plus bas du 19/11,2026-11-19 18h05
