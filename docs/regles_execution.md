@@ -245,6 +245,19 @@
     bord du range, jouer le retour ») serait un nouveau test au sens de la règle 29 : définitions écrites
     avant, décision un dimanche, au plus tôt en décembre 2026, jugement sur au moins une centaine
     d'épisodes au seuil du registre.
+    **Complément du 20/11/2026 (décision de l'utilisateur : « Oui les 2 ») : semaine d'échéance du future.**
+    Le future CAC 40 expire le 3e vendredi du mois à 16h. Pendant la semaine d'échéance, les échanges passent
+    sur le contrat suivant alors que FCE1! reste sur le contrat sortant jusqu'au jour d'échéance : son volume
+    s'effondre (19/11 : 13 260 contrats sur novembre contre 32 519 sur décembre ; la « baisse sans vendeurs »
+    lue ce jour-là était un artefact, avec les contrats cumulés la baisse de 16h30 à 18h30 s'est faite sur un
+    volume anormalement fort, rangs 90 à 98). Outillage (ce n'est pas un test, règle 29) :
+    `scripts/volume_normal.py` (et la ligne « Volume » de `scripts/live_fce1_turbo.py`) calcule la normale
+    hors semaines d'échéance (du lundi au vendredi d'échéance) et, pendant une semaine d'échéance, ajoute au
+    volume de FCE1! celui du contrat suivant (`EURONEXT:FCE<code mois><année>`, par exemple
+    `EURONEXT:FCEZ2026`, un appel de plus, ingéré sous ce nom) ; sans lui, la lecture est marquée « non
+    fiable ». La fenêtre du règlement final (15h40-16h le jour d'échéance) s'ajoute aux minutes exclues. Les
+    niveaux de `data/niveaux_cles.csv` portent le nom du contrat quand il diffère de FCE1! (par exemple
+    `FCEZ2026` le 20/11, décembre = novembre + 7,5 points).
 32. **Signaux swing du 17/11/2026 non reçus à temps : comptés comme manqués (décision de l'utilisateur,
     jeudi 19/11/2026, « Les compter comme manquer »)** : les 4 entrées à la clôture du 17/11 (Euro Stoxx 50
     6212,12, FTSE MIB 50845,80, DAX 26045,37, CAC 40 8216,78) n'ont pas été transmises le soir même (quota

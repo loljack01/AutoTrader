@@ -57,27 +57,32 @@ def volume_line(d, sessions=60):
     rank), for display only: the variant's rules do not use it. Comparing with the previous bars instead would
     flag the scheduled surges (9h00 cash open, 15h30 US open, 17h30 closing auction) as signals (see the
     analysis of 16/11/2026). A bar is called abnormal only above the 90th or below the 10th percentile of its
-    slot; the 9h00 and 17h30 bars are auctions and are not read as signals at all."""
-    allb = bt.cache.load("FCE1!", "15m")
-    p = allb.index.tz_convert("Europe/Paris")
-    last = d.index[-1].tz_convert("Europe/Paris")
+    slot; the 9h00 and 17h30 bars are auctions and are not read as signals at all. Since 20/11/2026 the volume
+    follows the most traded contract (scripts/volume_normal.py): expiry weeks are left out of the normal, and in
+    an expiry week the bar's volume adds the next contract when its bars are cached."""
+    from volume_normal import combined_volume, excluded_minute, rank_bar, reference
+    last_utc = d.index[-1]
+    last = last_utc.tz_convert("Europe/Paris")
     slot = last.strftime("%Hh%M")
-    hist = allb.Volume[(p.strftime("%Hh%M") == slot) & (p.date < last.date())].tail(sessions)
-    v = float(d.Volume.iloc[-1])
-    if len(hist) < 10:
-        return f"Volume : bougie de {slot} {v:.0f} contrats ; historique de ce creneau trop court ({len(hist)} seances)"
-    med = float(hist.median())
-    rank = (hist < v).mean() * 100
+    bars, note = combined_volume("15m", last.date())
+    v = float(bars.Volume[last_utc]) if last_utc in bars.index else float(d.Volume.iloc[-1])
+    ref, _ = reference("15m", last.date(), sessions)
+    med, rank, n = rank_bar(ref, last, v)
+    note = f" ({note})" if note else ""
+    if n < 10:
+        return f"Volume : bougie de {slot} {v:.0f} contrats ; historique de ce creneau trop court ({n} seances){note}"
     if slot in AUCTION_SLOTS:
         verdict = f"{AUCTION_SLOTS[slot]} : volume toujours fort a cette heure, a ne pas lire comme un signal"
+    elif excluded_minute(last):
+        verdict = "minute exclue (regle 31.3), a ne pas lire comme un signal"
     elif rank >= 90:
         verdict = "ANORMALEMENT FORT pour cette heure"
     elif rank <= 10:
         verdict = "ANORMALEMENT FAIBLE pour cette heure"
     else:
         verdict = "normal pour cette heure"
-    return (f"Volume : bougie de {slot} {v:.0f} contrats ; normale du creneau {med:.0f} (mediane de {len(hist)} seances) ; "
-            f"{v / med:.1f}x la normale, {rank:.0f}e centile : {verdict}")
+    return (f"Volume : bougie de {slot} {v:.0f} contrats ; normale du creneau {med:.0f} (mediane de {n} seances "
+            f"hors semaines d'echeance) ; {v / med:.1f}x la normale, {rank:.0f}e centile : {verdict}{note}")
 
 
 def main():

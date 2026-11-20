@@ -49,3 +49,17 @@ date_seance,symbole,niveau,role,importance,raison,fixe_le
 2026-11-20,FCE1!,8236.5,resistance,moyenne,zone 8236-8237.5 : retracement 23.6 % (8236.2) et plus haut du 18/11 (8237.5),2026-11-19 18h39
 2026-11-20,FCE1!,7957.0,support,moyenne,retracement 61.8 % de la hausse 7678.5-8408.5 (7957.4) ; proche du stop CAC du modele swing (7976.68 en cash),2026-11-19 18h39
 2026-11-20,FCE1!,8064.0,support,faible,zone 8063-8065 : petit plancher du soir entre les deux rejets sous 8077-8081.5 (lu sur capture),2026-11-19 19h00
+2026-11-20,FCEZ2026,8244.0,resistance,moyenne,zone 8243.5-8245 : retracement 23.6 % et plus haut du 18/11 (8236.5 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,8210.0,resistance,forte,"zone 8207.5-8210.5 : double rejet du 19/11 en decembre (8209.5 a 9h00, 8210.5 a 9h30) ; 8202 en novembre",2026-11-20 07h23
+2026-11-20,FCEZ2026,8190.5,resistance,moyenne,zone 8187.5-8193 : ouverture du 19/11 et rebond de 12h31 (8183 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,8162.5,resistance,moyenne,"ancien support, reglement du 18/11 et rebond de 13h15 (8155 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11)",2026-11-20 07h23
+2026-11-20,FCEZ2026,8139.5,resistance,forte,"zone 8132-8146 : SMA20 journaliere, retracement 38.2 % et ancien plus bas de la semaine casse le 19/11 a 16h05 (8132 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11)",2026-11-20 07h23
+2026-11-20,FCEZ2026,8121.0,resistance,moyenne,plus bas du 09/11 casse a 16h15-16h30 le 19/11 (8113.5 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,8112.5,resistance,forte,"zone 8107.5-8116.5 : chiffre rond 8100 de novembre ; rebond de 16h45-17h00 arrete a 8116.5 en decembre ; cassure de 16h30 sur volume anormalement fort (rang 95, contrats cumules)",2026-11-20 07h23
+2026-11-20,FCEZ2026,8088.0,resistance,forte,"zone 8085.5-8089 : rebond de 18h15 arrete a 8088, rejets a 18h45 (8089) et 19h30 (8087.5) en decembre ; ancien plus bas du fixing casse a 17h45 sur volume anormalement fort (rang 97)",2026-11-20 07h23
+2026-11-20,FCEZ2026,8059.0,pivot,faible,dernier cours du contrat de decembre a 22h00 le 19/11,2026-11-20 07h23
+2026-11-20,FCEZ2026,8057.0,pivot,moyenne,plus bas de 19h15 (8056.5) et de 20h45 (8057) en decembre ; chiffre rond 8050 en novembre ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,8042.0,support,forte,"zone 8039-8044.5 : plus bas du 19/11 en decembre (8039 a 18h00, 8041 a 18h15, 8044.5 a 21h00) ; 50 % de la hausse et SMA50 (zone 8035.5-8051 = novembre + 7.5) ; rebond de 18h15 sur volume anormalement fort (rang 98) : support majeur",2026-11-20 07h23
+2026-11-20,FCEZ2026,8009.5,support,forte,zone 8007.5-8012 : chiffre rond 8000 et plus bas du 06/11 (8002 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,7965.0,support,moyenne,retracement 61.8 % de la hausse 7678.5-8408.5 (7957.4 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-20,FCEZ2026,7927.5,support,moyenne,zone 7918-7937 : plus bas des 29/10 et 30/10 (7920 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
