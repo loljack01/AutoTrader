@@ -63,3 +63,18 @@ date_seance,symbole,niveau,role,importance,raison,fixe_le
 2026-11-20,FCEZ2026,8009.5,support,forte,zone 8007.5-8012 : chiffre rond 8000 et plus bas du 06/11 (8002 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
 2026-11-20,FCEZ2026,7965.0,support,moyenne,retracement 61.8 % de la hausse 7678.5-8408.5 (7957.4 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
 2026-11-20,FCEZ2026,7927.5,support,moyenne,zone 7918-7937 : plus bas des 29/10 et 30/10 (7920 en novembre) ; decembre = novembre + 7.5 (ecart median 9h-17h le 19/11),2026-11-20 07h23
+2026-11-23,FCE1!,8043.0,resistance,forte,"zone 8039-8047 : plus haut du 20/11 apres l'ouverture (8047 a 08:59), ancien support majeur 8042, SMA50 journaliere (8040)",2026-11-20 22h42
+2026-11-23,FCE1!,8016.5,resistance,forte,"zone 8013.5-8022 : sommets du 20/11 a 11:47 (8016.5) et 15:58 (8013.5, sommet plus bas)",2026-11-20 22h42
+2026-11-23,FCE1!,8000.0,resistance,moyenne,chiffre rond ; double creux du matin du 20/11 (7999.5-8000.5) casse a 10:00-10:30,2026-11-20 22h42
+2026-11-23,FCE1!,7980.0,resistance,moyenne,"zone 7977-7985.5 : palier de 12:00 a 13:15 le 20/11, casse a 13:00-13:30",2026-11-20 22h42
+2026-11-23,FCE1!,7965.0,resistance,moyenne,"zone 7962-7969 : retracement 61.8 % (7965) ; rebonds arretes a 13:45 (7966), 16:45 (7969) et 17:15 (7964.5) le 20/11",2026-11-20 22h42
+2026-11-23,FCE1!,7939.0,resistance,forte,"zone 7936-7942.5 : double creux du 20/11 (7936 a 14:15, 7937 a 14:30) casse a 17:30 ; rebonds arretes a 17:45 (7940.5) et 19:45 (7942.5)",2026-11-20 22h42
+2026-11-23,FCE1!,7921.0,resistance,moyenne,"zone 7918-7929 : plafond du soir du 20/11 (18:15-19:30) et ancien bas de la zone des 29-30/10, casse a 20:00",2026-11-20 22h42
+2026-11-23,FCE1!,7900.0,resistance,moyenne,chiffre rond ; casse a 20:15 le 20/11 ; rebond de 20:30 arrete a 7912,2026-11-20 22h42
+2026-11-23,FCE1!,7887.0,resistance,faible,zone 7886-7889 : palier de 21:00-21:30 le 20/11,2026-11-20 22h42
+2026-11-23,FCE1!,7875.0,pivot,faible,derniere cloture du 20/11 (bougie de 21:45),2026-11-20 22h42
+2026-11-23,FCE1!,7866.5,support,moyenne,"plus bas du 20/11 (21:45, volume au rang 95)",2026-11-20 22h42
+2026-11-23,FCE1!,7842.0,support,moyenne,retracement 78.6 % de la hausse 7678.5-8408.5 (niveau de novembre + 7.5),2026-11-20 22h42
+2026-11-23,FCE1!,7812.0,support,moyenne,"zone 7808-7816 : plus bas des 20/10 (7802.5) et 22/10 (7808.5) (niveau de novembre + 7.5), chiffre rond 7800 juste dessous",2026-11-20 22h42
+2026-11-23,FCE1!,7751.5,support,moyenne,plus bas du 23/10 (7744) (niveau de novembre + 7.5) ; a environ 1 ATR (123) sous la derniere cloture,2026-11-20 22h42
+2026-11-23,FCE1!,7686.0,support,forte,"creux d'octobre (7678.5 le 08/10) (niveau de novembre + 7.5) : support journalier cle, sa cassure confirmerait la tendance baissiere",2026-11-20 22h42
