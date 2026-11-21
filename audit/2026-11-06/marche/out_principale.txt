@@ -1,0 +1,160 @@
+Principale sma20, 339 trades clos, 1 pt CAC-eq : moy +0.330R, total +111.7R, plafonne 5R +51.4R ; 3 pt +81.3R
+
+--- Tranche horaire Paris (entree)
+  1 nuit 22h-8h          n= 51 moy +1.205R plaf5 +0.235R total  +61.4R (plaf  +12.0) gagn 33% t=+1.39 | p perm (plaf, vs reste) 0.721
+  2 8h-9h                n= 19 moy +0.124R plaf5 +0.068R total   +2.4R (plaf   +1.3) gagn 32% t=+0.27 | p perm (plaf, vs reste) 0.839
+  3 9h-12h               n= 69 moy +0.438R plaf5 +0.355R total  +30.2R (plaf  +24.5) gagn 42% t=+1.74 | p perm (plaf, vs reste) 0.295
+  4 12h-15h30            n= 83 moy -0.222R plaf5 -0.234R total  -18.4R (plaf  -19.4) gagn 25% t=-1.32 | p perm (plaf, vs reste) 0.023
+  5 15h30-17h30          n= 54 moy +0.356R plaf5 +0.356R total  +19.2R (plaf  +19.2) gagn 37% t=+1.32 | p perm (plaf, vs reste) 0.374
+  6 17h30-22h            n= 63 moy +0.268R plaf5 +0.220R total  +16.9R (plaf  +13.9) gagn 37% t=+1.09 | p perm (plaf, vs reste) 0.742
+  (* = p < 0,05/6, Bonferroni)
+
+--- Jour de la semaine (entree, Paris)
+  1 lun                  n= 66 moy +0.758R plaf5 +0.466R total  +50.0R (plaf  +30.8) gagn 38% t=+2.05 | p perm (plaf, vs reste) 0.108
+  2 mar                  n= 68 moy +0.317R plaf5 +0.278R total  +21.6R (plaf  +18.9) gagn 37% t=+1.29 | p perm (plaf, vs reste) 0.528
+  3 mer                  n= 72 moy +0.524R plaf5 -0.009R total  +37.7R (plaf   -0.6) gagn 31% t=+0.89 | p perm (plaf, vs reste) 0.402
+  4 jeu                  n= 71 moy -0.052R plaf5 -0.052R total   -3.7R (plaf   -3.7) gagn 31% t=-0.28 | p perm (plaf, vs reste) 0.288
+  5 ven                  n= 62 moy +0.098R plaf5 +0.098R total   +6.1R (plaf   +6.1) gagn 35% t=+0.47 | p perm (plaf, vs reste) 0.791
+  (* = p < 0,05/5, Bonferroni)
+
+--- Marche
+  CAC 40                 n= 35 moy +0.531R plaf5 +0.485R total  +18.6R (plaf  +17.0) gagn 43% t=+1.50 | p perm (plaf, vs reste) 0.237
+  DAX                    n= 34 moy +0.115R plaf5 +0.104R total   +3.9R (plaf   +3.5) gagn 32% t=+0.36 | p perm (plaf, vs reste) 0.863
+  Dow Jones              n= 29 moy -0.228R plaf5 -0.228R total   -6.6R (plaf   -6.6) gagn 28% t=-0.88 | p perm (plaf, vs reste) 0.228
+  Euro Stoxx 50          n= 28 moy +0.506R plaf5 +0.313R total  +14.2R (plaf   +8.8) gagn 39% t=+1.06 | p perm (plaf, vs reste) 0.642
+  FTSE 100               n= 32 moy +1.098R plaf5 +0.027R total  +35.1R (plaf   +0.9) gagn 31% t=+0.87 | p perm (plaf, vs reste) 0.683
+  FTSE MIB               n= 28 moy +0.309R plaf5 +0.294R total   +8.6R (plaf   +8.2) gagn 32% t=+0.78 | p perm (plaf, vs reste) 0.666
+  Nasdaq 100             n= 21 moy +0.365R plaf5 +0.185R total   +7.7R (plaf   +3.9) gagn 29% t=+0.64 | p perm (plaf, vs reste) 0.944
+  Russell 2000           n= 42 moy +0.349R plaf5 +0.349R total  +14.7R (plaf  +14.7) gagn 43% t=+1.33 | p perm (plaf, vs reste) 0.453
+  S&P 500                n= 48 moy +0.663R plaf5 +0.363R total  +31.8R (plaf  +17.4) gagn 40% t=+1.56 | p perm (plaf, vs reste) 0.404
+  SMI                    n= 42 moy -0.387R plaf5 -0.387R total  -16.3R (plaf  -16.3) gagn 21% t=-1.86 | p perm (plaf, vs reste) 0.039
+  (* = p < 0,05/10, Bonferroni)
+
+--- Sens
+  call                   n= 99 moy +0.064R plaf5 +0.053R total   +6.3R (plaf   +5.2) gagn 34% t=+0.38 | p perm (plaf, vs reste) 0.510
+  put                    n=240 moy +0.439R plaf5 +0.192R total +105.4R (plaf  +46.2) gagn 34% t=+2.02 | p perm (plaf, vs reste) 0.526
+  (* = p < 0,05/2, Bonferroni)
+
+--- Duree de detention
+  1 <2h                  n= 65 moy -0.529R plaf5 -0.529R total  -34.4R (plaf  -34.4) gagn 18% t=-3.75 | p perm (plaf, vs reste) 0.000  *
+  2 2-8h                 n=109 moy -0.088R plaf5 -0.098R total   -9.6R (plaf  -10.7) gagn 31% t=-0.60 | p perm (plaf, vs reste) 0.075
+  3 8-24h                n= 84 moy +0.279R plaf5 +0.243R total  +23.4R (plaf  +20.4) gagn 40% t=+1.43 | p perm (plaf, vs reste) 0.595
+  4 >24h                 n= 81 moy +1.633R plaf5 +0.939R total +132.3R (plaf  +76.1) gagn 44% t=+2.82 | p perm (plaf, vs reste) 0.000  *
+  (* = p < 0,05/4, Bonferroni)
+
+--- Week-end
+  passe un week-end      n= 44 moy +1.573R plaf5 +0.676R total  +69.2R (plaf  +29.7) gagn 39% t=+1.64 | p perm (plaf, vs reste) 0.043
+  sans week-end          n=295 moy +0.144R plaf5 +0.074R total  +42.5R (plaf  +21.7) gagn 34% t=+1.24 | p perm (plaf, vs reste) 0.038
+  (* = p < 0,05/2, Bonferroni)
+
+--- Regime ATR journalier du future (rang sur 250 j, veille)
+  ATR j bas              n=235 moy +0.455R plaf5 +0.203R total +106.9R (plaf  +47.6) gagn 35% t=+2.06 | p perm (plaf, vs reste) 0.436
+  ATR j haut (>= mediane 1 an) n=104 moy +0.046R plaf5 +0.037R total   +4.8R (plaf   +3.8) gagn 33% t=+0.28 | p perm (plaf, vs reste) 0.433
+  (* = p < 0,05/2, Bonferroni)
+
+--- VIX de la veille (mediane des trades 16.0)
+  VIX veille < 20        n=325 moy +0.283R plaf5 +0.110R total  +92.0R (plaf  +35.8) gagn 34% t=+1.72 | p perm (plaf, vs reste) 0.041
+  VIX veille >= 20       n= 14 moy +1.411R plaf5 +1.121R total  +19.8R (plaf  +15.7) gagn 50% t=+1.76 | p perm (plaf, vs reste) 0.040
+  (* = p < 0,05/2, Bonferroni)
+
+--- VIX veille, coupure a la mediane
+  VIX < mediane          n=166 moy +0.527R plaf5 +0.208R total  +87.4R (plaf  +34.5) gagn 36% t=+1.80 | p perm (plaf, vs reste) 0.575
+  VIX >= mediane         n=173 moy +0.140R plaf5 +0.098R total  +24.3R (plaf  +17.0) gagn 33% t=+0.98 | p perm (plaf, vs reste) 0.576
+  (* = p < 0,05/2, Bonferroni)
+
+--- Jour d'annonce majeure (NFP, CPI, FOMC, BCE ; calendrier TradingView)
+  autre jour             n=284 moy +0.407R plaf5 +0.195R total +115.5R (plaf  +55.3) gagn 35% t=+2.16 | p perm (plaf, vs reste) 0.314
+  jour d'annonce         n= 55 moy -0.070R plaf5 -0.070R total   -3.8R (plaf   -3.8) gagn 31% t=-0.34 | p perm (plaf, vs reste) 0.313
+  (* = p < 0,05/2, Bonferroni)
+    NFP: n=15 moy +0.211R total +3.2R
+    CPI: n=12 moy -0.153R total -1.8R
+    FOMC: n=14 moy -0.661R total -9.3R
+    BCE: n=14 moy +0.292R total +4.1R
+
+--- Annonce pendant le trade
+  annonce pendant le trade n= 39 moy +2.834R plaf5 +1.432R total +110.5R (plaf  +55.9) gagn 59% t=+2.55 | p perm (plaf, vs reste) 0.001  *
+  aucune                 n=300 moy +0.004R plaf5 -0.015R total   +1.2R (plaf   -4.4) gagn 31% t=+0.04 | p perm (plaf, vs reste) 0.000  *
+  (* = p < 0,05/2, Bonferroni)
+
+=== SECTION 2 : lecture graphique
+balayage sur niveau deja casse en cloture : tous les pools balayes 61.9% (210/339), au moins un 62.8% (213)
+  deja casse (tous)    n=210 moy +0.163R plaf +0.104R total +34.2R
+  niveau intact        n=126 moy +0.573R plaf +0.194R total +72.2R
+  p perm (plafonne) casse vs intact : 0.656
+  par sens : call 54%, put 65%
+  suivi (>=28/10) : 65% ; reference : 62%
+distance entree-stop en ATR15m (14) : moyenne 2.80, mediane 2.24, p10 2.00, p90 4.23 ; part au plancher 2 ATR (<= 2,01) 45%
+  en points CAC-eq : mediane 26.4, p10 13.4, p90 40.8
+R:R vise (brut) : moyenne 3.22, mediane 2.14 ; R:R obtenu : moy +0.330R ; taux de cible 34.2% ; seuil de rentabilite implicite 1/(1+RR median) 31.8%
+  cible 1 1,3-2  n=158 atteinte 38.6% (seuil 38%) moy -0.032R total -5.0R, detention mediane 5.5 h
+  cible 2 2-3    n= 75 atteinte 36.0% (seuil 29%) moy +0.214R total +16.1R, detention mediane 6.8 h
+  cible 3 3-5    n= 59 atteinte 28.8% (seuil 21%) moy +0.393R total +23.2R, detention mediane 13.0 h
+  cible 4 5-10   n= 38 atteinte 23.7% (seuil 12%) moy +0.829R total +31.5R, detention mediane 10.2 h
+  cible 5 >10    n=  9 atteinte 22.2% (seuil 5%) moy +5.108R total +46.0R, detention mediane 72.2 h
+
+gagnants > 5R : 11 trades, +115.3R sur +111.7R (reste -3.6R)
+  tranche : {'3 9h-12h': 4, '1 nuit 22h-8h': 4, '4 12h-15h30': 1, '2 8h-9h': 1, '6 17h30-22h': 1}
+  sens : {'put': 10, 'call': 1} ; tendance SMA20 haussiere 45% (tous 65%) ; au-dessus SMA50 73% (tous 69%)
+  stop CAC-eq median 24.0 (tous 26.4) ; detention mediane 56.0 h (tous 7.2) ; week-end 36% (tous 13%)
+       market side      entry_paris       exit_paris  risk_cac  rr_target  net_r  above20  hold_h
+     FTSE 100  put 2026-08-26 06:15 2026-10-08 08:45       9.3       39.4   39.3     True  1034.5
+      S&P 500  put 2026-10-12 07:30 2026-10-15 15:30      11.1       14.3   14.2     True    80.0
+Euro Stoxx 50  put 2026-08-31 09:15 2026-09-09 13:30      25.5        9.5    9.4    False   220.2
+   Nasdaq 100  put 2026-10-12 07:30 2026-10-14 15:30      20.2        8.8    8.8     True    56.0
+      S&P 500  put 2026-11-04 21:45 2026-11-05 16:45      29.4        8.0    8.0    False    19.0
+      S&P 500  put 2026-09-15 05:00 2026-09-16 21:00      12.8        7.3    7.2    False    40.0
+       CAC 40 call 2026-11-04 08:00 2026-11-04 14:30      24.0        6.1    6.1     True     6.5
+Euro Stoxx 50  put 2026-07-27 14:00 2026-07-29 10:15      24.2        6.0    6.0    False    44.2
+       CAC 40  put 2026-08-17 09:15 2026-08-18 09:45      18.5        5.6    5.5     True    24.5
+     FTSE MIB  put 2026-09-01 09:45 2026-09-15 09:00      33.1        5.4    5.4    False   335.2
+          DAX  put 2026-09-07 09:30 2026-09-15 09:45      41.6        5.4    5.4    False   192.2
+
+=== SECTION 5 : suivi reel (entrees >= 28/10, trades clos du cache)
+suivi : 40 trades clos, total +13.8R (1 pt), +11.0R (3 pt), moy +0.345R
+  entree hors heures turbo (21h30-8h)                   9 trades, +6.3R
+  annonce +/-30 min de l'entree ou pendant le trade     6 trades, -3.5R
+  stop < 40 pts CAC-eq                                 31 trades, +18.0R
+  au moins un des trois : 33 trades (+16.0R) ; RESTE 7 trades, -2.1R a 1 pt, -2.4R a 3 pt, moy -0.306R
+  sans le critere annonce : retires 31, reste 9 trades -4.2R
+  (historique complet, meme filtre descriptif : reste 30 trades, +3.9R)
+       market side      entry_paris  risk_cac  net_r  hors_turbo  annonce  stop40
+       CAC 40 call 2026-10-28 09:15     26.43   1.65       False     True    True
+ Russell 2000  put 2026-10-28 11:00     21.87  -1.05       False    False    True
+Euro Stoxx 50  put 2026-10-28 11:00     30.34  -1.03       False    False    True
+ Russell 2000  put 2026-10-28 18:30     20.24  -1.05       False     True    True
+    Dow Jones  put 2026-10-28 19:30     26.89  -1.04       False     True    True
+ Russell 2000 call 2026-10-28 21:00     77.60  -1.01       False     True   False
+      S&P 500 call 2026-10-29 01:15     28.50  -1.04        True     True    True
+ Russell 2000  put 2026-10-29 04:15     26.76  -1.04        True    False    True
+          DAX call 2026-10-29 05:30     17.57  -1.06        True    False    True
+    Dow Jones  put 2026-10-29 09:15     19.41  -1.05       False    False    True
+     FTSE MIB call 2026-10-29 10:30     41.22  -1.02       False     True   False
+ Russell 2000  put 2026-10-29 18:30     31.77   3.95       False    False    True
+     FTSE MIB  put 2026-10-29 18:45     32.30   1.97       False    False    True
+Euro Stoxx 50  put 2026-10-29 21:00     44.23   3.96       False    False   False
+          DAX  put 2026-10-29 21:30     28.06   2.07        True    False    True
+    Dow Jones  put 2026-10-30 02:00     25.99  -1.04        True    False    True
+     FTSE 100  put 2026-10-30 11:45     25.96   1.67       False    False    True
+     FTSE 100 call 2026-10-30 14:45     26.72  -1.04       False    False    True
+    Dow Jones call 2026-10-30 20:45     25.21  -1.04       False    False    True
+ Russell 2000  put 2026-11-02 07:00     16.70  -1.06        True    False    True
+     FTSE 100 call 2026-11-02 10:15     25.62  -1.04       False    False    True
+ Russell 2000 call 2026-11-02 10:15     25.40  -1.04       False    False    True
+          SMI call 2026-11-02 13:00     20.00   2.01       False    False    True
+ Russell 2000  put 2026-11-02 18:15     40.71  -1.02       False    False   False
+ Russell 2000 call 2026-11-02 18:30     42.26  -1.02       False    False   False
+ Russell 2000 call 2026-11-03 09:15     17.28   2.79       False    False    True
+          DAX call 2026-11-03 10:00     29.94   2.35       False    False    True
+       CAC 40  put 2026-11-03 12:45     21.64  -1.05       False    False    True
+       CAC 40  put 2026-11-03 17:00     87.00  -1.01       False    False   False
+          DAX  put 2026-11-03 17:30     65.72  -1.02       False    False   False
+     FTSE MIB  put 2026-11-03 18:00     70.26  -1.01       False    False   False
+ Russell 2000 call 2026-11-04 07:15     38.72   2.54        True    False    True
+       CAC 40 call 2026-11-04 08:00     24.00   6.06       False    False    True
+ Russell 2000  put 2026-11-04 13:00     28.28  -1.04       False    False    True
+ Russell 2000  put 2026-11-04 16:15     90.93  -1.01       False    False   False
+      S&P 500  put 2026-11-04 21:45     29.43   8.00        True    False    True
+ Russell 2000 call 2026-11-05 07:45     23.50  -1.04        True    False    True
+       CAC 40  put 2026-11-05 12:00     35.64  -1.03       False    False    True
+     FTSE MIB call 2026-11-05 12:00     39.13  -1.03       False    False    True
+ Russell 2000  put 2026-11-05 14:00     25.94   2.73       False    False    True

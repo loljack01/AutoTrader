@@ -1,0 +1,249 @@
+//@version=6
+// Strategie principale (gelee le 28/10/2026) : balayage d'un pool de liquidite
+// (EQL/EQH) puis CHoCH en 15 minutes, avec alertes TradingView.
+// Traduction ligne a ligne de scripts/incremental_engine.py, lui-meme verifie
+// identique au moteur de reference (scripts/backtest_liquidity_sweep_buy.py,
+// reglages de frozen_15m_calls_trend.py, version sma20) sur CAC, DAX, S&P 500
+// et Russell 2000 (151 trades sur 151, le 04/11/2026).
+//
+// Regles :
+//  - swing : plus haut (bas) des 2 bougies de chaque cote, connu 2 bougies apres ;
+//  - pool EQH/EQL : 2 swings ou plus a moins de max(2 pts, 0,25 x ATR14) du 1er ;
+//  - balayage : meche au-dela du pool puis cloture revenue de l'autre cote ;
+//  - entree a la cloture de la bougie ou un CHoCH dans le sens du trade a eu lieu
+//    depuis le balayage, moins de 4 h apres lui, un seul trade par balayage ;
+//  - stop = max(extreme du balayage -/+ 8 x k, 2 x ATR14) ; cible = pool non
+//    balaye le plus proche, sinon dernier swing ; R:R net de couts >= 1,3 ;
+//  - pas d'entree 9h00-9h15 ni 15 min apres l'ouverture americaine (Paris) ;
+//  - calls seulement si la cloture journaliere precedente > sa SMA 20 ;
+//  - une position a la fois par sens ; sortie au stop ou a la cible.
+// A utiliser UNIQUEMENT en 15 minutes. Indicateur de suivi : aucun avantage n'est
+// encore demontre en reel (verdict a 100 trades sur les 10 marches).
+//
+// Alerte : creer une alerte sur cet indicateur avec la condition
+// "Any alert() function call" ("N'importe quel appel de fonction alert()").
+
+indicator("Strategie principale 15m - alertes", shorttitle="Principale 15m", overlay=true, max_labels_count=300, max_lines_count=300)
+
+k        = input.float(1.0, "Facteur k du marche", tooltip="CAC 1 ; DAX 3.2397 ; Euro Stoxx 50 0.8004 ; S&P 500 0.9799 ; Nasdaq 100 3.7619 ; FTSE 100 1.362 ; SMI 1.7999 ; Dow 6.6697 ; Russell 0.3678 ; FTSE MIB 6.5848")
+costPts  = input.float(1.0, "Cout aller-retour (points CAC-equivalents)")
+trendLen = input.int(20, "SMA journaliere du filtre des calls")
+showLvls = input.bool(true, "Afficher stop et cible des positions ouvertes")
+
+margin = 8.0 * k
+cost   = costPts * k
+MAXPOOLS = 400
+
+if timeframe.period != "15" and barstate.islast
+    var label warn = label.new(bar_index, high, "Cet indicateur doit etre utilise en 15 minutes", style=label.style_label_down, color=color.red, textcolor=color.white)
+
+// ---------- ATR (moyenne simple du True Range, comme finta) ----------
+atr = ta.sma(ta.tr(true), 14)
+
+// ---------- filtre de tendance journalier (cloture precedente > SMA) ----------
+dailyUp = request.security(syminfo.tickerid, "D", (close > ta.sma(close, trendLen))[1], lookahead=barmerge.lookahead_on)
+trendOk = dailyUp
+
+// ---------- filtre horaire (Paris) ----------
+pY = year(time, "Europe/Paris")
+pM = month(time, "Europe/Paris")
+pD = dayofmonth(time, "Europe/Paris")
+cashOpen = timestamp("Europe/Paris", pY, pM, pD, 9, 0)
+usOpen   = timestamp("America/New_York", pY, pM, pD, 9, 30)
+blocked  = (time >= cashOpen and time < cashOpen + 15 * 60000) or (time >= usOpen and time < usOpen + 15 * 60000)
+
+// ---------- etat ----------
+var float sh = na
+var float sl = na
+var int   chState = 0
+var int   lastTrigBuy = -1
+var int   lastTrigSell = -1
+
+var float curHiLvl = na
+var int   curHiCnt = 0
+var float curLoLvl = na
+var int   curLoCnt = 0
+var array<float> hiLvl  = array.new<float>()
+var array<int>   hiConf = array.new<int>()
+var array<float> loLvl  = array.new<float>()
+var array<int>   loConf = array.new<int>()
+
+var int   swBuyIdx = -1
+var int   swBuyTime = 0
+var float swBuyExt = na
+var bool  swBuyUsed = false
+var int   swSellIdx = -1
+var int   swSellTime = 0
+var float swSellExt = na
+var bool  swSellUsed = false
+
+var bool  inBuy = false
+var int   buyBar = 0
+var int   buyTime = 0
+var float buyEntry = na
+var float buyStop = na
+var float buyTake = na
+var bool  inSell = false
+var int   sellBar = 0
+var int   sellTime = 0
+var float sellEntry = na
+var float sellStop = na
+var float sellTake = na
+
+fmt(x) => str.tostring(x, format.mintick)
+
+// ---------- 1. balayages des pools confirmes sur des bougies precedentes ----------
+// (un pool balaye est retire : il ne peut plus etre balaye ni servir de cible)
+if array.size(loLvl) > 0
+    for j = array.size(loLvl) - 1 to 0
+        lv = array.get(loLvl, j)
+        if array.get(loConf, j) < bar_index and low < lv and close > lv
+            swBuyIdx := bar_index
+            swBuyTime := time
+            swBuyExt := low
+            swBuyUsed := false
+            array.remove(loLvl, j)
+            array.remove(loConf, j)
+if array.size(hiLvl) > 0
+    for j = array.size(hiLvl) - 1 to 0
+        lv = array.get(hiLvl, j)
+        if array.get(hiConf, j) < bar_index and high > lv and close < lv
+            swSellIdx := bar_index
+            swSellTime := time
+            swSellExt := high
+            swSellUsed := false
+            array.remove(hiLvl, j)
+            array.remove(hiConf, j)
+
+// ---------- 2. swing confirme sur cette bougie (pivot 2 bougies plus tot) ----------
+tol = na(atr) ? 2.0 : math.max(2.0, 0.25 * atr)
+if bar_index >= 4 and high[2] > high[3] and high[2] > high[4] and high[2] >= high[1] and high[2] >= high
+    sh := high[2]
+    if not na(curHiLvl) and math.abs(high[2] - curHiLvl) <= tol
+        curHiCnt += 1
+        if curHiCnt == 2
+            array.push(hiLvl, curHiLvl)
+            array.push(hiConf, bar_index)
+            if array.size(hiLvl) > MAXPOOLS
+                array.shift(hiLvl)
+                array.shift(hiConf)
+    else
+        curHiLvl := high[2]
+        curHiCnt := 1
+if bar_index >= 4 and low[2] < low[3] and low[2] < low[4] and low[2] <= low[1] and low[2] <= low
+    sl := low[2]
+    if not na(curLoLvl) and math.abs(low[2] - curLoLvl) <= tol
+        curLoCnt += 1
+        if curLoCnt == 2
+            array.push(loLvl, curLoLvl)
+            array.push(loConf, bar_index)
+            if array.size(loLvl) > MAXPOOLS
+                array.shift(loLvl)
+                array.shift(loConf)
+    else
+        curLoLvl := low[2]
+        curLoCnt := 1
+
+// ---------- 3. BOS / CHoCH ----------
+bull = not na(sh) and close > sh
+bear = not na(sl) and close < sl
+if bull
+    if chState != 1
+        lastTrigBuy := bar_index
+    chState := 1
+else if bear
+    if chState != -1
+        lastTrigSell := bar_index
+    chState := -1
+
+// ---------- 4. sorties (jamais sur la bougie d'entree) ----------
+buyExit = ""
+if inBuy and buyBar < bar_index
+    if low <= buyStop
+        buyExit := "STOP"
+    else if high >= buyTake
+        buyExit := "CIBLE"
+    if buyExit != ""
+        r = buyExit == "CIBLE" ? (buyTake - buyEntry - cost) / (buyEntry - buyStop) : -(1 + cost / (buyEntry - buyStop))
+        alert(syminfo.ticker + " principale : CALL du " + str.format_time(buyTime, "dd/MM HH:mm", "Europe/Paris") + " sorti " + buyExit + " (" + str.tostring(r, "#.##") + "R)", alert.freq_once_per_bar_close)
+        label.new(bar_index, buyExit == "CIBLE" ? high : low, "Call " + buyExit + "\n" + str.tostring(r, "#.##") + "R", style=buyExit == "CIBLE" ? label.style_label_down : label.style_label_up, color=buyExit == "CIBLE" ? color.green : color.gray, textcolor=color.white, size=size.small)
+        inBuy := false
+sellExit = ""
+if inSell and sellBar < bar_index
+    if high >= sellStop
+        sellExit := "STOP"
+    else if low <= sellTake
+        sellExit := "CIBLE"
+    if sellExit != ""
+        r = sellExit == "CIBLE" ? (sellEntry - sellTake - cost) / (sellStop - sellEntry) : -(1 + cost / (sellStop - sellEntry))
+        alert(syminfo.ticker + " principale : PUT du " + str.format_time(sellTime, "dd/MM HH:mm", "Europe/Paris") + " sorti " + sellExit + " (" + str.tostring(r, "#.##") + "R)", alert.freq_once_per_bar_close)
+        label.new(bar_index, sellExit == "CIBLE" ? low : high, "Put " + sellExit + "\n" + str.tostring(r, "#.##") + "R", style=sellExit == "CIBLE" ? label.style_label_up : label.style_label_down, color=sellExit == "CIBLE" ? color.green : color.gray, textcolor=color.white, size=size.small)
+        inSell := false
+
+// ---------- 5. entrees ----------
+// cible la plus proche parmi les pools non balayes (confirmes au plus tard sur cette bougie)
+nearestAbove(lvls, confs, px) =>
+    float best = na
+    if array.size(lvls) > 0
+        for j = 0 to array.size(lvls) - 1
+            lv = array.get(lvls, j)
+            if array.get(confs, j) <= bar_index and lv > px
+                best := na(best) ? lv : math.min(best, lv)
+    best
+nearestBelow(lvls, confs, px) =>
+    float best = na
+    if array.size(lvls) > 0
+        for j = 0 to array.size(lvls) - 1
+            lv = array.get(lvls, j)
+            if array.get(confs, j) <= bar_index and lv < px
+                best := na(best) ? lv : math.max(best, lv)
+    best
+
+if not inBuy and swBuyIdx >= 0 and not swBuyUsed and time - swBuyTime <= 4 * 3600000 and lastTrigBuy >= swBuyIdx and not blocked and trendOk
+    risk = math.max(close - (swBuyExt - margin), na(atr) ? 0.0 : 2.0 * atr)
+    stop = close - risk
+    take = nearestAbove(hiLvl, hiConf, close)
+    if na(take)
+        take := sh
+    if not na(take) and take > close and (take - close - cost) / (risk + cost) >= 1.3
+        inBuy := true
+        buyBar := bar_index
+        buyTime := time
+        buyEntry := close
+        buyStop := stop
+        buyTake := take
+        swBuyUsed := true
+        alert(syminfo.ticker + " principale : CALL a la cloture " + str.format_time(time, "HH:mm", "Europe/Paris") + " - entree " + fmt(close) + ", stop " + fmt(stop) + ", cible " + fmt(take) + " (risque " + fmt(risk) + ")", alert.freq_once_per_bar_close)
+        label.new(bar_index, low, "CALL\n" + fmt(close) + "\nstop " + fmt(stop) + "\ncible " + fmt(take), style=label.style_label_up, color=color.new(color.teal, 0), textcolor=color.white, size=size.small)
+
+if not inSell and swSellIdx >= 0 and not swSellUsed and time - swSellTime <= 4 * 3600000 and lastTrigSell >= swSellIdx and not blocked
+    risk = math.max((swSellExt + margin) - close, na(atr) ? 0.0 : 2.0 * atr)
+    stop = close + risk
+    take = nearestBelow(loLvl, loConf, close)
+    if na(take)
+        take := sl
+    if not na(take) and take < close and (close - take - cost) / (risk + cost) >= 1.3
+        inSell := true
+        sellBar := bar_index
+        sellTime := time
+        sellEntry := close
+        sellStop := stop
+        sellTake := take
+        swSellUsed := true
+        alert(syminfo.ticker + " principale : PUT a la cloture " + str.format_time(time, "HH:mm", "Europe/Paris") + " - entree " + fmt(close) + ", stop " + fmt(stop) + ", cible " + fmt(take) + " (risque " + fmt(risk) + ")", alert.freq_once_per_bar_close)
+        label.new(bar_index, high, "PUT\n" + fmt(close) + "\nstop " + fmt(stop) + "\ncible " + fmt(take), style=label.style_label_down, color=color.new(color.maroon, 0), textcolor=color.white, size=size.small)
+
+// ---------- affichage des positions ouvertes ----------
+plot(showLvls and inBuy ? buyStop : na, "Call : stop", color.red, 1, plot.style_linebr)
+plot(showLvls and inBuy ? buyTake : na, "Call : cible", color.green, 1, plot.style_linebr)
+plot(showLvls and inSell ? sellStop : na, "Put : stop", color.red, 1, plot.style_linebr)
+plot(showLvls and inSell ? sellTake : na, "Put : cible", color.green, 1, plot.style_linebr)
+
+var table tb = table.new(position.bottom_right, 2, 3, bgcolor=color.new(color.black, 20), border_width=1)
+if barstate.islast
+    table.cell(tb, 0, 0, "Principale 15m", text_color=color.white)
+    table.cell(tb, 1, 0, trendOk ? "calls + puts" : "puts seuls", text_color=trendOk ? color.lime : color.orange)
+    table.cell(tb, 0, 1, "Call", text_color=color.white)
+    table.cell(tb, 1, 1, inBuy ? fmt(buyEntry) + " / stop " + fmt(buyStop) + " / cible " + fmt(buyTake) : "aucun", text_color=color.white)
+    table.cell(tb, 0, 2, "Put", text_color=color.white)
+    table.cell(tb, 1, 2, inSell ? fmt(sellEntry) + " / stop " + fmt(sellStop) + " / cible " + fmt(sellTake) : "aucun", text_color=color.white)

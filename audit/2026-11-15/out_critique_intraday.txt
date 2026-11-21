@@ -1,0 +1,88 @@
+Donnees 15 minutes jusqu'au 13/11/2026 22:15 (Paris) ; historique depuis 22/05/2026 (CAC) a 03/08/2026 selon le marche
+
+== 1. Tableau de bord : tout l'intraday en suivi, depuis le debut de chaque suivi ==
+  principale       depuis le 28/10 a 1 pt :   66 trades,  29% gagnants, net   +7.43R, moy +0.113R, t +0.45, plafond 5R   +3.34R, pire creux -12.8R
+  principale       depuis le 28/10 a 3 pt :   63 trades,  29% gagnants, net   +4.34R, moy +0.069R, t +0.26, plafond 5R   +0.43R, pire creux -12.3R
+  D                depuis le 06/11 a 1 pt :   34 trades,  35% gagnants, net   -9.75R, moy -0.287R, t -1.72, plafond 5R   -9.75R, pire creux -10.4R
+  D                depuis le 06/11 a 3 pt :   32 trades,  31% gagnants, net  -14.44R, moy -0.451R, t -2.81, plafond 5R  -14.44R, pire creux -14.7R
+  simple balayage  depuis le 30/10 a 1 pt :   87 trades,  28% gagnants, net   +5.50R, moy +0.063R, t +0.29, plafond 5R   +0.05R, pire creux -14.5R
+  simple balayage  depuis le 30/10 a 3 pt :   83 trades,  27% gagnants, net   -0.56R, moy -0.007R, t -0.03, plafond 5R   -5.70R, pire creux -17.6R
+  ecart continue   depuis le 28/10 a 1 pt :   64 trades,  53% gagnants, net   +5.06R, moy +0.079R, t +1.15, plafond 5R   +5.06R, pire creux -3.0R
+  ecart continue   depuis le 28/10 a 3 pt :   64 trades,  53% gagnants, net   +2.85R, moy +0.045R, t +0.65, plafond 5R   +2.85R, pire creux -3.2R
+  petrole          depuis le 30/10 a 1 pt :   11 trades,  18% gagnants, net   -0.65R, moy -0.059R, t -0.09, plafond 5R   -0.71R, pire creux -5.1R
+  petrole          depuis le 30/10 a 3 pt :   11 trades,  18% gagnants, net   -0.90R, moy -0.082R, t -0.13, plafond 5R   -0.94R, pire creux -5.2R
+  P2 (rejet du plus haut / plus bas de la veille) depuis le 09/11 : 2 trades, net +0.75R a 1 pt, +0.56R a 3 pts
+
+== 2. principale : les chiffres de base ==
+  1 pt, avant le 28/10  :  299 trades,  34% gagnants, net  +97.90R, moy +0.327R, t +1.85, plafond 5R  +41.69R, pire creux -15.8R
+  1 pt, depuis le 28/10 :   66 trades,  29% gagnants, net   +7.43R, moy +0.113R, t +0.45, plafond 5R   +3.34R, pire creux -12.8R
+      avant le 28/10 : moyenne par trade entre +0.018R et +0.722R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 2% ; gain moyen +2.94R, perte moyenne -1.05R, reussite necessaire 26%, obtenue 34%
+      depuis le 28/10 : moyenne par trade entre -0.348R et +0.640R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 33% ; gain moyen +2.95R, perte moyenne -1.03R, reussite necessaire 26%, obtenue 29%
+  3 pt, avant le 28/10  :  262 trades,  33% gagnants, net  +76.27R, moy +0.291R, t +1.46, plafond 5R  +21.09R, pire creux -20.2R
+  3 pt, depuis le 28/10 :   63 trades,  29% gagnants, net   +4.34R, moy +0.069R, t +0.26, plafond 5R   +0.43R, pire creux -12.3R
+      avant le 28/10 : moyenne par trade entre -0.059R et +0.723R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 6% ; gain moyen +3.21R, perte moyenne -1.14R, reussite necessaire 26%, obtenue 33%
+      depuis le 28/10 : moyenne par trade entre -0.398R et +0.607R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 42% ; gain moyen +2.99R, perte moyenne -1.10R, reussite necessaire 27%, obtenue 29%
+
+== 2. D : les chiffres de base ==
+  1 pt, avant le 28/10  :  346 trades,  43% gagnants, net   +6.52R, moy +0.019R, t +0.30, plafond 5R   +5.07R, pire creux -27.0R
+  1 pt, depuis le 28/10 :   79 trades,  47% gagnants, net  +19.04R, moy +0.241R, t +1.25, plafond 5R  +15.50R, pire creux -10.4R
+      avant le 28/10 : moyenne par trade entre -0.099R et +0.146R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 38% ; gain moyen +1.10R, perte moyenne -0.81R, reussite necessaire 42%, obtenue 43%
+      depuis le 28/10 : moyenne par trade entre -0.116R et +0.645R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 10% ; gain moyen +1.56R, perte moyenne -0.92R, reussite necessaire 37%, obtenue 47%
+  3 pt, avant le 28/10  :  314 trades,  41% gagnants, net  -13.83R, moy -0.044R, t -0.65, plafond 5R  -15.15R, pire creux -37.2R
+  3 pt, depuis le 28/10 :   74 trades,  43% gagnants, net  +10.90R, moy +0.147R, t +0.72, plafond 5R   +7.57R, pire creux -14.4R
+      avant le 28/10 : moyenne par trade entre -0.173R et +0.094R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 75% ; gain moyen +1.12R, perte moyenne -0.84R, reussite necessaire 43%, obtenue 41%
+      depuis le 28/10 : moyenne par trade entre -0.222R et +0.562R (intervalle a 95 % par reechantillonnage), probabilite d'une moyenne <= 0 : 24% ; gain moyen +1.61R, perte moyenne -0.97R, reussite necessaire 38%, obtenue 43%
+
+== 3. Principale : d'ou vient le resultat (frais 1 pt) ==
+  avant le 28/10 : total +97.9R ; les 5 meilleurs trades +78.9R ; les 10 meilleurs +106.1R ; sans les 5 meilleurs +19.0R ; sans les 10 meilleurs -8.3R ; trades au-dela de +5R : 9 (+101.2R)
+      entrees 8h-21h30 (heures des turbos) :  250 trades,  35% gagnants, net  +37.97R, moy +0.152R, t +1.31, plafond 5R  +31.22R, pire creux -17.6R
+      entrees 21h30-8h (turbos fermes)     :   49 trades,  33% gagnants, net  +59.93R, moy +1.223R, t +1.36, plafond 5R  +10.47R, pire creux -11.2R
+      sortis le jour meme                  :  160 trades,  27% gagnants, net  -42.94R, moy -0.268R, t -2.54, plafond 5R  -42.94R, pire creux -48.1R
+      gardes au moins une nuit             :  139 trades,  43% gagnants, net +140.84R, moy +1.013R, t +2.88, plafond 5R  +84.62R, pire creux -9.0R
+      duree : mediane 8.5 h ; part des trades de plus de 24 h 25%
+      calls :   82 trades,  34% gagnants, net   +0.29R, moy +0.004R, t +0.02, plafond 5R   +0.29R, pire creux -22.1R
+      puts  :  217 trades,  35% gagnants, net  +97.61R, moy +0.450R, t +1.92, plafond 5R  +41.39R, pire creux -20.0R
+  depuis le 28/10 : total +7.4R ; les 5 meilleurs trades +27.0R ; les 10 meilleurs +39.9R ; sans les 5 meilleurs -19.6R ; sans les 10 meilleurs -32.5R ; trades au-dela de +5R : 3 (+19.1R)
+      entrees 8h-21h30 (heures des turbos) :   56 trades,  29% gagnants, net   +2.13R, moy +0.038R, t +0.15, plafond 5R   +1.04R, pire creux -11.7R
+      entrees 21h30-8h (turbos fermes)     :   10 trades,  30% gagnants, net   +5.30R, moy +0.530R, t +0.56, plafond 5R   +2.29R, pire creux -4.2R
+      sortis le jour meme                  :   45 trades,  24% gagnants, net   -9.08R, moy -0.202R, t -0.84, plafond 5R  -10.14R, pire creux -13.2R
+      gardes au moins une nuit             :   21 trades,  38% gagnants, net  +16.51R, moy +0.786R, t +1.36, plafond 5R  +13.48R, pire creux -5.1R
+      duree : mediane 4.1 h ; part des trades de plus de 24 h 15%
+      calls :   26 trades,  31% gagnants, net   +6.14R, moy +0.236R, t +0.57, plafond 5R   +5.05R, pire creux -7.3R
+      puts  :   40 trades,  28% gagnants, net   +1.29R, moy +0.032R, t +0.10, plafond 5R   -1.71R, pire creux -9.3R
+  par marche (toute la periode, 1 pt puis 3 pts) :
+      CAC 40          39 trades  +23.76R | a 3 pts  35 trades  +21.00R
+      DAX             35 trades   +2.91R | a 3 pts  33 trades   +5.61R
+      Dow Jones       33 trades   -8.09R | a 3 pts  27 trades  -12.45R
+      Euro Stoxx 50   34 trades  +14.05R | a 3 pts  30 trades   +6.31R
+      FTSE 100        35 trades  +32.00R | a 3 pts  33 trades  +29.12R
+      FTSE MIB        30 trades   +6.57R | a 3 pts  26 trades   +9.03R
+      Nasdaq 100      22 trades   +6.64R | a 3 pts  19 trades   +7.64R
+      Russell 2000    44 trades  +12.59R | a 3 pts  38 trades   +5.91R
+      S&P 500         50 trades  +32.19R | a 3 pts  43 trades  +25.08R
+      SMI             43 trades  -17.30R | a 3 pts  41 trades  -16.65R
+      marches positifs : 8 sur 10 a 1 pt, 8 sur 10 a 3 pts
+  par mois de sortie (1 pt) : 05/2026 +3.8R, 06/2026 -1.6R, 07/2026 +4.1R, 08/2026 +0.1R, 09/2026 +37.8R, 10/2026 +52.5R, 11/2026 +8.6R
+
+== 4. Rarete des signaux (principale, 1 pt) ==
+      CAC 40         126 jours de cotation,  39 trades, jours avec au moins un trade  29%, un trade tous les 3.2 jours
+      DAX             99 jours de cotation,  35 trades, jours avec au moins un trade  28%, un trade tous les 2.8 jours
+      Euro Stoxx 50   98 jours de cotation,  35 trades, jours avec au moins un trade  29%, un trade tous les 2.8 jours
+      S&P 500         76 jours de cotation,  50 trades, jours avec au moins un trade  51%, un trade tous les 1.5 jours
+      Nasdaq 100      76 jours de cotation,  22 trades, jours avec au moins un trade  25%, un trade tous les 3.5 jours
+      FTSE 100        97 jours de cotation,  36 trades, jours avec au moins un trade  32%, un trade tous les 2.7 jours
+      SMI            120 jours de cotation,  43 trades, jours avec au moins un trade  32%, un trade tous les 2.8 jours
+      Dow Jones       76 jours de cotation,  34 trades, jours avec au moins un trade  37%, un trade tous les 2.2 jours
+      Russell 2000    76 jours de cotation,  45 trades, jours avec au moins un trade  41%, un trade tous les 1.7 jours
+      FTSE MIB       120 jours de cotation,  31 trades, jours avec au moins un trade  23%, un trade tous les 3.9 jours
+
+== 5. En euros (ordre de 500 EUR, levier 2,8) et regle de passage ==
+  principale avant le 28/10 : 299 ordres (150 000 EUR d'ordres passes), +460 EUR a 1 pt, +358 EUR a 3 pts (1R = 4.7 EUR)
+  D          avant le 28/10 : 346 ordres (173 000 EUR d'ordres passes), +31 EUR a 1 pt, -65 EUR a 3 pts (1R = 4.7 EUR)
+  principale depuis le 28/10 : 66 ordres (33 000 EUR d'ordres passes), +35 EUR a 1 pt, +20 EUR a 3 pts (1R = 4.7 EUR)
+  D          depuis le 28/10 : 79 ordres (40 000 EUR d'ordres passes), +90 EUR a 1 pt, +51 EUR a 3 pts (1R = 4.7 EUR)
+  regle de passage (+72R plafonnes a un controle de 100 en 100 trades, 600 au plus) : moyenne plafonnee necessaire par trade 0.72R a 100, 0.36R a 200, 0.24R a 300, 0.18R a 400, 0.14R a 500, 0.12R a 600
+      principale a 1 pt, avant le 28/10 : moyenne plafonnee obtenue +0.139R par trade
+      principale a 1 pt, depuis le 28/10 : moyenne plafonnee obtenue +0.051R par trade
+      D a 3 pt, avant le 28/10 : moyenne plafonnee obtenue -0.048R par trade
+      D a 3 pt, depuis le 28/10 : moyenne plafonnee obtenue +0.102R par trade

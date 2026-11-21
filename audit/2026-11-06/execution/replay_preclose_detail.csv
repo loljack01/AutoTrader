@@ -1,0 +1,92 @@
+jour,marche,zone,flag,sortie_au_stop,rsi2_cloture,ligne,pc_entree,pc_ignoree,pc_sortie,bilan_entree,bilan_ignoree,bilan_sortie
+2026-07-08,CAC 40,eu,proxy,False,5.9,"CAC 40: ENTREE a prendre avant la cloture, RSI(2) 5.3, cours 8225.36, stop 7983.72 (2.9%),",True,False,False,True,False,False
+2026-07-08,DAX,eu,proxy,False,9.2,"DAX: ENTREE a prendre avant la cloture, RSI(2) 8.8, cours 24854.37, stop 24013.32 (3.4%), ",True,False,False,True,False,False
+2026-07-08,Euro Stoxx 50,eu,proxy,False,7.6,"Euro Stoxx 50: ENTREE a prendre avant la cloture, RSI(2) 6.8, cours 6185.72, stop 5995.90 ",True,False,False,True,False,False
+2026-07-08,FTSE 100,eu,proxy,False,10.5,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 9.1, cours 10458.16, stop 10171.21 (2.",True,False,False,False,False,False
+2026-07-09,FTSE 100,eu,proxy,False,9.0,"FTSE 100: a surveiller, RSI(2) 18.0 (signal sous 10 a la cloture)",False,False,False,True,False,False
+2026-07-13,CAC 40,eu,proxy,False,66.0,"CAC 40: position ouverte (entree 8252.66), cours 8365.50, SMA5 8344.00 -> SORTIE avant la ",False,False,True,False,False,True
+2026-07-13,Euro Stoxx 50,eu,proxy,False,45.4,"Euro Stoxx 50: position ouverte (entree 6204.92), cours 6267.99, SMA5 6269.41 -> garder, s",False,False,False,False,False,True
+2026-07-14,DAX,eu,proxy,False,59.9,"DAX: position ouverte (entree 24897.45), cours 25194.97, SMA5 25078.41 -> SORTIE avant la ",False,False,True,False,False,True
+2026-07-14,FTSE 100,eu,proxy,False,74.2,"FTSE 100: position ouverte (entree 10472.46), cours 10524.27, SMA5 10496.28 -> SORTIE avan",False,False,True,False,False,True
+2026-07-16,DAX,eu,proxy,False,11.4,"DAX: ENTREE a prendre avant la cloture, RSI(2) 8.2, cours 24840.32, stop 24011.40 (3.3%), ",True,False,False,False,False,False
+2026-07-17,DAX,eu,proxy,False,6.1,"DAX: ENTREE a prendre avant la cloture, RSI(2) 6.1, cours 24829.69, stop 24001.89 (3.3%), ",True,False,False,True,False,False
+2026-07-17,FTSE MIB,eu,proxy,False,5.4,"FTSE MIB: ENTREE a prendre avant la cloture, RSI(2) 5.3, cours 51864.03, stop 50293.79 (3.",True,False,False,True,False,False
+2026-07-21,DAX,eu,proxy,False,80.4,"DAX: position ouverte (entree 24830.98), cours 24951.20, SMA5 24908.78 -> SORTIE avant la ",False,False,True,False,False,True
+2026-07-21,FTSE MIB,eu,proxy,False,72.1,"FTSE MIB: position ouverte (entree 51882.27), cours 52211.22, SMA5 52148.30 -> SORTIE avan",False,False,True,False,False,True
+2026-08-12,FTSE 100,eu,proxy,False,13.5,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 7.8, cours 10806.73, stop 10545.02 (2.",True,False,False,False,False,False
+2026-08-13,CAC 40,eu,proxy,False,8.3,"CAC 40: ENTREE a prendre avant la cloture, RSI(2) 9.1, cours 8654.94, stop 8448.43 (2.4%),",True,False,False,True,False,False
+2026-08-13,FTSE 100,eu,proxy,False,3.1,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 4.4, cours 10795.65, stop 10542.96 (2.",True,False,False,True,False,False
+2026-08-17,SMI,eu,proxy,False,6.3,"SMI: ENTREE a prendre avant la cloture, RSI(2) 6.1, cours 14296.63, stop 13947.42 (2.4%), ",True,False,False,True,False,False
+2026-08-17,FTSE MIB,eu,proxy,False,15.2,"FTSE MIB: ENTREE a prendre avant la cloture, RSI(2) 7.1, cours 53548.73, stop 52181.05 (2.",True,False,False,False,False,False
+2026-08-17,Dow Jones,us,proxy,False,6.4,"Dow Jones: ENTREE a prendre avant la cloture, RSI(2) 6.1, cours 53446.79, stop 52105.94 (2",True,False,False,True,False,False
+2026-08-18,Euro Stoxx 50,eu,proxy,False,3.5,"Euro Stoxx 50: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 3.1, cours 6460.71, s",False,True,False,False,True,False
+2026-08-18,FTSE MIB,eu,proxy,False,0.9,"FTSE MIB: ENTREE a prendre avant la cloture, RSI(2) 0.9, cours 53004.03, stop 51680.07 (2.",True,False,False,True,False,False
+2026-08-18,S&P 500,us,proxy,False,9.5,"S&P 500: ENTREE a prendre avant la cloture, RSI(2) 10.0, cours 7695.96, stop 7514.15 (2.4%",True,False,False,False,True,False
+2026-08-18,Nasdaq 100,us,proxy,False,10.0,"Nasdaq 100: a surveiller, RSI(2) 10.2 (signal sous 10 a la cloture)",False,False,False,False,True,False
+2026-08-19,Euro Stoxx 50,eu,proxy,False,2.1,"Euro Stoxx 50: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 2.3, cours 6449.24, s",False,True,False,False,False,False
+2026-08-19,FTSE 100,eu,proxy,False,56.3,"FTSE 100: position ouverte (entree 10772.68), cours 10740.51, SMA5 10742.33 -> garder, sto",False,False,False,False,False,True
+2026-08-19,SMI,eu,proxy,False,67.4,"SMI: position ouverte (entree 14302.39), cours 14380.94, SMA5 14374.01 -> SORTIE avant la ",False,False,True,False,False,True
+2026-08-19,Nasdaq 100,us,proxy,False,8.2,"Nasdaq 100: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 8.4, cours 29436.13, sto",False,True,False,False,False,False
+2026-08-20,CAC 40,eu,proxy,True,0.2,"CAC 40: position ouverte (entree 8650.56), cours 8458.48, SMA5 8537.23 -> garder, stop 844",False,False,False,True,False,True
+2026-08-20,DAX,eu,proxy,False,4.8,"DAX: ENTREE a prendre avant la cloture, RSI(2) 4.3, cours 25960.81, stop 25310.41 (2.5%), ",True,False,False,True,False,False
+2026-08-20,Euro Stoxx 50,eu,proxy,False,1.2,"Euro Stoxx 50: ENTREE a prendre avant la cloture, RSI(2) 1.2, cours 6423.54, stop 6272.38 ",True,False,False,False,False,False
+2026-08-20,Nasdaq 100,us,proxy,False,3.8,"Nasdaq 100: ENTREE a prendre avant la cloture, RSI(2) 3.8, cours 29215.46, stop 27986.39 (",True,False,False,False,False,False
+2026-08-21,DAX,eu,proxy,False,62.0,"DAX: position ouverte (entree 25983.04), cours 26097.68, SMA5 26127.80 -> garder, stop 253",False,False,False,False,False,True
+2026-08-21,Dow Jones,us,proxy,False,58.6,"Dow Jones: position ouverte (entree 53465.36), cours 53300.29, SMA5 53269.32 -> SORTIE ava",False,False,True,False,False,True
+2026-08-25,FTSE MIB,eu,proxy,False,63.4,"FTSE MIB: position ouverte (entree 53017.85), cours 52626.90, SMA5 52624.23 -> SORTIE avan",False,False,True,False,False,True
+2026-08-26,CAC 40,eu,proxy,False,57.9,"CAC 40: position ouverte (entree 8453.09), cours 8469.61, SMA5 8459.87 -> SORTIE avant la ",False,False,True,False,False,True
+2026-08-27,CAC 40,eu,proxy,False,8.2,"CAC 40: ENTREE a prendre avant la cloture, RSI(2) 7.3, cours 8301.32, stop 8126.79 (2.1%),",True,False,False,True,False,False
+2026-08-28,CAC 40,eu,proxy,False,53.6,"CAC 40: position ouverte (entree 8319.87), cours 8421.25, SMA5 8419.14 -> SORTIE avant la ",False,False,True,False,False,False
+2026-08-31,SMI,eu,proxy,False,9.7,"SMI: ENTREE a prendre avant la cloture, RSI(2) 9.4, cours 14280.71, stop 13958.34 (2.3%), ",True,False,False,True,False,False
+2026-08-31,Russell 2000,us,proxy,False,8.4,"Russell 2000: ENTREE a prendre avant la cloture, RSI(2) 7.6, cours 2952.51, stop 2873.71 (",True,False,False,True,False,False
+2026-09-01,S&P 500,us,proxy,False,9.8,"S&P 500: ENTREE a prendre avant la cloture, RSI(2) 9.2, cours 7625.98, stop 7471.23 (2.0%)",True,False,False,True,False,False
+2026-09-01,Dow Jones,us,proxy,False,3.8,"Dow Jones: ENTREE a prendre avant la cloture, RSI(2) 3.7, cours 52755.67, stop 51638.78 (2",True,False,False,True,False,False
+2026-09-02,DAX,eu,proxy,False,8.8,"DAX: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 8.7, cours 25834.21, stop 25206",False,True,False,True,False,False
+2026-09-02,SMI,eu,proxy,False,59.5,"SMI: position ouverte (entree 14286.43), cours 14339.79, SMA5 14349.03 -> garder, stop 139",False,False,False,False,False,True
+2026-09-02,FTSE MIB,eu,proxy,False,9.2,"FTSE MIB: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 8.5, cours 51745.46, stop ",False,True,False,False,True,False
+2026-09-03,S&P 500,us,proxy,False,84.6,"S&P 500: position ouverte (entree 7631.47), cours 7745.73, SMA5 7688.34 -> SORTIE avant la",False,False,True,False,False,True
+2026-09-03,Dow Jones,us,proxy,False,83.4,"Dow Jones: position ouverte (entree 52772.27), cours 53693.55, SMA5 53257.96 -> SORTIE ava",False,False,True,False,False,True
+2026-09-03,Russell 2000,us,proxy,False,69.8,"Russell 2000: position ouverte (entree 2956.45), cours 2961.95, SMA5 2952.81 -> SORTIE ava",False,False,True,False,False,True
+2026-09-04,DAX,eu,proxy,False,60.2,"DAX: position ouverte (entree 25839.33), cours 26045.26, SMA5 26023.23 -> SORTIE avant la ",False,False,True,False,False,True
+2026-09-07,CAC 40,eu,proxy,False,71.9,"CAC 40: position ouverte (entree 8319.87), cours 8302.73, SMA5 8290.08 -> SORTIE avant la ",False,False,True,False,False,True
+2026-09-08,SMI,eu,proxy,False,2.7,"SMI: ENTREE a prendre avant la cloture, RSI(2) 2.9, cours 14080.35, stop 13742.44 (2.4%), ",True,False,False,True,False,False
+2026-09-09,DAX,eu,proxy,False,3.7,"DAX: ENTREE a prendre avant la cloture, RSI(2) 3.4, cours 25545.69, stop 24950.31 (2.3%), ",True,False,False,True,False,False
+2026-09-09,Euro Stoxx 50,eu,proxy,False,8.9,"Euro Stoxx 50: ENTREE a prendre avant la cloture, RSI(2) 8.3, cours 6303.18, stop 6166.48 ",True,False,False,True,False,False
+2026-09-09,FTSE 100,eu,proxy,False,3.2,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 2.9, cours 10654.32, stop 10437.82 (2.",True,False,False,True,False,False
+2026-09-09,Russell 2000,us,proxy,False,10.8,"Russell 2000: ENTREE a prendre avant la cloture, RSI(2) 9.9, cours 2916.47, stop 2840.42 (",True,False,False,False,False,False
+2026-09-10,S&P 500,us,proxy,False,7.4,"S&P 500: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 7.3, cours 7591.66, stop 74",False,True,False,False,True,False
+2026-09-10,Nasdaq 100,us,proxy,False,7.8,"Nasdaq 100: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 8.3, cours 29125.38, sto",False,True,False,False,True,False
+2026-09-10,Dow Jones,us,proxy,False,6.3,"Dow Jones: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 5.9, cours 52017.58, stop",False,True,False,False,True,False
+2026-09-10,Russell 2000,us,proxy,False,5.1,"Russell 2000: ENTREE a prendre avant la cloture, RSI(2) 5.1, cours 2891.35, stop 2813.36 (",True,False,False,True,False,False
+2026-09-14,FTSE 100,eu,proxy,False,66.7,"FTSE 100: position ouverte (entree 10670.07), cours 10688.91, SMA5 10686.00 -> SORTIE avan",False,False,True,False,False,True
+2026-09-14,SMI,eu,proxy,False,65.0,"SMI: position ouverte (entree 14057.61), cours 13892.30, SMA5 13854.00 -> SORTIE avant la ",False,False,True,False,False,True
+2026-09-16,DAX,eu,proxy,False,67.3,"DAX: position ouverte (entree 25576.45), cours 25571.08, SMA5 25468.78 -> SORTIE avant la ",False,False,True,False,False,True
+2026-09-16,Euro Stoxx 50,eu,proxy,False,52.3,"Euro Stoxx 50: position ouverte (entree 6311.57), cours 6278.47, SMA5 6273.90 -> SORTIE av",False,False,True,False,False,False
+2026-09-16,S&P 500,us,proxy,False,11.6,"S&P 500: ENTREE a prendre avant la cloture, RSI(2) 8.9, cours 7530.00, stop 7376.57 (2.0%)",True,False,False,False,False,False
+2026-09-16,Dow Jones,us,proxy,False,7.1,"Dow Jones: ENTREE a prendre avant la cloture, RSI(2) 6.1, cours 51318.65, stop 50093.06 (2",True,False,False,False,False,False
+2026-09-17,Euro Stoxx 50,eu,proxy,False,81.5,"Euro Stoxx 50: position ouverte (entree 6311.57), cours 6321.44, SMA5 6282.00 -> SORTIE av",False,False,True,False,False,True
+2026-09-21,Russell 2000,us,proxy,False,64.1,"Russell 2000: position ouverte (entree 2890.95), cours 2882.63, SMA5 2869.35 -> SORTIE ava",False,False,True,False,False,True
+2026-09-28,Russell 2000,us,proxy,False,8.4,"Russell 2000: ENTREE a prendre avant la cloture, RSI(2) 8.9, cours 2819.59, stop 2738.03 (",True,False,False,True,False,False
+2026-09-29,FTSE 100,eu,proxy,False,8.8,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 7.5, cours 10625.77, stop 10390.55 (2.",True,False,False,True,False,False
+2026-09-30,SMI,eu,proxy,False,6.1,"SMI: ENTREE a prendre avant la cloture, RSI(2) 7.8, cours 13853.22, stop 13485.46 (2.7%), ",True,False,False,True,False,False
+2026-09-30,Dow Jones,us,proxy,False,9.3,"Dow Jones: a surveiller, RSI(2) 11.6 (signal sous 10 a la cloture)",False,False,False,True,False,False
+2026-10-01,DAX,eu,proxy,False,4.2,"DAX: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 4.6, cours 24967.80, stop 24255",False,True,False,True,False,False
+2026-10-01,Euro Stoxx 50,eu,proxy,False,5.5,"Euro Stoxx 50: ENTREE ignoree (5 positions) avant la cloture, RSI(2) 5.8, cours 6181.42, s",False,True,False,False,True,False
+2026-10-01,FTSE 100,eu,proxy,True,0.7,"FTSE 100: position ouverte (entree 10636.7), cours 10424.97, SMA5 10609.56 -> garder, stop",False,False,False,False,False,True
+2026-10-01,FTSE MIB,eu,proxy,False,2.5,"FTSE MIB: ENTREE a prendre avant la cloture, RSI(2) 2.6, cours 50318.34, stop 48739.54 (3.",True,False,False,True,False,False
+2026-10-02,DAX,eu,proxy,False,61.7,"DAX: position ouverte (entree 24939.35), cours 25193.37, SMA5 25221.11 -> garder, stop 242",False,False,False,False,False,True
+2026-10-02,Dow Jones,us,proxy,False,64.0,"Dow Jones: position ouverte (entree 50911.09), cours 51133.82, SMA5 51163.86 -> garder, st",False,False,False,False,False,True
+2026-10-02,Russell 2000,us,proxy,False,84.6,"Russell 2000: position ouverte (entree 2817.91), cours 2830.64, SMA5 2811.99 -> SORTIE ava",False,False,True,False,False,True
+2026-10-06,SMI,eu,proxy,False,78.4,"SMI: position ouverte (entree 13830.34), cours 13793.50, SMA5 13722.23 -> SORTIE avant la ",False,False,True,False,False,True
+2026-10-06,FTSE MIB,eu,proxy,False,79.6,"FTSE MIB: position ouverte (entree 50237.86), cours 51261.16, SMA5 50834.52 -> SORTIE avan",False,False,True,False,False,True
+2026-10-14,S&P 500,us,proxy,False,7.2,"S&P 500: ENTREE a prendre avant la cloture, RSI(2) 6.9, cours 7714.29, stop 7561.69 (2.0%)",True,False,False,True,False,False
+2026-10-14,Nasdaq 100,us,proxy,False,3.3,"Nasdaq 100: ENTREE a prendre avant la cloture, RSI(2) 3.4, cours 29969.04, stop 29063.67 (",True,False,False,True,False,False
+2026-10-20,S&P 500,us,proxy,False,60.5,"S&P 500: position ouverte (entree 7718.94), cours 7708.13, SMA5 7704.26 -> SORTIE avant la",False,False,True,False,False,True
+2026-10-21,Nasdaq 100,us,proxy,False,75.3,"Nasdaq 100: position ouverte (entree 29950.82), cours 29822.31, SMA5 29593.02 -> SORTIE av",False,False,True,False,False,True
+2026-10-23,FTSE 100,eu,proxy,False,13.0,"FTSE 100: ENTREE a prendre avant la cloture, RSI(2) 8.7, cours 10655.75, stop 10384.88 (2.",True,False,False,False,False,False
+2026-10-30,S&P 500,us,apres_cloture,False,8.8,"S&P 500: ENTREE a prendre avant la cloture, RSI(2) 8.8, cours 7580.07, stop 7409.15 (2.3%)",True,False,False,True,False,False
+2026-10-30,Nasdaq 100,us,apres_cloture,False,8.2,"Nasdaq 100: ENTREE a prendre avant la cloture, RSI(2) 8.2, cours 28384.85, stop 27231.86 (",True,False,False,True,False,False
+2026-10-30,Dow Jones,us,apres_cloture,False,5.8,"Dow Jones: ENTREE a prendre avant la cloture, RSI(2) 5.8, cours 51775.17, stop 50570.68 (2",True,False,False,True,False,False
+2026-11-04,S&P 500,us,proxy,False,82.3,"S&P 500: position ouverte (entree 7580.07), cours 7698.20, SMA5 7621.80 -> SORTIE avant la",False,False,True,False,False,True
+2026-11-04,Dow Jones,us,proxy,False,90.0,"Dow Jones: position ouverte (entree 51775.17), cours 53459.91, SMA5 52272.94 -> SORTIE ava",False,False,True,False,False,True
+2026-11-05,Nasdaq 100,us,proxy,True,8.6,"Nasdaq 100: position ouverte (entree 28384.85), cours 26723.23, SMA5 27943.06 -> garder, s",False,False,False,False,False,True

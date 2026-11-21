@@ -1,0 +1,78 @@
+Controle de reproduction : 40/40 configurations identiques au moteur -> OK
+
+== 1. Etat des lieux (base, frais 1 pt) ==
+  370 trades ; de meme sens que le trade precedent sur le meme indice : 216 (60%) ; de sens oppose : 144
+  calls 109, puts 261
+  paires call + put ouvertes en meme temps sur le meme indice : 60
+  avant le 28/10 (historique, information) : trades de meme sens que le precedent :  186 trades,  61 gagnants, net  +61.31R (moy +0.330, t +1.30), plafond 5R  +18.59R, pire jour -4.23R, jours <= -3R  9, pire creux -20.93R
+                                             trades de sens oppose ou premiers  :  113 trades,  42 gagnants, net  +36.59R (moy +0.324, t +1.51), plafond 5R  +23.10R, pire jour -5.29R, jours <= -3R  4, pire creux -13.09R
+  depuis le 28/10 (suivi) : trades de meme sens que le precedent :   28 trades,   7 gagnants, net   -3.22R (moy -0.115, t -0.36), plafond 5R   -3.22R, pire jour -6.19R, jours <= -3R  3, pire creux -7.87R
+                            trades de sens oppose ou premiers  :   38 trades,  12 gagnants, net  +10.65R (moy +0.280, t +0.76), plafond 5R   +6.56R, pire jour -2.07R, jours <= -3R  0, pire creux -6.94R
+
+== 2. Alternance et retournement ==
+  -- principale, frais 1 pt --
+   avant le 28/10 (historique, information)
+     base                    299 trades, 103 gagnants, net  +97.90R (moy +0.327, t +1.85), plafond 5R  +41.69R, pire jour -7.35R, jours <= -3R 13, pire creux -15.82R
+     A alternance stricte    132 trades,  53 gagnants, net  +51.47R (moy +0.390, t +2.03), plafond 5R  +37.97R, pire jour -5.29R, jours <= -3R  3, pire creux -9.12R
+     Aj alternance du jour   284 trades,  96 gagnants, net  +88.64R (moy +0.312, t +1.70), plafond 5R  +32.43R, pire jour -8.42R, jours <= -3R 11, pire creux -15.20R
+     R retournement          340 trades, 127 gagnants, net  +75.90R (moy +0.223, t +2.11), plafond 5R  +53.50R, pire jour -6.84R, jours <= -3R 12, pire creux -15.75R
+     A+R                     138 trades,  60 gagnants, net  +53.52R (moy +0.388, t +2.27), plafond 5R  +42.34R, pire jour -4.37R, jours <= -3R  2, pire creux -8.71R
+     Aj+R                    316 trades, 117 gagnants, net  +68.37R (moy +0.216, t +1.95), plafond 5R  +45.96R, pire jour -7.40R, jours <= -3R  8, pire creux -15.12R
+   depuis le 28/10 (suivi)
+     base                     66 trades,  19 gagnants, net   +7.43R (moy +0.113, t +0.45), plafond 5R   +3.34R, pire jour -5.28R, jours <= -3R  3, pire creux -12.78R
+     A alternance stricte     40 trades,  12 gagnants, net   +8.55R (moy +0.214, t +0.61), plafond 5R   +4.46R, pire jour -3.13R, jours <= -3R  1, pire creux -7.98R
+     Aj alternance du jour    62 trades,  17 gagnants, net   +3.05R (moy +0.049, t +0.19), plafond 5R   -1.05R, pire jour -4.23R, jours <= -3R  3, pire creux -13.81R
+     R retournement           77 trades,  25 gagnants, net   +5.85R (moy +0.076, t +0.37), plafond 5R   +1.79R, pire jour -9.15R, jours <= -3R  3, pire creux -18.64R
+     A+R                      49 trades,  21 gagnants, net  +16.36R (moy +0.334, t +1.18), plafond 5R  +12.29R, pire jour -5.02R, jours <= -3R  1, pire creux -7.53R
+     Aj+R                     70 trades,  22 gagnants, net   +5.28R (moy +0.075, t +0.34), plafond 5R   +1.21R, pire jour -9.15R, jours <= -3R  3, pire creux -18.07R
+  -- principale, frais 3 pt --
+   avant le 28/10 (historique, information)
+     base                    262 trades,  86 gagnants, net  +76.27R (moy +0.291, t +1.46), plafond 5R  +21.09R, pire jour -7.67R, jours <= -3R 12, pire creux -20.25R
+     A alternance stricte    109 trades,  44 gagnants, net  +46.75R (moy +0.429, t +1.88), plafond 5R  +33.64R, pire jour -4.91R, jours <= -3R  2, pire creux -14.72R
+     Aj alternance du jour   249 trades,  80 gagnants, net  +68.48R (moy +0.275, t +1.32), plafond 5R  +13.30R, pire jour -9.19R, jours <= -3R  9, pire creux -21.38R
+     R retournement          298 trades, 107 gagnants, net  +55.09R (moy +0.185, t +1.55), plafond 5R  +33.71R, pire jour -7.79R, jours <= -3R 13, pire creux -20.02R
+     A+R                     119 trades,  49 gagnants, net  +41.19R (moy +0.346, t +1.77), plafond 5R  +30.39R, pire jour -4.91R, jours <= -3R  1, pire creux -12.26R
+     Aj+R                    278 trades,  98 gagnants, net  +48.25R (moy +0.174, t +1.39), plafond 5R  +26.87R, pire jour -8.14R, jours <= -3R 10, pire creux -20.77R
+   depuis le 28/10 (suivi)
+     base                     63 trades,  18 gagnants, net   +4.34R (moy +0.069, t +0.26), plafond 5R   +0.43R, pire jour -5.92R, jours <= -3R  3, pire creux -12.32R
+     A alternance stricte     38 trades,  12 gagnants, net   +8.03R (moy +0.211, t +0.58), plafond 5R   +4.12R, pire jour -3.39R, jours <= -3R  1, pire creux -7.56R
+     Aj alternance du jour    59 trades,  16 gagnants, net   +0.08R (moy +0.001, t +0.00), plafond 5R   -3.84R, pire jour -5.63R, jours <= -3R  3, pire creux -13.42R
+     R retournement           72 trades,  23 gagnants, net   +6.94R (moy +0.096, t +0.43), plafond 5R   +3.02R, pire jour -9.85R, jours <= -3R  3, pire creux -18.51R
+     A+R                      45 trades,  20 gagnants, net  +17.17R (moy +0.382, t +1.26), plafond 5R  +13.26R, pire jour -5.57R, jours <= -3R  1, pire creux -7.63R
+     Aj+R                     65 trades,  20 gagnants, net   +3.18R (moy +0.049, t +0.21), plafond 5R   -0.74R, pire jour -9.85R, jours <= -3R  3, pire creux -17.84R
+  -- D, frais 1 pt --
+   avant le 28/10 (historique, information)
+     base                    346 trades, 150 gagnants, net   +6.52R (moy +0.019, t +0.30), plafond 5R   +5.07R, pire jour -7.21R, jours <= -3R 12, pire creux -27.04R
+     A alternance stricte    105 trades,  53 gagnants, net  +18.94R (moy +0.180, t +1.55), plafond 5R  +18.94R, pire jour -3.21R, jours <= -3R  2, pire creux -7.04R
+     Aj alternance du jour   320 trades, 141 gagnants, net  +12.06R (moy +0.038, t +0.56), plafond 5R  +10.61R, pire jour -6.12R, jours <= -3R 12, pire creux -21.55R
+     R retournement          349 trades, 153 gagnants, net   +9.08R (moy +0.026, t +0.42), plafond 5R   +7.63R, pire jour -7.21R, jours <= -3R 10, pire creux -27.30R
+     A+R                     107 trades,  55 gagnants, net  +21.66R (moy +0.202, t +1.81), plafond 5R  +21.66R, pire jour -3.21R, jours <= -3R  2, pire creux -7.69R
+     Aj+R                    324 trades, 145 gagnants, net  +14.72R (moy +0.045, t +0.70), plafond 5R  +13.27R, pire jour -6.12R, jours <= -3R 10, pire creux -21.81R
+   depuis le 28/10 (suivi)
+     base                     79 trades,  37 gagnants, net  +19.04R (moy +0.241, t +1.25), plafond 5R  +15.50R, pire jour -4.63R, jours <= -3R  2, pire creux -10.39R
+     A alternance stricte     42 trades,  19 gagnants, net  +11.54R (moy +0.275, t +1.01), plafond 5R  +10.41R, pire jour -2.18R, jours <= -3R  0, pire creux -6.36R
+     Aj alternance du jour    72 trades,  32 gagnants, net  +16.20R (moy +0.225, t +1.07), plafond 5R  +12.66R, pire jour -8.12R, jours <= -3R  2, pire creux -12.85R
+     R retournement           79 trades,  35 gagnants, net  +15.42R (moy +0.195, t +1.03), plafond 5R  +11.88R, pire jour -6.90R, jours <= -3R  2, pire creux -12.16R
+     A+R                      42 trades,  21 gagnants, net  +13.70R (moy +0.326, t +1.25), plafond 5R  +12.56R, pire jour -1.04R, jours <= -3R  0, pire creux -3.54R
+     Aj+R                     72 trades,  31 gagnants, net  +15.30R (moy +0.213, t +1.03), plafond 5R  +11.76R, pire jour -7.67R, jours <= -3R  2, pire creux -11.74R
+  -- D, frais 3 pt --
+   avant le 28/10 (historique, information)
+     base                    314 trades, 128 gagnants, net  -13.83R (moy -0.044, t -0.65), plafond 5R  -15.15R, pire jour -6.63R, jours <= -3R 12, pire creux -36.68R
+     A alternance stricte     92 trades,  43 gagnants, net  +10.32R (moy +0.112, t +0.88), plafond 5R  +10.32R, pire jour -2.95R, jours <= -3R  0, pire creux -7.49R
+     Aj alternance du jour   290 trades, 120 gagnants, net   -8.46R (moy -0.029, t -0.40), plafond 5R   -9.78R, pire jour -6.12R, jours <= -3R 10, pire creux -30.42R
+     R retournement          316 trades, 131 gagnants, net  -10.20R (moy -0.032, t -0.48), plafond 5R  -11.52R, pire jour -6.63R, jours <= -3R 12, pire creux -35.32R
+     A+R                      94 trades,  45 gagnants, net  +12.46R (moy +0.133, t +1.08), plafond 5R  +12.46R, pire jour -2.95R, jours <= -3R  0, pire creux -7.45R
+     Aj+R                    293 trades, 124 gagnants, net   -4.86R (moy -0.017, t -0.24), plafond 5R   -6.19R, pire jour -6.12R, jours <= -3R 10, pire creux -29.59R
+   depuis le 28/10 (suivi)
+     base                     74 trades,  32 gagnants, net  +10.90R (moy +0.147, t +0.72), plafond 5R   +7.57R, pire jour -8.08R, jours <= -3R  1, pire creux -14.44R
+     A alternance stricte     40 trades,  19 gagnants, net  +11.06R (moy +0.276, t +0.98), plafond 5R  +10.07R, pire jour -2.57R, jours <= -3R  0, pire creux -7.11R
+     Aj alternance du jour    67 trades,  28 gagnants, net  +11.08R (moy +0.165, t +0.74), plafond 5R   +7.75R, pire jour -8.80R, jours <= -3R  1, pire creux -14.23R
+     R retournement           74 trades,  31 gagnants, net  +10.00R (moy +0.135, t +0.67), plafond 5R   +6.67R, pire jour -7.62R, jours <= -3R  1, pire creux -13.97R
+     A+R                      40 trades,  21 gagnants, net  +13.21R (moy +0.330, t +1.23), plafond 5R  +12.22R, pire jour -1.00R, jours <= -3R  0, pire creux -3.60R
+     Aj+R                     67 trades,  27 gagnants, net  +10.18R (moy +0.152, t +0.69), plafond 5R   +6.85R, pire jour -8.34R, jours <= -3R  2, pire creux -13.61R
+
+== 3. Les trades retournes (principale, frais 1 pt, variante R) ==
+  avant le 28/10 (historique, information) : 47 trades fermes par retournement, net +28.71R ; les memes trades dans la base (37 retrouves, clos) : +49.41R contre +27.33R retournes
+  depuis le 28/10 (suivi) : 20 trades fermes par retournement, net +6.37R ; les memes trades dans la base (14 retrouves, clos) : +2.75R contre +5.11R retournes
+
+Detail (frais 1 pt) : alternance_trades.csv

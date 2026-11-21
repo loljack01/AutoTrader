@@ -1,0 +1,125 @@
+//@version=5
+// Panneau de discipline pour les turbos CAC 40, d'après la « Fiche gruyère »
+// (https://claude.ai/artifact/QG1DuSGSJaroDUmK113JXf).
+// Outil de gestion du risque : il ne donne AUCUN signal. Le signal vient de la
+// stratégie principale (15m, balayage + CHoCH). Les résultats du jour et de la
+// semaine se saisissent à la main (TradingView ne voit pas le compte Boursorama).
+indicator("Turbos CAC · Fiche gruyère", overlay = true)
+
+// ---------- Compte ----------
+capital    = input.float(10000, "Capital (€)", minval = 0, group = "Compte")
+riskPct    = input.float(1.0, "Risque par trade (%)", minval = 0.1, maxval = 5, step = 0.5, group = "Compte",
+     tooltip = "1 % selon la fiche ; 0,5 % pendant les 50 premiers trades réels")
+pnlDay     = input.float(0, "Résultat du jour (€, négatif = perte)", group = "Compte")
+pnlWeek    = input.float(0, "Résultat de la semaine (€, négatif = perte)", group = "Compte")
+dayLimitR  = input.float(3, "Limite du jour (R)", minval = 1, group = "Compte")
+weekLimitR = input.float(6, "Limite de la semaine (R)", minval = 1, group = "Compte")
+validated  = input.bool(false, "Validation des 100 trades obtenue", group = "Compte",
+     tooltip = "Tant que la stratégie principale n'a pas passé sa règle des 100 trades : suivi sans argent")
+
+// ---------- Trade envisagé ----------
+side       = input.string("Put", "Sens", options = ["Call", "Put"], group = "Trade")
+entryIn    = input.float(0, "Entrée (0 = dernier cours)", group = "Trade")
+stopIn     = input.float(0, "Stop (niveau CAC)", group = "Trade")
+targetIn   = input.float(0, "Cible (niveau CAC, 0 = non saisie)", group = "Trade")
+spreadEur  = input.float(0.01, "Écart achat/vente du turbo (€)", minval = 0, step = 0.01, group = "Trade",
+     tooltip = "Écart affiché sur Boursorama entre l'achat et la vente du turbo (souvent 0,01 €)")
+parity     = input.float(0.01, "Parité (€ par point CAC)", minval = 0.0001, group = "Trade",
+     tooltip = "Turbo de parité 1/100 : 0,01 € par point. Vérifier sur la fiche du turbo")
+spreadPts  = spreadEur / parity
+barrier    = input.float(0, "Barrière du turbo (0 = non saisie)", group = "Trade")
+inTrade    = input.bool(false, "Position ouverte", group = "Trade")
+entryTime  = input.time(timestamp("30 Oct 2026 09:15 +0100"), "Heure d'entrée", group = "Trade")
+
+// ---------- Tendance journalière (veille close vs SMA20) ----------
+[dClose, dSma] = request.security(syminfo.tickerid, "D", [close[1], ta.sma(close, 20)[1]], lookahead = barmerge.lookahead_on)
+
+// ---------- Calculs ----------
+oneR      = capital * riskPct / 100
+entry     = entryIn > 0 ? entryIn : close
+stopDist  = stopIn > 0 ? math.abs(entry - stopIn) : na
+lossPer   = stopDist + spreadPts
+eurPer    = lossPer * parity
+nTurbos   = eurPer > 0 ? math.floor(oneR / eurPer) : na
+dayR      = oneR > 0 ? pnlDay / oneR : 0
+weekR     = oneR > 0 ? pnlWeek / oneR : 0
+dayLeft   = dayLimitR * oneR + pnlDay
+weekLeft  = weekLimitR * oneR + pnlWeek
+budget    = math.min(dayLeft, weekLeft)
+nAllowed  = eurPer > 0 ? math.max(0, math.min(nTurbos, math.floor(budget / eurPer))) : na
+rr        = targetIn > 0 and stopIn > 0 ? (math.abs(targetIn - entry) - spreadPts) / (math.abs(entry - stopIn) + spreadPts) : na
+stopSide  = stopIn <= 0 ? true : side == "Call" ? stopIn < entry : stopIn > entry
+barGap    = barrier > 0 and stopIn > 0 ? (side == "Call" ? stopIn - barrier : barrier - stopIn) : na
+trendUp   = dClose > dSma
+
+parisH    = hour(timenow, "Europe/Paris") + minute(timenow, "Europe/Paris") / 60.0
+nyH       = hour(timenow, "America/New_York") + minute(timenow, "America/New_York") / 60.0
+blocked   = (parisH >= 9.0 and parisH < 9.25) or (nyH >= 9.5 and nyH < 9.75)
+
+dayStop   = pnlDay <= -dayLimitR * oneR
+weekStop  = pnlWeek <= -weekLimitR * oneR
+callBad   = side == "Call" and not trendUp
+
+// ---------- Verdict (la première tranche trouée l'emporte) ----------
+string verdict = "OK : toutes les tranches bouchées"
+color  vColor  = color.new(color.green, 0)
+if weekStop
+    verdict := "STOP : limite de la semaine atteinte, pause jusqu'à lundi"
+    vColor  := color.new(color.red, 0)
+else if dayStop
+    verdict := "STOP : limite du jour atteinte, écran fermé"
+    vColor  := color.new(color.red, 0)
+else if callBad
+    verdict := "REFUS : call contre la tendance journalière"
+    vColor  := color.new(color.red, 0)
+else if not stopSide
+    verdict := "REFUS : stop du mauvais côté de l'entrée"
+    vColor  := color.new(color.red, 0)
+else if not na(rr) and rr < 1.3
+    verdict := "REFUS : gain/risque net < 1,3"
+    vColor  := color.new(color.red, 0)
+else if blocked
+    verdict := "ATTENTE : horaire bloqué (9h00-9h15 / ouverture US)"
+    vColor  := color.new(color.orange, 0)
+else if not na(barGap) and barGap < 100
+    verdict := "PRUDENCE : barrière à moins de 100 pts du stop"
+    vColor  := color.new(color.orange, 0)
+else if stopIn <= 0
+    verdict := "Saisir le stop pour calculer la taille"
+    vColor  := color.new(color.gray, 0)
+else if not validated
+    verdict := "SUIVI SANS ARGENT : 100 trades pas encore validés"
+    vColor  := color.new(color.blue, 0)
+
+// ---------- Affichage ----------
+fmt(x) => na(x) ? "—" : str.tostring(x, "#,##0.00")
+fmt0(x) => na(x) ? "—" : str.tostring(x, "#,##0")
+
+var table t = table.new(position.top_right, 2, 14, bgcolor = color.new(#131722, 0), border_width = 1,
+     border_color = color.new(#2a2e39, 0), frame_color = color.new(#2a2e39, 0), frame_width = 1)
+
+row(i, label, value, col) =>
+    table.cell(t, 0, i, label, text_color = color.new(#d1d4dc, 0), text_size = size.small, text_halign = text.align_left)
+    table.cell(t, 1, i, value, text_color = col, text_size = size.small, text_halign = text.align_right)
+
+if barstate.islast
+    white = color.new(#d1d4dc, 0)
+    amber = color.new(#f5a623, 0)
+    red   = color.new(#ef5350, 0)
+    green = color.new(#26a69a, 0)
+    table.cell(t, 0, 0, "TURBOS CAC · Fiche gruyère", text_color = green, text_size = size.small, text_halign = text.align_left)
+    table.cell(t, 1, 0, "", text_size = size.small)
+    row(1, "1R (" + str.tostring(riskPct) + " % du capital)", fmt(oneR) + " €", white)
+    row(2, "Résultat du jour", fmt(pnlDay) + " € (" + str.tostring(dayR, "0.0") + "R)", pnlDay < 0 ? amber : white)
+    row(3, "Reste avant -" + str.tostring(dayLimitR) + "R jour", fmt(dayLeft) + " €", dayLeft <= oneR ? red : white)
+    row(4, "Reste avant -" + str.tostring(weekLimitR) + "R semaine", fmt(weekLeft) + " € (" + str.tostring(weekR, "0.0") + "R)", weekLeft <= oneR ? red : white)
+    row(5, "Tendance (veille vs SMA20 j)", (trendUp ? "haussière : calls OK" : "baissière : puts seuls") + " · SMA " + fmt0(dSma), trendUp ? green : amber)
+    row(6, "Stop", na(stopDist) ? "à saisir" : fmt(stopDist) + " pts + écart " + fmt(spreadPts) + " pts (" + str.tostring(spreadEur, "0.00") + " €)", white)
+    row(7, "Perte par turbo si stop", na(eurPer) ? "—" : fmt(eurPer) + " €", white)
+    row(8, "Turbos (1R)", na(nTurbos) ? "—" : fmt0(nTurbos), white)
+    row(9, "Turbos permis par les limites", na(nAllowed) ? "—" : fmt0(nAllowed), not na(nAllowed) and nAllowed < nTurbos ? amber : white)
+    row(10, "Gain/risque net", na(rr) ? "cible non saisie" : str.tostring(rr, "0.00") + (rr >= 1.3 ? " (≥ 1,3)" : " (< 1,3)"), na(rr) ? white : rr >= 1.3 ? green : red)
+    row(11, "Barrière - stop", na(barGap) ? "non saisie" : fmt0(barGap) + " pts" + (barGap >= 100 ? " (OK)" : " (< 100)"), na(barGap) ? white : barGap >= 100 ? green : amber)
+    row(12, "Sortie forcée (entrée + 48 h)", inTrade ? str.format_time(entryTime + 48 * 3600 * 1000, "dd/MM HH:mm", "Europe/Paris") : "pas de position", inTrade and timenow > entryTime + 48 * 3600 * 1000 ? red : white)
+    table.cell(t, 0, 13, verdict, text_color = color.white, bgcolor = vColor, text_size = size.small, text_halign = text.align_center)
+    table.merge_cells(t, 0, 13, 1, 13)
