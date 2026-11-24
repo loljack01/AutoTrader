@@ -81,16 +81,18 @@ date_seance,symbole,niveau,role,importance,raison,fixe_le
 2026-11-24,FCE1!,8210.0,resistance,forte,zone 8208-8210.5 : double rejet du 19/11 (8209.5 et 8210.5) ; 50 % de la baisse 8419-7952,2026-11-24 08h15
 2026-11-24,FCE1!,8145.0,resistance,forte,"zone 8141-8150 : SMA20 journaliere (8141) et retracement 38.2 % de la hausse 7714-8420 (8150, decembre continu)",2026-11-24 08h15
 2026-11-24,FCE1!,8100.0,resistance,moyenne,chiffre rond,2026-11-24 08h15
-2026-11-24,FCE1!,8085.0,resistance,faible,zone 65.4 % de l'indicateur de l'utilisateur (lu sur capture),2026-11-24 08h15
+2026-11-24,FCE1!,8085.5,resistance,forte,"zone 8077-8085.5 : plus haut du 24/11 (8085.5 vers 10h40, sur capture), apres un sommet vers 8083 a 09h50 ; depassement de 8079 (plus haut du 23/11) non tenu, retour sous 8072 ; zone 65.4 % de l'indicateur de l'utilisateur",2026-11-24 13h10
 2026-11-24,FCE1!,8077.0,resistance,forte,"zone 8075-8079 : plus haut du 23/11 (8079 a 19:15), rejete a 19:30 ; poussee du 24/11 avant 8h arretee vers 8070",2026-11-24 08h15
 2026-11-24,FCE1!,8067.0,pivot,moyenne,retracement 50 % de la hausse 7714-8420 (8067) ; sommets de 17:00-17:15 (8066-8066.5) ; derniere cloture du 23/11 (8066.5),2026-11-24 08h15
 2026-11-24,FCE1!,8060.0,pivot,faible,cours a 08h35 le 24/11,2026-11-24 08h36
-2026-11-24,FCE1!,8050.0,support,forte,"zone 8048.5-8051.5 : reglement du 23/11 (8050.5), creux de 18:45 (8048.5) et de 20:30-20:45 (8050.5), sommet de 15:00 (8051.5) ; approchee sans etre touchee vers 08:27 le 24/11 (~8052.5)",2026-11-24 08h35
-2026-11-24,FCE1!,8042.0,support,moyenne,creux de 16:30 et du fixing de 17:30 le 23/11 (8042),2026-11-24 08h15
+2026-11-24,FCE1!,8050.0,support,forte,"zone 8048.5-8051.5 : reglement du 23/11 (8050.5) ; casse vers 11h45 le 24/11, reprise vers 12h00, cours 8051 a 13h04 (capture)",2026-11-24 13h10
+2026-11-24,FCE1!,8042.0,support,moyenne,creux de 16:30 et du fixing de 17:30 le 23/11 (8042) ; perce vers 11h50 le 24/11 (plus bas 8037) puis repris aussitot,2026-11-24 13h10
 2026-11-24,FCE1!,8026.0,support,moyenne,"zone 8017.5-8030 : SMA50 journaliere (8026), creux de 15:00-15:15 le 23/11, zone 24.6 % de l'utilisateur",2026-11-24 08h15
 2026-11-24,FCE1!,8002.0,support,forte,"zone 8000-8004 : chiffre rond, plafond du range du 23/11 (8004 a 10:05), retest tenu a 15:30 (8003.5)",2026-11-24 08h15
 2026-11-24,FCE1!,7973.0,support,moyenne,zone 7969-7977 : plancher du range du 23/11 de 10h30 a 14h45,2026-11-24 08h15
 2026-11-24,FCE1!,7938.0,support,forte,"zone 7934.5-7942 : ouverture et plus bas du 23/11 (7942), reglement du 20/11 (7934.5) ; a environ 1 ATR (125) sous le cours",2026-11-24 08h15
 2026-11-24,FCE1!,7866.5,support,moyenne,plus bas du 20/11 ; retracement 78.6 % de la hausse 7714-8420 (7865),2026-11-24 08h15
 2026-11-24,FCE1!,8071.0,resistance,moyenne,"zone 8069.5-8072.5 : double rejet du matin du 24/11 (8072.5 a 08:08, 8070 a 08:15-08:16), sous le plus haut du 23/11 (8079)",2026-11-24 08h36
-2026-11-24,FCE1!,8052.5,support,faible,"creux du 24/11 a 08:20 (8052.5), reteste a 08:29 (8053) et 08:31 (8053.5), juste au-dessus de la zone 8048.5-8051.5",2026-11-24 08h36
+2026-11-24,FCE1!,8052.5,support,faible,"creux du 24/11 a 08:20 (8052.5), reteste a 08:29 et 08:31 ; casse vers 11h45 le 24/11",2026-11-24 13h10
+2026-11-24,FCE1!,8062.0,resistance,faible,"rejet vers 12h50 le 24/11 (marque Bear Wick, environ 8062 sur capture) : sommet plus bas que 8085.5",2026-11-24 13h10
+2026-11-24,FCE1!,8037.0,support,moyenne,plus bas du 24/11 vers 11h50 (8037 sur capture) : passage sous 8042 aussitot repris ; creux suivant vers 8043 a 12h25,2026-11-24 13h10
