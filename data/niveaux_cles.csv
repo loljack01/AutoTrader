@@ -81,7 +81,7 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-24,FCE1!,jour,8210.0,resistance,forte,zone 8208-8210.5 : double rejet du 19/11 (8209.5 et 8210.5) ; 50 % de la baisse 8419-7952,2026-11-24 08h15
 2026-11-24,FCE1!,jour,8145.0,resistance,forte,"zone 8141-8150 : SMA20 journaliere (8141) et retracement 38.2 % de la hausse 7714-8420 (8150, decembre continu)",2026-11-24 08h15
 2026-11-24,FCE1!,jour,8100.0,resistance,moyenne,chiffre rond,2026-11-24 08h15
-2026-11-24,FCE1!,jour,8086.5,resistance,forte,"RESISTANCE PRINCIPALE, zone 8077-8086.5 : plus haut du 23/11 (8079) ; double rejet le 24/11 (8085.5 vers 10h40, 8086.5 vers 15h50, sur capture), chaque fois suivi de 30 a 50 points de baisse",2026-11-24 17h25
+2026-11-24,FCE1!,jour,8086.5,resistance,forte,"zone 8077-8086.5 : plus haut du 23/11 (8079) ; rejets le 24/11 a 10h30 (8085.5) et 15h45 (8086.5) en seance ; CASSEE le soir (cloture 15m 8088 a 20h15, plus haut 8096 a 21h45) dans un marche peu echange",2026-11-24 22h25
 2026-11-24,FCE1!,jour,8077.0,resistance,forte,bas de la zone 8077-8086.5 (resistance principale du 24/11) : plus haut du 23/11 (8079 a 19:15) ; depasse deux fois le 24/11 sans tenir,2026-11-24 17h25
 2026-11-24,FCE1!,jour,8067.0,pivot,moyenne,retracement 50 % de la hausse 7714-8420 (8067) ; sommets de 17:00-17:15 (8066-8066.5) ; derniere cloture du 23/11 (8066.5),2026-11-24 08h15
 2026-11-24,FCE1!,jour,8060.0,pivot,faible,cours a 08h35 le 24/11,2026-11-24 08h36
@@ -95,7 +95,7 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-24,FCE1!,jour,8071.0,resistance,moyenne,"zone 8069.5-8072.5 : double rejet du matin du 24/11 (8072.5 a 08:08, 8070 a 08:15-08:16), sous le plus haut du 23/11 (8079)",2026-11-24 08h36
 2026-11-24,FCE1!,jour,8052.5,support,faible,"creux du 24/11 a 08:20 (8052.5), reteste a 08:29 et 08:31 ; casse vers 11h45 le 24/11",2026-11-24 13h10
 2026-11-24,FCE1!,jour,8062.0,resistance,moyenne,rejets vers 12h50 et vers 17h00 le 24/11 (environ 8062-8064 sur capture) : sommets plus bas que 8086.5,2026-11-24 17h25
-2026-11-24,FCE1!,jour,8034.5,support,forte,"SUPPORT PRINCIPAL, zone 8026-8037 : plus bas du 24/11 teste deux fois et tenu (8037 vers 11h50, 8032 vers 14h35, sur capture) ; SMA50 journaliere 8026 juste dessous",2026-11-24 17h25
+2026-11-24,FCE1!,jour,8034.5,support,forte,"SUPPORT PRINCIPAL, zone 8026-8037 : plus bas du 24/11 teste trois fois et tenu (8037 a 11h50, 8032 a 14h30-14h45, 8034 a 17h00 ; donnees exactes 15m) ; SMA50 journaliere 8026 juste dessous",2026-11-24 22h25
 2026-11-24,FCE1!,plusieurs mois,8768.5,resistance,forte,"plus haut sur 12 mois (07/08/2026), FCE1! journalier continu",2026-11-24 17h40
 2026-11-24,FCE1!,plusieurs mois,8580.0,resistance,moyenne,zone 8570-8590 : sommets d'avril (8590 le 14/04) et de juillet (8569.5 le 06/07),2026-11-24 17h40
 2026-11-24,FCE1!,plusieurs mois,8410.0,resistance,forte,"RESISTANCE PRINCIPALE PLUSIEURS MOIS, zone 8400-8420 : sommet de janvier (8400.5 le 14/01) et sommet de la hausse oct-nov (8408.5 le 12/11, 8420 en decembre continu)",2026-11-24 17h40
@@ -105,3 +105,10 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-24,FCE1!,plusieurs mois,7840.0,support,moyenne,"zone 7813-7866 : creux de mai (7813 le 18/05, 7862.5 le 04/05) et du 20/11 (7866.5)",2026-11-24 17h40
 2026-11-24,FCE1!,plusieurs mois,7720.0,support,forte,"zone 7678-7765 : double creux d'octobre (7678.5 le 08/10, 7744 le 23/10) et creux de mars (7764 le 09/03)",2026-11-24 17h40
 2026-11-24,FCE1!,plusieurs mois,7509.5,support,forte,plus bas sur 12 mois (23/03/2026),2026-11-24 17h40
+2026-11-25,FCE1!,jour,8100.0,resistance,moyenne,chiffre rond ; juste au-dessus du plus haut du soir du 24/11 (8096),2026-11-24 22h25
+2026-11-25,FCE1!,jour,8092.0,resistance,moyenne,"zone 8089-8096 : plus hauts du soir du 24/11 (8094 a 20h15, 8096 a 21h45), marche peu echange ; derniere cloture 8090 a 22h",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8082.0,pivot,moyenne,"zone 8077-8086.5 : resistance de la seance du 24/11 (deux rejets), cassee le soir a faible volume : a reconfirmer en seance (support si elle tient, sinon retour dans le range 8032-8086.5)",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8059.0,pivot,faible,"milieu du range 9h-17h30 du 24/11 (P2 : PDH 8086.5, PDL 8032, milieu 8059.25) ; fixing 17h30-17h45 8055.5",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8050.0,support,moyenne,"zone 8048.5-8052.5 : reglement du 23/11 (8050.5), cassee et reprise plusieurs fois le 24/11",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8034.5,support,forte,"SUPPORT PRINCIPAL, zone 8026-8037 : plus bas du 24/11 teste trois fois et tenu (8037, 8032, 8034) ; SMA50 journaliere 8026",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8002.0,support,forte,"zone 8000-8004 : chiffre rond, bas du support de plusieurs mois 8000-8035",2026-11-24 22h25
