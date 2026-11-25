@@ -108,10 +108,11 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-25,FCE1!,jour,8100.0,resistance,moyenne,chiffre rond ; juste au-dessus du plus haut du soir du 24/11 (8096),2026-11-24 22h25
 2026-11-25,FCE1!,jour,8092.0,resistance,moyenne,"zone 8089-8096 : plus hauts du soir du 24/11 (8094 a 20h15, 8096 a 21h45), marche peu echange ; derniere cloture 8090 a 22h",2026-11-24 22h25
 2026-11-25,FCE1!,jour,8082.0,resistance,forte,"zone 8077-8086.5 : deux rejets en seance le 24/11, cassee le soir a faible volume (plus haut 8096) puis reperdue a l'ouverture du 25/11 (fausse cassure) ; rejets le 25/11 a 08h05 (8081) et 08h13 (8079), sur capture",2026-11-25 08h25
-2026-11-25,FCE1!,jour,8059.0,pivot,faible,"milieu du range 9h-17h30 du 24/11 (P2 : PDH 8086.5, PDL 8032, milieu 8059.25) ; fixing 17h30-17h45 8055.5",2026-11-24 22h25
-2026-11-25,FCE1!,jour,8050.0,support,moyenne,"zone 8048.5-8052.5 : reglement du 23/11 (8050.5), cassee et reprise plusieurs fois le 24/11",2026-11-24 22h25
+2026-11-25,FCE1!,jour,8059.0,pivot,moyenne,"milieu du range 9h-17h30 du 24/11 (8059.25) ; objectif du put de 08h30 atteint a 08h34 (8059) ; casse a 08h37, repris a 08h48 (8061.5)",2026-11-25 08h55
+2026-11-25,FCE1!,jour,8050.0,support,forte,"zone 8048.5-8052.5 : reglement du 23/11 (8050.5), double test tenu le 25/11 (8051.5 a 08h37, 8052 a 08h44 ; cloture 15m de 08h30 a 8052) puis rebond a 8064",2026-11-25 08h55
 2026-11-25,FCE1!,jour,8034.5,support,forte,"SUPPORT PRINCIPAL, zone 8026-8037 : plus bas du 24/11 teste trois fois et tenu (8037, 8032, 8034) ; SMA50 journaliere 8026",2026-11-24 22h25
 2026-11-25,FCE1!,jour,8002.0,support,forte,"zone 8000-8004 : chiffre rond, bas du support de plusieurs mois 8000-8035",2026-11-24 22h25
-2026-11-25,FCE1!,jour,8081.0,resistance,moyenne,"plus haut du 25/11 avant le cash (08h05, Bear Wick) puis sommet plus bas vers 8079 a 08h13 (zone 25.8 % de l'indicateur), sur capture",2026-11-25 08h25
-2026-11-25,FCE1!,jour,8065.0,support,moyenne,"plus bas du 25/11 avant le cash (08h00, ouverture environ -22 points sous 8090), sur capture",2026-11-25 08h25
+2026-11-25,FCE1!,jour,8081.5,resistance,moyenne,"plus haut du 25/11 avant le cash (8081.5 a 08h08, donnees exactes 1m), rejete ; sommets plus bas ensuite : 8079 (08h15), 8067 (08h35)",2026-11-25 08h55
+2026-11-25,FCE1!,jour,8065.0,support,moyenne,"plus bas du 25/11 a 08h00 (8065, donnees exactes) ; casse a 08h29, retour dessous a 08h49 (8064) : ancien plancher devenu plafond a court terme",2026-11-25 08h55
 2026-11-25,FCE1!,jour,8045.5,support,moyenne,"reglement du 24/11 (8045.5, deduit de la variation affichee +22.5 a 8068) ; sous la zone 8048.5-8052.5",2026-11-25 08h25
+2026-11-25,FCE1!,jour,8079.0,resistance,faible,sommet plus bas du 25/11 (8079 a 08h15) sous la zone 8077-8086.5,2026-11-25 08h55
