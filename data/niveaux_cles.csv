@@ -120,3 +120,10 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-25,FCE1!,jour,8145.0,resistance,forte,zone 8141-8150 : SMA20 journaliere (8148) ; atteinte a l'ouverture du 25/11 puis rejet (repli jusqu'a 8103),2026-11-25 12h05
 2026-11-25,FCE1!,jour,8131.0,resistance,moyenne,"zone 8129-8138 : triple sommet du 25/11 (8129 a 11h00-11h15, 8130.5 a 11h45-12h00, 8131.5 a 12h00-12h15 ; donnees exactes 15m) et rejet de 10h15 (8138) ; CAC cash 8122-8124",2026-11-25 12h20
 2026-11-25,FCE1!,jour,8105.0,support,forte,"zone 8100-8108 : creux du 25/11 a 8103 (bougie 15m de 10h30, donnees exactes ; CAC cash 8097.45 vers 10h36) = 50 % de la hausse 8051.5-8154.5 ; creux suivant plus haut a 8110.5 (11h15)",2026-11-25 12h20
+2026-11-26,FCE1!,jour,8154.5,resistance,forte,"plus haut du 25/11 (9h30), rejet de la SMA20 journaliere (8148)",2026-11-25 22h35
+2026-11-26,FCE1!,jour,8133.0,resistance,moyenne,zone 8129-8138 : triple sommet du 25/11 (11h-12h15) et Bear Wick de 12h30 ; plafond du rebond du soir vers 8118-8120,2026-11-25 22h35
+2026-11-26,FCE1!,jour,8116.5,pivot,faible,"derniere cotation du 25/11 a 22h (rebond du soir de 7979 a 8120 dans un marche peu echange, porte par Wall Street)",2026-11-25 22h35
+2026-11-26,FCE1!,jour,8104.0,support,moyenne,"zone 8100-8108 : creux de 10h30 le 25/11 (8103), casse a 12h45, repris le soir a 20h00",2026-11-25 22h35
+2026-11-26,FCE1!,jour,8073.5,pivot,moyenne,milieu du range 9h-17h30 du 25/11 (P2 : 8073) et sommet de 16h00 (8073.5),2026-11-25 22h35
+2026-11-26,FCE1!,jour,8040.0,support,moyenne,zone 8032-8045 : creux du soir du 25/11 (8032.5 a 18h15) et reglement du 24/11 (8045.5),2026-11-25 22h35
+2026-11-26,FCE1!,jour,7991.5,support,forte,"plus bas 9h-17h30 du 25/11 (PDL P2) ; zone 7979-8000 : plus bas 7979 au fixing de 17h30 (CAC cash cloture 7980.57), sous le support de plusieurs mois 8000-8035",2026-11-25 22h35
