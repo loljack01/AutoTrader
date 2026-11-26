@@ -63,3 +63,23 @@ ou plus bas de 4 heures, puis clôture revenue » perd nettement et de façon si
 il se déclenche environ 4,7 fois par jour et finit au stop 6 fois sur 10. La lecture du 26/11 (+87,5 points)
 reposait sur des bornes choisies après coup ; elle ne se reproduit pas avec une définition objective connue
 à 8h00. Aucune variante n'est calculée (ce serait un nouveau test, règle 29).
+
+## Audit critique (26/11, relecture des 630 trades, sans nouveau calcul de règle)
+
+- Avant frais, le signal est nul : −17,5 R bruts, −0,03 R par trade. Les frais (3 points pour un risque
+  médian de 13 points, soit 0,28 R par trade) font presque toute la perte. Taux de réussite 33 % pour un
+  équilibre vers 44 %.
+- Fidélité à l'idée de l'utilisateur : FAIBLE. Les « bornes » codées (tout niveau d'une liste dense, balayé
+  au plus haut ou plus bas de 4 heures) ne sont pas les bornes majeures lues le 26/11 (SMA20, plus haut et
+  plus bas de la veille, zones touchées plusieurs fois). D'où 4,7 trades par jour (11 au plus) et des
+  reprises après stop sur la même zone. Les paramètres (16 bougies, 3 bougies de confirmation, marge de
+  2 points, 1,5 R) ont été choisis sans justification ni question à l'utilisateur ; la question du sens
+  (point 7 de la proposition) a été tranchée seule. Le test rejette donc cette version, pas toute l'idée.
+- Ce qui reste solide : sur 630 occasions, « balayage puis reprise » n'a aucun avantage avant frais sur le
+  CAC 15m ; c'est le deuxième échec de la famille « réaction aux niveaux » (après le 05/11). Le +87,5 du
+  26/11 venait de bornes choisies après coup.
+- Tranches (information, pas des règles) : 15h-18h +9,1 R sur 131 trades (+0,07 R) ; 8h-9h −40,1 R ;
+  18h-22h −37,5 R ; le premier trade du jour est le plus mauvais (−0,48 R). Choisir une tranche après coup
+  serait de l'ajustement.
+- Toute version plus stricte serait un nouveau test (règle 29, décembre, décision le 6/12), à définir
+  entièrement AVANT calcul avec l'utilisateur ; probabilité de succès a priori faible.
