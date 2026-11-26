@@ -45,3 +45,21 @@ depuis le 28/10, pire écart, motifs de sortie.
 
 Quel que soit le verdict : **aucun argent réel** (seul le swing est joué en réel) et aucune règle de
 stratégie figée n'est modifiée.
+
+## Résultat (calculé le 26/11/2026 après le commit e7b999b qui fige la règle)
+
+| Mesure | Valeur |
+|---|---|
+| Période | 22/05/2026 au 25/11/2026, 134 jours avec trade |
+| Trades | 630 (210 gagnants, 33 %) |
+| Total à 3 points | **−193,5 R**, moyenne −0,31 R, **t −5,48** |
+| Calls / puts | −108,7 R (327) / −84,8 R (303) |
+| Sans les 3 meilleurs | −204,7 R |
+| Avant le 28/10 / depuis | −154,2 R (547 trades) / −39,3 R (83 trades) |
+| Sorties | stop 399, objectif 159, fin de séance 72 |
+
+**Verdict (critère fixé avant) : REJETÉE.** Le retournement mécanique « balayage d'un niveau au plus haut
+ou plus bas de 4 heures, puis clôture revenue » perd nettement et de façon significative sur le CAC en 15m :
+il se déclenche environ 4,7 fois par jour et finit au stop 6 fois sur 10. La lecture du 26/11 (+87,5 points)
+reposait sur des bornes choisies après coup ; elle ne se reproduit pas avec une définition objective connue
+à 8h00. Aucune variante n'est calculée (ce serait un nouveau test, règle 29).
