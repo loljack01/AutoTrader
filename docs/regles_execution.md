@@ -287,3 +287,13 @@
     données 1 minute 5 appels les mardi, mercredi et jeudi (US mardi et jeudi, Europe mercredi) et 10 le
     samedi, CAC40 cash 1 minute le samedi seulement. Les demandes en direct (lecture minute par minute)
     coûtent un appel par point : au plus 15 minutes, ou un point toutes les 5 minutes.
+35. **Fenêtre des analyses du FCE1 : 8h00-22h00 (décision de l'utilisateur, jeudi 26/11/2026, « Les horaires
+    du fce1 vont de 8h00 à 22h, prends-le en compte pour toutes les analyses »)** : toutes les analyses de
+    séance, cartes de niveaux et tableaux de puts et calls après coup couvrent la séance complète du contrat
+    à terme, de 8h00 à 22h00 (heure de Paris), et non plus 9h15-17h35. Les périodes 8h00-9h00 et
+    17h35-22h00 sont lues et comptées, avec la mention « peu échangé » (moins d'ordres, clôtures moins
+    fiables). Restent exclues pour une entrée : la minute de 9h00 (ouverture du cash), 15h30-15h45
+    (ouverture américaine), 17h30-17h35 (fixing de clôture) et 15 minutes avant et après une annonce
+    (règle 31). Les niveaux du FCE1 sont donnés avec l'équivalent du CAC 40 cash (écart future - cash) quand
+    une analyse sert aux turbos. Cette règle d'analyse ne modifie aucune stratégie figée : la principale,
+    ses variantes (D garde ses entrées 8h-21h30), le swing et les tests en cours restent inchangés.
