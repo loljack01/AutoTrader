@@ -131,6 +131,9 @@ date_seance,symbole,horizon,niveau,role,importance,raison,fixe_le
 2026-11-27,FCE1!,jour,8135.0,resistance,forte,"zone 8129-8138 : plus haut de l'apres-midi du 26/11 (8137.5 a 17h05-17h10), rejets a 12h25 (8133.5) et 16h00 (8133.5) ; traversee 6 fois le 26/11 (va-et-vient)",2026-11-26 18h35
 2026-11-27,FCE1!,jour,8124.75,pivot,moyenne,"milieu de la seance 9h-17h30 du 26/11 (plus haut 8151, plus bas 8098.5) ; fixing 17h30 et cours de 18h30 vers 8120-8124",2026-11-26 18h35
 2026-11-27,FCE1!,jour,8108.0,support,forte,"zone 8106-8110 : creux de 14h00 (8106) et du fixing de 17h30 (8108) le 26/11, zone 48 % de l'indicateur ; tenue deux fois",2026-11-26 18h35
-2026-11-27,FCE1!,jour,8097.0,support,forte,"zone 8096-8100 : plus bas du 26/11 (8096 a 08h55, faux passage sous 8100 avant l'ouverture du cash) et plus bas de seance 8098.5 (9h00)",2026-11-26 18h35
 2026-11-27,FCE1!,jour,8073.5,support,moyenne,sommet de 16h00 le 25/11 et milieu du range du 25/11,2026-11-26 18h35
 2026-11-27,FCE1!,jour,7985.0,support,forte,"zone 7979-7991.5 : plus bas et reglement du 25/11 (7987.5) ; base de l'ecart d'ouverture du 26/11 (+1.6 %, non comble)",2026-11-26 18h35
+2026-11-27,FCE1!,jour,8151.0,resistance,forte,"plus haut du 26/11 : premier sommet 8150.5 vers 10h05-10h09, double sommet 8151 a 11h00 ; fin du grand call 8096 -> 8151 du matin",2026-11-26 19h05
+2026-11-27,FCE1!,jour,8120.0,resistance,faible,"zone 8119-8121 (73 % de l'indicateur) : plafond du rebond d'apres fixing le 26/11 (8124 a 17h40, puis glissade a 8116 vers 18h50)",2026-11-26 19h05
+2026-11-27,FCE1!,jour,8116.5,pivot,moyenne,"pivot du 26/11 : objectif des calls de 09h15 et des puts de 12h45, traverse 4 fois ; cours vers 8116 a 18h50",2026-11-26 19h05
+2026-11-27,FCE1!,jour,8096.0,support,forte,"plus bas du 26/11 a 08h55 : faux passage sous 8100 avant l'ouverture du cash, depart du grand call du matin (8096 -> 8151, +55)",2026-11-26 19h05
