@@ -297,3 +297,8 @@
     (règle 31). Les niveaux du FCE1 sont donnés avec l'équivalent du CAC 40 cash (écart future - cash) quand
     une analyse sert aux turbos. Cette règle d'analyse ne modifie aucune stratégie figée : la principale,
     ses variantes (D garde ses entrées 8h-21h30), le swing et les tests en cours restent inchangés.
+36. **Test 12 hors limite de novembre (décision de l'utilisateur, jeudi 26/11/2026, « Les 2 »)** :
+    l'utilisateur lève la limite de la règle 29 pour un seul test supplémentaire en novembre, le test 12
+    « retournement confirmé sur une borne » (`docs/test_12_retournement_bornes_fige_2026-11-26.md`). La
+    limite de décembre reste entière (un test, décidé le dimanche 6/12). Aucun argent réel, aucune
+    stratégie figée modifiée.
