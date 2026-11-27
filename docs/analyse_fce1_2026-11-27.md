@@ -1,7 +1,7 @@
-# Analyse intraday du FCE1, vendredi 27/11/2026 (8h00-19h05) : modèle pour les fois suivantes
+# Analyse intraday du FCE1, vendredi 27/11/2026 (8h00-22h00) : modèle pour les fois suivantes
 
 Lecture APRÈS COUP, pas un signal. Méthode : règle 37 de `docs/regles_execution.md`. Données exactes 1 minute
-(666 minutes, 8h00-19h05), double contrôle par deux calculs indépendants : concordants (outil
+(666 minutes, 8h00-19h05) puis 15m du bilan jusqu'à 22h00, double contrôle par deux calculs indépendants : concordants (outil
 `scripts/lecture_fce1_jour.py`). Clôture anticipée de New York à 19h00 (lendemain de Thanksgiving).
 Écart future - cash : FCE1 8158 à 17h35 pour un CAC cash clôturé à 8156,09, soit environ +2 à +3 points ;
 équivalent cash ≈ FCE1 - 2,5.
@@ -26,6 +26,7 @@ plus haut **8189,5 à 18h59**, dernier cours 19h05 : 8183,5 (+69,5). Prix moyen 
 | 17h03 → 17h32 | 8178,5 → 8153,5 (−25) | ventes du fixing (1466 contrats à 17h34), arrêt sur 8152 devenu support |
 | 17h32 → 18h59 | 8153,5 → 8189,5 (+36) | hausse jusqu'à la clôture anticipée de New York |
 | 18h59 → 19h05 | 8189,5 → 8178,5 → 8183,5 | léger repli, très peu de volume |
+| 19h05 → 22h00 | range 8177-8183, clôture 8180,5 | peu échangé (636 contrats en 3 heures), New York fermé |
 
 ## 2. Figures et structure
 
@@ -64,10 +65,12 @@ stop 2 points derrière ; sortie à la première zone touchée ; 3 points de fra
 | 14h04 | VENTE | **CALL** | | 8138 (≈8135,5) | grande bougie verte 14h00 | | haut de la zone pivot (plus haut 8142,5 à 14h10) | | **+7 brut, +4 net** |
 | 16h15 | ACHAT | **CALL** | | 8161 (≈8158,5), stop 8148 | **grande bougie verte** (corps 16,5 / 19,5), volume 2,7 fois | RSI 69, au-dessus EMA20, SMA50, VWAP | cassure de 8152, SMA20, plus haut de semaine ; **triangle ascendant** | **cassure haussière** au-dessus de 8155, trou 8151,5-8156 | |
 | 17h45 | renfort possible | **CALL** | | 8163 (≈8160,5), stop 8151,5 | **marteau** (mèche basse 8,5), volume 6,6 fois (fixing) | RSI 63, au-dessus VWAP | **retest de 8152** par le dessus | creux 8153,5 dans le trou 8151,5-8156 | même sens |
-| 19h05 | (ouvert) | **CALL** | | 8183,5 | grande bougie verte 18h45, repli 19h00 | RSI 73 puis 69, volume faible | objectif du triangle 8190 atteint ; prochaine résistance 8199 (SMA200) | | **+22,5 brut en latent** |
+| 22h00 | VENTE | **CALL** | | 8180,5 (≈8178) | fin de séance (sortie au plus tard à 22h00) ; stop 8148 jamais touché (plus bas après l'entrée 8153,5 à 17h32) | RSI 73 à 18h45, volume faible le soir | objectif du triangle 8190 atteint (8189,5) ; 8199 (SMA200) pas atteint | | **+19,5 brut, +16,5 net (+1,3 R)** |
 | 17h03 | — | | non détecté | 8178,5 | pas de figure de retournement | RSI 74 à 16h45 | aucun niveau connu | grande bougie rouge 17h15 (fixing) | −25 non pris |
 
-Bilan : 6 trades clos, **+38,75 brut, +20,75 net** ; call de 16h15 ouvert (environ +19,5 net à 19h05).
+Bilan 8h00-22h00 : 7 trades clos, **+58,25 brut, +37,25 net**. Séance : ouverture 8139, plus haut 8189,5 (18h59), plus bas 8117 (12h47), clôture 22h 8180,5 (+66,5 sur le règlement du 26/11 ; règlement du 27/11 : 8161,5).
+
+Double contrôle de la soirée : les 44 bougies 15m de 8h00 à 18h45 du flux 15m du bilan sont identiques à celles recalculées depuis les barres 1 minute (écart 0).
 
 ## 4. Erreurs corrigées dans la conversation (à ne pas refaire)
 
