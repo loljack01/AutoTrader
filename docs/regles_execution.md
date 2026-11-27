@@ -320,5 +320,7 @@
     première zone touchée (depuis l'intérieur d'une zone : son bord opposé), pas de trade si la cible est à
     3 points ou moins, 3 points de frais, une position à la fois ; **passer en revue tous les creux et
     sommets qui touchent une borne** (creux ou sommets égaux, creux montants) avant de donner le tableau ;
-    (f) enregistrer ensuite les niveaux du jour dans `data/niveaux_cles.csv`. C'est une lecture après coup :
+    (f) enregistrer ensuite dans `data/niveaux_cles.csv` SEULEMENT les supports, résistances et pivots les
+    plus importants (décision du 27/11 : « seulement les supports résistances et pivot les plus importants
+    sont à enregistrer »), en pratique 3 à 5 niveaux. C'est une lecture après coup :
     pas un signal, pas un test (règle 29), aucun ordre sur capture ; aucune stratégie figée n'est modifiée.

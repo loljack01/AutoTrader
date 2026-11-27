@@ -14,8 +14,8 @@ demandent une action de ma part à chaque session :
 
 Analyse de séance du FCE1 avec tableau de puts et calls : suivre la règle 37 et le modèle
 `docs/analyse_fce1_2026-11-27.md` (données 1 minute, double contrôle avec `scripts/lecture_fce1_jour.py`,
-entrées dès 8h15, revue de tous les creux et sommets sur une borne, lecture technique par trade, niveaux
-enregistrés ensuite).
+entrées dès 8h15, revue de tous les creux et sommets sur une borne, lecture technique par trade, puis seulement
+les 3 à 5 supports, résistances et pivots les plus importants enregistrés).
 
 Seul le swing est joué en argent réel. Aucune règle de stratégie figée n'est modifiée sans décision écrite
 de l'utilisateur dans `docs/regles_execution.md`.
