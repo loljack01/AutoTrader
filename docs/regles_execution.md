@@ -322,5 +322,7 @@
     sommets qui touchent une borne** (creux ou sommets égaux, creux montants) avant de donner le tableau ;
     (f) enregistrer ensuite dans `data/niveaux_cles.csv` SEULEMENT les supports, résistances et pivots les
     plus importants (décision du 27/11 : « seulement les supports résistances et pivot les plus importants
-    sont à enregistrer »), en pratique 3 à 5 niveaux. C'est une lecture après coup :
+    sont à enregistrer »), en pratique 3 à 5 niveaux, chacun avec sa zone de stops probable (déduite, pas
+    observée : juste au-delà des plus hauts et plus bas, sommets ou creux égaux, chiffres ronds et bornes
+    cassées ; décision du 27/11 « Oui ajoute la zone de stops probable »). C'est une lecture après coup :
     pas un signal, pas un test (règle 29), aucun ordre sur capture ; aucune stratégie figée n'est modifiée.
