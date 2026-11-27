@@ -302,3 +302,23 @@
     « retournement confirmé sur une borne » (`docs/test_12_retournement_bornes_fige_2026-11-26.md`). La
     limite de décembre reste entière (un test, décidé le dimanche 6/12). Aucun argent réel, aucune
     stratégie figée modifiée.
+37. **Méthode des tableaux intraday du FCE1 après coup (décision de l'utilisateur, vendredi 27/11/2026,
+    « Entrées dès 8h00 » puis « Enregistre tout cela pour les fois suivantes »)** : chaque analyse de séance
+    du FCE1 avec tableau de puts et calls suit le modèle `docs/analyse_fce1_2026-11-27.md` :
+    (a) données exactes 1 minute (pas la capture), **double contrôle** par deux calculs indépendants
+    (`scripts/lecture_fce1_jour.py`) avant de donner un résultat ; (b) d'abord la journée réelle (grands
+    mouvements et où ils ont tourné), puis les figures et la structure, puis le tableau ; (c) tableau avec
+    les lignes ACHAT et VENTE séparées, les colonnes CALL et PUT côte à côte, l'heure, le niveau FCE1 et son
+    équivalent cash, et pour chaque entrée : bougie 15m, indicateurs (RSI(14), moyenne exponentielle 20,
+    moyenne 50 en 15m, prix moyen pondéré depuis 8h, volume rapporté aux 20 bougies précédentes),
+    support / résistance et figure, lecture smart money (balayage de liquidité, cassure ou changement de
+    structure, trou de cotation, dernière bougie opposée), cause et conséquence ; (d) **entrées dès la
+    clôture de 8h15**, y compris 8h45, 9h00 et autour des annonces du matin (ces entrées sont signalées
+    « annonce » ou « 9h00 ») ; restent signalées comme exclues 15h30-15h45, 17h30-17h35 et les annonces
+    après 9h15 (règles 31 et 35) ; (e) méthode : niveaux connus la veille (`data/niveaux_cles.csv`), entrée
+    à la clôture 15m après un retournement ou une cassure sur une borne, stop 2 points derrière, sortie à la
+    première zone touchée (depuis l'intérieur d'une zone : son bord opposé), pas de trade si la cible est à
+    3 points ou moins, 3 points de frais, une position à la fois ; **passer en revue tous les creux et
+    sommets qui touchent une borne** (creux ou sommets égaux, creux montants) avant de donner le tableau ;
+    (f) enregistrer ensuite les niveaux du jour dans `data/niveaux_cles.csv`. C'est une lecture après coup :
+    pas un signal, pas un test (règle 29), aucun ordre sur capture ; aucune stratégie figée n'est modifiée.
