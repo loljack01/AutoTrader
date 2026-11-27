@@ -2,7 +2,8 @@ variante,marche,sens,entree_paris,entree,stop,cible,resultat,net_r
 principale,CAC 40,put,11/11 08:00,8315.5,8356.5,8236.0,stop,-1.024
 principale,CAC 40,put,12/11 13:15,8388.5,8416.5,8349.0,take,1.375
 principale,CAC 40,put,16/11 12:30,8389.0,8412.0,8344.0,take,1.913
-principale,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,open,
+principale,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,stop,-1.027
+principale,CAC 40,put,27/11 12:30,8128.5,8159.5,7974.0,stop,-1.032
 principale,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,take,2.358
 principale,DAX,put,24/11 18:15,25202.0,25347.71,25000.0,take,1.364
 principale,DAX,call,17/11 06:15,26573.0,26508.08,26953.0,stop,-1.05
@@ -14,6 +15,7 @@ principale,Euro Stoxx 50,put,16/11 03:00,6410.0,6429.4,6382.0,take,1.402
 principale,Euro Stoxx 50,put,18/11 10:00,6214.0,6247.4,6145.0,take,2.042
 principale,Euro Stoxx 50,put,23/11 14:45,6057.0,6084.86,5988.0,stop,-1.029
 principale,Euro Stoxx 50,put,24/11 03:45,6079.0,6119.4,5988.0,take,2.232
+principale,Euro Stoxx 50,put,27/11 12:30,6084.0,6101.71,6019.0,stop,-1.045
 principale,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,take,5.028
 principale,Euro Stoxx 50,call,11/11 09:15,6394.0,6362.6,6495.0,stop,-1.025
 principale,Euro Stoxx 50,call,11/11 16:45,6389.0,6353.6,6495.0,stop,-1.023
@@ -27,7 +29,7 @@ principale,Nasdaq 100,put,19/11 02:15,27395.5,27568.0,27088.5,stop,-1.022
 principale,Nasdaq 100,put,19/11 10:15,27631.5,27772.1,27322.0,stop,-1.027
 principale,Nasdaq 100,put,19/11 14:45,27687.25,27791.64,27322.0,stop,-1.036
 principale,Nasdaq 100,put,24/11 00:30,26702.75,26943.35,25824.0,stop,-1.016
-principale,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,open,
+principale,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,stop,-1.019
 principale,FTSE 100,put,16/11 16:00,10960.5,10991.4,10892.5,take,2.157
 principale,FTSE 100,put,17/11 10:30,10817.5,10856.4,10534.0,take,7.254
 principale,FTSE 100,put,26/11 06:30,10597.0,10620.9,10562.5,take,1.387
@@ -41,6 +43,7 @@ principale,Dow Jones,put,11/11 17:15,52343.0,52528.36,52056.0,stop,-1.036
 principale,Dow Jones,put,12/11 14:45,52549.0,52804.36,52056.0,stop,-1.026
 principale,Dow Jones,put,12/11 19:30,52634.0,52829.36,52056.0,take,2.925
 principale,Dow Jones,put,20/11 15:00,49141.0,49309.14,48897.0,stop,-1.04
+principale,Dow Jones,put,27/11 12:30,50833.0,50935.71,48865.0,stop,-1.065
 principale,Dow Jones,call,12/11 17:00,52813.0,52455.64,53913.0,stop,-1.019
 principale,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 principale,Russell 2000,put,12/11 14:00,2832.3,2860.74,2728.1,take,3.651
@@ -49,6 +52,7 @@ principale,Russell 2000,put,20/11 15:45,2671.3,2685.49,2645.9,take,1.765
 principale,Russell 2000,put,24/11 01:45,2679.7,2689.64,2664.7,take,1.472
 principale,Russell 2000,put,24/11 20:45,2688.1,2704.14,2664.9,take,1.423
 principale,Russell 2000,put,25/11 10:45,2664.8,2682.94,2634.4,take,1.655
+principale,Russell 2000,put,27/11 12:15,2745.1,2750.27,2737.3,take,1.437
 principale,Russell 2000,call,11/11 09:30,2843.2,2834.66,2862.2,stop,-1.043
 principale,FTSE MIB,put,11/11 15:45,51235.0,51422.68,50510.0,stop,-1.035
 principale,FTSE MIB,put,12/11 19:30,51355.0,51507.68,50510.0,take,5.491
@@ -59,6 +63,7 @@ A sortie le jour meme,CAC 40,put,11/11 08:00,8315.5,8356.5,8236.0,stop,-1.024
 A sortie le jour meme,CAC 40,put,12/11 13:15,8388.5,8416.5,8349.0,take,1.375
 A sortie le jour meme,CAC 40,put,16/11 12:30,8389.0,8412.0,8344.0,take,1.913
 A sortie le jour meme,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,eod,0.16
+A sortie le jour meme,CAC 40,put,27/11 12:30,8128.5,8159.5,7974.0,stop,-1.032
 A sortie le jour meme,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,eod,0.056
 A sortie le jour meme,DAX,put,09/11 07:30,25874.0,25949.92,25748.0,stop,-1.043
 A sortie le jour meme,DAX,put,24/11 18:15,25202.0,25347.71,25000.0,eod,-0.139
@@ -72,6 +77,7 @@ A sortie le jour meme,Euro Stoxx 50,put,18/11 10:00,6214.0,6247.4,6145.0,eod,1.4
 A sortie le jour meme,Euro Stoxx 50,put,19/11 04:30,6178.0,6196.4,6145.0,stop,-1.043
 A sortie le jour meme,Euro Stoxx 50,put,23/11 14:45,6057.0,6084.86,5988.0,stop,-1.029
 A sortie le jour meme,Euro Stoxx 50,put,24/11 03:45,6079.0,6119.4,5988.0,eod,0.525
+A sortie le jour meme,Euro Stoxx 50,put,27/11 12:30,6084.0,6101.71,6019.0,stop,-1.045
 A sortie le jour meme,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,eod,-0.538
 A sortie le jour meme,Euro Stoxx 50,call,11/11 09:15,6394.0,6362.6,6495.0,stop,-1.025
 A sortie le jour meme,Euro Stoxx 50,call,11/11 16:45,6389.0,6353.6,6495.0,eod,0.655
@@ -107,6 +113,7 @@ A sortie le jour meme,Dow Jones,put,12/11 14:45,52549.0,52804.36,52056.0,stop,-1
 A sortie le jour meme,Dow Jones,put,12/11 19:30,52634.0,52829.36,52056.0,eod,1.051
 A sortie le jour meme,Dow Jones,put,16/11 05:00,52397.0,52510.36,52056.0,take,2.949
 A sortie le jour meme,Dow Jones,put,20/11 15:00,49141.0,49309.14,48897.0,stop,-1.04
+A sortie le jour meme,Dow Jones,put,27/11 12:30,50833.0,50935.71,48865.0,stop,-1.065
 A sortie le jour meme,Dow Jones,call,12/11 17:00,52813.0,52455.64,53913.0,stop,-1.019
 A sortie le jour meme,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 A sortie le jour meme,Russell 2000,put,12/11 14:00,2832.3,2860.74,2728.1,eod,0.792
@@ -117,6 +124,7 @@ A sortie le jour meme,Russell 2000,put,20/11 15:45,2671.3,2685.49,2645.9,take,1.
 A sortie le jour meme,Russell 2000,put,24/11 01:45,2679.7,2689.64,2664.7,take,1.472
 A sortie le jour meme,Russell 2000,put,24/11 20:45,2688.1,2704.14,2664.9,eod,-0.017
 A sortie le jour meme,Russell 2000,put,25/11 10:45,2664.8,2682.94,2634.4,take,1.655
+A sortie le jour meme,Russell 2000,put,27/11 12:15,2745.1,2750.27,2737.3,take,1.437
 A sortie le jour meme,Russell 2000,call,11/11 09:30,2843.2,2834.66,2862.2,eod,1.315
 A sortie le jour meme,FTSE MIB,put,11/11 15:45,51235.0,51422.68,50510.0,stop,-1.035
 A sortie le jour meme,FTSE MIB,put,12/11 19:30,51355.0,51507.68,50510.0,eod,0.448
@@ -127,7 +135,8 @@ A sortie le jour meme,FTSE MIB,call,13/11 12:00,51390.0,51217.32,51640.0,stop,-1
 B entrees 8h-22h,CAC 40,put,11/11 08:00,8315.5,8356.5,8236.0,stop,-1.024
 B entrees 8h-22h,CAC 40,put,12/11 13:15,8388.5,8416.5,8349.0,take,1.375
 B entrees 8h-22h,CAC 40,put,16/11 12:30,8389.0,8412.0,8344.0,take,1.913
-B entrees 8h-22h,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,open,
+B entrees 8h-22h,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,stop,-1.027
+B entrees 8h-22h,CAC 40,put,27/11 12:30,8128.5,8159.5,7974.0,stop,-1.032
 B entrees 8h-22h,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,take,2.358
 B entrees 8h-22h,DAX,put,24/11 18:15,25202.0,25347.71,25000.0,take,1.364
 B entrees 8h-22h,DAX,call,17/11 08:00,26505.0,26462.57,26953.0,stop,-1.076
@@ -138,6 +147,7 @@ B entrees 8h-22h,Euro Stoxx 50,put,12/11 08:00,6412.0,6430.4,6145.0,stop,-1.043
 B entrees 8h-22h,Euro Stoxx 50,put,18/11 10:00,6214.0,6247.4,6145.0,take,2.042
 B entrees 8h-22h,Euro Stoxx 50,put,23/11 14:45,6057.0,6084.86,5988.0,stop,-1.029
 B entrees 8h-22h,Euro Stoxx 50,put,24/11 18:00,6050.0,6089.43,5988.0,take,1.552
+B entrees 8h-22h,Euro Stoxx 50,put,27/11 12:30,6084.0,6101.71,6019.0,stop,-1.045
 B entrees 8h-22h,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,take,5.028
 B entrees 8h-22h,Euro Stoxx 50,call,11/11 09:15,6394.0,6362.6,6495.0,stop,-1.025
 B entrees 8h-22h,Euro Stoxx 50,call,11/11 16:45,6389.0,6353.6,6495.0,stop,-1.023
@@ -148,7 +158,7 @@ B entrees 8h-22h,S&P 500,put,19/11 14:30,7413.25,7436.34,7380.5,stop,-1.042
 B entrees 8h-22h,Nasdaq 100,put,11/11 16:15,28375.5,28504.14,28199.0,stop,-1.029
 B entrees 8h-22h,Nasdaq 100,put,19/11 10:15,27631.5,27772.1,27322.0,stop,-1.027
 B entrees 8h-22h,Nasdaq 100,put,19/11 14:45,27687.25,27791.64,27322.0,stop,-1.036
-B entrees 8h-22h,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,open,
+B entrees 8h-22h,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,stop,-1.019
 B entrees 8h-22h,FTSE 100,put,16/11 16:00,10960.5,10991.4,10892.5,take,2.157
 B entrees 8h-22h,FTSE 100,put,17/11 10:30,10817.5,10856.4,10534.0,take,7.254
 B entrees 8h-22h,FTSE 100,call,10/11 13:30,10858.5,10832.1,10948.5,stop,-1.052
@@ -161,12 +171,14 @@ B entrees 8h-22h,Dow Jones,put,11/11 17:15,52343.0,52528.36,52056.0,stop,-1.036
 B entrees 8h-22h,Dow Jones,put,12/11 14:45,52549.0,52804.36,52056.0,stop,-1.026
 B entrees 8h-22h,Dow Jones,put,12/11 19:30,52634.0,52829.36,52056.0,take,2.925
 B entrees 8h-22h,Dow Jones,put,20/11 15:00,49141.0,49309.14,48897.0,stop,-1.04
+B entrees 8h-22h,Dow Jones,put,27/11 12:30,50833.0,50935.71,48865.0,stop,-1.065
 B entrees 8h-22h,Dow Jones,call,12/11 17:00,52813.0,52455.64,53913.0,stop,-1.019
 B entrees 8h-22h,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 B entrees 8h-22h,Russell 2000,put,12/11 14:00,2832.3,2860.74,2728.1,take,3.651
 B entrees 8h-22h,Russell 2000,put,20/11 15:45,2671.3,2685.49,2645.9,take,1.765
 B entrees 8h-22h,Russell 2000,put,24/11 20:45,2688.1,2704.14,2664.9,take,1.423
 B entrees 8h-22h,Russell 2000,put,25/11 10:45,2664.8,2682.94,2634.4,take,1.655
+B entrees 8h-22h,Russell 2000,put,27/11 12:15,2745.1,2750.27,2737.3,take,1.437
 B entrees 8h-22h,Russell 2000,call,11/11 09:30,2843.2,2834.66,2862.2,stop,-1.043
 B entrees 8h-22h,FTSE MIB,put,11/11 15:45,51235.0,51422.68,50510.0,stop,-1.035
 B entrees 8h-22h,FTSE MIB,put,12/11 19:30,51355.0,51507.68,50510.0,take,5.491
@@ -176,7 +188,8 @@ B entrees 8h-22h,FTSE MIB,call,13/11 12:00,51390.0,51217.32,51640.0,stop,-1.038
 C puts seulement,CAC 40,put,11/11 08:00,8315.5,8356.5,8236.0,stop,-1.024
 C puts seulement,CAC 40,put,12/11 13:15,8388.5,8416.5,8349.0,take,1.375
 C puts seulement,CAC 40,put,16/11 12:30,8389.0,8412.0,8344.0,take,1.913
-C puts seulement,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,open,
+C puts seulement,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,stop,-1.027
+C puts seulement,CAC 40,put,27/11 12:30,8128.5,8159.5,7974.0,stop,-1.032
 C puts seulement,DAX,put,24/11 18:15,25202.0,25347.71,25000.0,take,1.364
 C puts seulement,Euro Stoxx 50,put,06/11 14:15,6157.0,6206.4,6071.0,stop,-1.016
 C puts seulement,Euro Stoxx 50,put,10/11 13:30,6365.0,6389.4,6145.0,stop,-1.033
@@ -186,6 +199,7 @@ C puts seulement,Euro Stoxx 50,put,16/11 03:00,6410.0,6429.4,6382.0,take,1.402
 C puts seulement,Euro Stoxx 50,put,18/11 10:00,6214.0,6247.4,6145.0,take,2.042
 C puts seulement,Euro Stoxx 50,put,23/11 14:45,6057.0,6084.86,5988.0,stop,-1.029
 C puts seulement,Euro Stoxx 50,put,24/11 03:45,6079.0,6119.4,5988.0,take,2.232
+C puts seulement,Euro Stoxx 50,put,27/11 12:30,6084.0,6101.71,6019.0,stop,-1.045
 C puts seulement,S&P 500,put,09/11 09:30,7429.25,7455.36,7385.75,stop,-1.038
 C puts seulement,S&P 500,put,10/11 08:15,7588.5,7601.79,7568.75,take,1.413
 C puts seulement,S&P 500,put,19/11 10:30,7418.25,7438.89,7380.5,stop,-1.047
@@ -196,7 +210,7 @@ C puts seulement,Nasdaq 100,put,19/11 02:15,27395.5,27568.0,27088.5,stop,-1.022
 C puts seulement,Nasdaq 100,put,19/11 10:15,27631.5,27772.1,27322.0,stop,-1.027
 C puts seulement,Nasdaq 100,put,19/11 14:45,27687.25,27791.64,27322.0,stop,-1.036
 C puts seulement,Nasdaq 100,put,24/11 00:30,26702.75,26943.35,25824.0,stop,-1.016
-C puts seulement,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,open,
+C puts seulement,Nasdaq 100,put,26/11 08:00,26190.0,26387.35,25027.5,stop,-1.019
 C puts seulement,FTSE 100,put,16/11 16:00,10960.5,10991.4,10892.5,take,2.157
 C puts seulement,FTSE 100,put,17/11 10:30,10817.5,10856.4,10534.0,take,7.254
 C puts seulement,FTSE 100,put,26/11 06:30,10597.0,10620.9,10562.5,take,1.387
@@ -206,6 +220,7 @@ C puts seulement,Dow Jones,put,11/11 17:15,52343.0,52528.36,52056.0,stop,-1.036
 C puts seulement,Dow Jones,put,12/11 14:45,52549.0,52804.36,52056.0,stop,-1.026
 C puts seulement,Dow Jones,put,12/11 19:30,52634.0,52829.36,52056.0,take,2.925
 C puts seulement,Dow Jones,put,20/11 15:00,49141.0,49309.14,48897.0,stop,-1.04
+C puts seulement,Dow Jones,put,27/11 12:30,50833.0,50935.71,48865.0,stop,-1.065
 C puts seulement,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 C puts seulement,Russell 2000,put,12/11 14:00,2832.3,2860.74,2728.1,take,3.651
 C puts seulement,Russell 2000,put,19/11 05:00,2731.7,2739.11,2719.7,stop,-1.05
@@ -213,6 +228,7 @@ C puts seulement,Russell 2000,put,20/11 15:45,2671.3,2685.49,2645.9,take,1.765
 C puts seulement,Russell 2000,put,24/11 01:45,2679.7,2689.64,2664.7,take,1.472
 C puts seulement,Russell 2000,put,24/11 20:45,2688.1,2704.14,2664.9,take,1.423
 C puts seulement,Russell 2000,put,25/11 10:45,2664.8,2682.94,2634.4,take,1.655
+C puts seulement,Russell 2000,put,27/11 12:15,2745.1,2750.27,2737.3,take,1.437
 C puts seulement,FTSE MIB,put,11/11 15:45,51235.0,51422.68,50510.0,stop,-1.035
 C puts seulement,FTSE MIB,put,12/11 19:30,51355.0,51507.68,50510.0,take,5.491
 C puts seulement,FTSE MIB,put,18/11 12:45,50330.0,50539.29,48915.0,take,6.73
@@ -221,6 +237,7 @@ D executable turbo,CAC 40,put,11/11 08:00,8315.5,8356.5,8236.0,stop,-1.024
 D executable turbo,CAC 40,put,12/11 13:15,8388.5,8416.5,8349.0,take,1.375
 D executable turbo,CAC 40,put,16/11 12:30,8389.0,8412.0,8344.0,take,1.913
 D executable turbo,CAC 40,put,26/11 12:45,8117.5,8155.0,7974.0,eod,0.053
+D executable turbo,CAC 40,put,27/11 12:30,8128.5,8159.5,7974.0,stop,-1.032
 D executable turbo,CAC 40,call,06/11 15:45,8112.5,7996.5,8387.0,eod,0.082
 D executable turbo,DAX,put,24/11 18:15,25202.0,25347.71,25000.0,eod,-0.098
 D executable turbo,DAX,call,17/11 08:00,26505.0,26462.57,26953.0,stop,-1.076
@@ -231,6 +248,7 @@ D executable turbo,Euro Stoxx 50,put,12/11 08:00,6412.0,6430.4,6145.0,stop,-1.04
 D executable turbo,Euro Stoxx 50,put,18/11 10:00,6214.0,6247.4,6145.0,eod,1.443
 D executable turbo,Euro Stoxx 50,put,23/11 14:45,6057.0,6084.86,5988.0,stop,-1.029
 D executable turbo,Euro Stoxx 50,put,24/11 18:00,6050.0,6089.43,5988.0,eod,-0.02
+D executable turbo,Euro Stoxx 50,put,27/11 12:30,6084.0,6101.71,6019.0,stop,-1.045
 D executable turbo,Euro Stoxx 50,call,06/11 16:00,6171.0,6128.6,6385.0,eod,-0.585
 D executable turbo,Euro Stoxx 50,call,11/11 09:15,6394.0,6362.6,6495.0,stop,-1.025
 D executable turbo,Euro Stoxx 50,call,11/11 16:45,6389.0,6353.6,6495.0,eod,0.768
@@ -261,6 +279,7 @@ D executable turbo,Dow Jones,put,12/11 14:45,52549.0,52804.36,52056.0,stop,-1.02
 D executable turbo,Dow Jones,put,12/11 19:30,52634.0,52829.36,52056.0,eod,0.964
 D executable turbo,Dow Jones,put,16/11 13:30,52411.0,52559.36,52056.0,take,2.348
 D executable turbo,Dow Jones,put,20/11 15:00,49141.0,49309.14,48897.0,stop,-1.04
+D executable turbo,Dow Jones,put,27/11 12:30,50833.0,50935.71,48865.0,stop,-1.065
 D executable turbo,Dow Jones,call,12/11 17:00,52813.0,52455.64,53913.0,stop,-1.019
 D executable turbo,Russell 2000,put,09/11 08:15,2777.4,2787.14,2728.1,stop,-1.038
 D executable turbo,Russell 2000,put,12/11 14:00,2832.3,2860.74,2728.1,eod,0.799
@@ -269,6 +288,7 @@ D executable turbo,Russell 2000,put,16/11 13:15,2778.5,2792.84,2728.1,eod,2.373
 D executable turbo,Russell 2000,put,20/11 15:45,2671.3,2685.49,2645.9,take,1.765
 D executable turbo,Russell 2000,put,24/11 20:45,2688.1,2704.14,2664.9,eod,0.021
 D executable turbo,Russell 2000,put,25/11 10:45,2664.8,2682.94,2634.4,take,1.655
+D executable turbo,Russell 2000,put,27/11 12:15,2745.1,2750.27,2737.3,take,1.437
 D executable turbo,Russell 2000,call,11/11 09:30,2843.2,2834.66,2862.2,eod,1.174
 D executable turbo,FTSE MIB,put,11/11 15:45,51235.0,51422.68,50510.0,stop,-1.035
 D executable turbo,FTSE MIB,put,12/11 19:30,51355.0,51507.68,50510.0,eod,0.35
