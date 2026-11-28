@@ -1,0 +1,40 @@
+SWING, 500 EUR par ordre au levier 2.8 (exposition 1400 EUR), 1124 trades, 30/01/2012 -> 05/11/2026 (14.8 ans), cout 0,05 % inclus
+  resultat total +3268 EUR, soit +220 EUR/an avant impot ; 69% de trades gagnants ; gain moyen +16 EUR, perte moyenne -27 EUR ; 76 trades/an
+  perte au stop par trade : mediane 39 EUR, 90e centile 58, max 90 ; pire trade -129 EUR (DAX, 07/04/2025) ; meilleur +73 EUR
+  pire baisse -1063 EUR (creux le 28/10/2020) ; pire periode de 3 mois -489 EUR ; plus longue serie de pertes : 11 trades
+
+Par annee (EUR) :
+  2012   75 trades    +468  (apres impot   +321)  gagnants 72%  cumul   +468
+  2013   80 trades    +673  (apres impot   +461)  gagnants 82%  cumul  +1141
+  2014   96 trades    +356  (apres impot   +244)  gagnants 69%  cumul  +1497
+  2015   77 trades    +333  (apres impot   +229)  gagnants 71%  cumul  +1830
+  2016   41 trades    +125  (apres impot    +86)  gagnants 73%  cumul  +1956
+  2017   96 trades    +603  (apres impot   +414)  gagnants 81%  cumul  +2559
+  2018   67 trades    -586  (apres impot   -586)  gagnants 45%  cumul  +1973
+  2019   72 trades     +65  (apres impot    +44)  gagnants 65%  cumul  +2038
+  2020   59 trades    -170  (apres impot   -170)  gagnants 59%  cumul  +1867
+  2021   94 trades    +747  (apres impot   +512)  gagnants 77%  cumul  +2614
+  2022   29 trades     -91  (apres impot    -91)  gagnants 62%  cumul  +2523
+  2023   78 trades    +169  (apres impot   +116)  gagnants 62%  cumul  +2691
+  2024   89 trades    +186  (apres impot   +127)  gagnants 66%  cumul  +2877
+  2025   81 trades     +35  (apres impot    +24)  gagnants 67%  cumul  +2912
+  2026   90 trades    +356  (apres impot   +244)  gagnants 70%  cumul  +3268
+  annees negatives : 3 sur 15 ; apres impot (PFU 31,4 % les annees positives, sans report des pertes) : +133 EUR/an
+
+Par indice (EUR, 2012 -> fin) :
+  CAC 40          112 trades    +196  (+1.8 EUR/trade)
+  DAX             104 trades    +116  (+1.1 EUR/trade)
+  Dow Jones       144 trades    +382  (+2.7 EUR/trade)
+  Euro Stoxx 50   104 trades     +88  (+0.8 EUR/trade)
+  FTSE 100        103 trades    +204  (+2.0 EUR/trade)
+  FTSE MIB        100 trades    +451  (+4.5 EUR/trade)
+  Nasdaq 100      124 trades    +605  (+4.9 EUR/trade)
+  Russell 2000    106 trades    +706  (+6.7 EUR/trade)
+  S&P 500         122 trades    +410  (+3.4 EUR/trade)
+  SMI             105 trades    +111  (+1.1 EUR/trade)
+
+Arret total a -500 EUR (regle du 07/11), en partant au debut de chaque mois :
+  167 departs : arret atteint dans la 1re annee 7 fois (4%), a un moment quelconque 25 fois (15%)
+  resultat de la 1re annee selon le mois de depart : mediane +275 EUR, pire -669, meilleur +984, negative 35% des departs
+
+Descriptif : historique, pas une promesse ; avantage statistique faible (t = 0,27 depuis 2018, audit du 06/11).

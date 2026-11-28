@@ -1,0 +1,81 @@
+Carnet swing 5 positions : 1124 trades 30/01/2012 -> 05/11/2026, total +71.0R, moy +0.063R
+
+--- Distance a la SMA200 a l'entree
+  0-2 %                      n= 239 moy +0.029R total   +7.0R gagn 66% t=+0.72 | dev +11.7R/163 ; 2022+ -4.7R/76
+  2-5 %                      n= 351 moy +0.077R total  +26.9R gagn 70% t=+2.41 | dev +18.2R/243 ; 2022+ +8.6R/108
+  5-10 %                     n= 417 moy +0.072R total  +30.0R gagn 68% t=+2.57 | dev +19.1R/276 ; 2022+ +10.9R/141
+  >10 %                      n= 117 moy +0.061R total   +7.2R gagn 75% t=+1.15 | dev +7.0R/75 ; 2022+ +0.1R/42
+
+--- VIX de la veille, quintiles
+  (9.359, 13.03]             n= 228 moy +0.059R total  +13.4R gagn 73% t=+1.61 | dev +13.0R/204 ; 2022+ +0.3R/24
+  (13.03, 14.71]             n= 226 moy +0.056R total  +12.6R gagn 66% t=+1.50 | dev +7.9R/160 ; 2022+ +4.7R/66
+  (14.71, 16.72]             n= 223 moy +0.046R total  +10.2R gagn 67% t=+1.21 | dev -0.7R/137 ; 2022+ +10.8R/86
+  (16.72, 19.32]             n= 224 moy +0.046R total  +10.4R gagn 67% t=+1.07 | dev +3.5R/131 ; 2022+ +7.0R/93
+  (19.32, 37.32]             n= 223 moy +0.110R total  +24.4R gagn 71% t=+2.60 | dev +32.3R/125 ; 2022+ -7.9R/98
+  VIX > 25                   n=  47 moy -0.062R total   -2.9R gagn 60% t=-0.59 | dev -1.8R/32 ; 2022+ -1.1R/15
+  VIX > 30                   n=  12 moy +0.255R total   +3.1R gagn 83% t=+1.39 | dev +4.8R/10 ; 2022+ -1.8R/2
+
+--- Mois d'entree
+  mois 01                    n= 112 moy +0.097R total  +10.9R gagn 75% t=+1.63
+  mois 02                    n=  71 moy -0.092R total   -6.6R gagn 62% t=-1.11
+  mois 03                    n= 102 moy -0.004R total   -0.4R gagn 66% t=-0.06
+  mois 04                    n=  88 moy +0.143R total  +12.6R gagn 76% t=+2.62
+  mois 05                    n= 101 moy +0.124R total  +12.5R gagn 75% t=+2.06
+  mois 06                    n=  93 moy +0.059R total   +5.4R gagn 69% t=+1.22
+  mois 07                    n=  99 moy +0.076R total   +7.6R gagn 66% t=+1.39
+  mois 08                    n= 111 moy +0.067R total   +7.5R gagn 66% t=+1.26
+  mois 09                    n=  91 moy +0.011R total   +1.0R gagn 62% t=+0.19
+  mois 10                    n=  94 moy +0.008R total   +0.7R gagn 62% t=+0.12
+  mois 11                    n=  62 moy -0.022R total   -1.4R gagn 66% t=-0.26
+  mois 12                    n= 100 moy +0.211R total  +21.1R gagn 80% t=+3.64
+  ecart-type des moyennes mensuelles 0.082R ; erreur type attendue d'un mois ~0.061R (bruit)
+
+--- Semaine de krach : l'indice a perdu > 5 % sur 5 seances a l'entree
+  krach (ret5 < -5 %)        n=  50 moy -0.103R total   -5.2R gagn 58% t=-0.89 | dev -3.6R/36 ; 2022+ -1.6R/14
+  ret5 -5 a -3 %             n= 177 moy +0.195R total  +34.5R gagn 76% t=+4.64 | dev +25.5R/124 ; 2022+ +9.1R/53
+  ret5 >= -3 %               n= 897 moy +0.046R total  +41.7R gagn 68% t=+2.41 | dev +34.2R/597 ; 2022+ +7.5R/300
+
+--- Apres un jour Nasdaq 100 < -5 % (cloture/cloture), signaux du carnet dans les 10 seances suivantes
+  2020-03-09 NDX -6.8% : 0 trades, +0.00R  []
+  2020-03-12 NDX -9.3% : 0 trades, +0.00R  []
+  2020-03-16 NDX -12.2% : 0 trades, +0.00R  []
+  2020-06-11 NDX -5.0% : 0 trades, +0.00R  []
+  2020-09-03 NDX -5.2% : 6 trades, +0.40R  [Nasdaq 100 +0.29, Russell 2000 +0.47, S&P 500 +0.38, Dow Jones +0.44, S&P 500 -0.16, Euro Stoxx 50 -1.01]
+  2022-05-05 NDX -5.1% : 1 trades, -0.19R  [FTSE 100 -0.19]
+  2022-05-18 NDX -5.1% : 0 trades, +0.00R  []
+  2022-09-13 NDX -5.5% : 0 trades, +0.00R  []
+  2025-04-03 NDX -5.4% : 1 trades, -1.60R  [DAX -1.60]
+  2025-04-04 NDX -6.1% : 0 trades, +0.00R  []
+  2026-11-05 NDX -6.4% : 0 trades, +0.00R  []
+  dans les 10 j apres        n=   8 moy -0.173R total   -1.4R gagn 50% t=-0.65
+  autres trades              n=1116 moy +0.065R total  +72.4R gagn 69% t=+3.68
+  derniere seance cash en cache par indice : [datetime.date(2026, 11, 5)]
+    CAC 40         2026-11-05 close 8205.4 RSI2  94.4 > SMA200 True dist +0.0%
+    DAX            2026-11-05 close 26325.0 RSI2  67.3 > SMA200 True dist +5.6%
+    Euro Stoxx 50  2026-11-05 close 6231.6 RSI2  59.2 > SMA200 True dist +1.9%
+    S&P 500        2026-11-05 close 7353.7 RSI2  16.2 > SMA200 True dist +0.4%
+    Nasdaq 100     2026-11-05 close 26629.8 RSI2   8.6 > SMA200 False dist -4.8%
+    FTSE 100       2026-11-05 close 10782.6 RSI2  56.4 > SMA200 True dist +2.4%
+    SMI            2026-11-05 close 14967.7 RSI2  67.7 > SMA200 True dist +8.8%
+    Dow Jones      2026-11-05 close 51528.2 RSI2  29.7 > SMA200 True dist +1.7%
+    Russell 2000   2026-11-05 close 2729.9 RSI2  16.2 > SMA200 False dist -2.8%
+    FTSE MIB       2026-11-05 close 50505.9 RSI2  52.4 > SMA200 True dist +2.0%
+
+--- Part US / Europe
+  US (SPX, NDX, DJI, RUT)    n= 496 moy +0.096R total  +47.5R gagn 70% t=+3.78 | dev +24.1R/347 ; 2022+ +23.4R/149
+  Europe (6 indices)         n= 628 moy +0.037R total  +23.5R gagn 68% t=+1.54 | dev +32.0R/410 ; 2022+ -8.5R/218
+  part du gain total venant des US : 67% pour 44% des trades
+    CAC 40         n= 112 total   +1.9R moy +0.017R
+    DAX            n= 104 total   +4.4R moy +0.042R
+    Dow Jones      n= 144 total  +11.1R moy +0.077R
+    Euro Stoxx 50  n= 104 total   +1.4R moy +0.013R
+    FTSE 100       n= 103 total   +4.9R moy +0.048R
+    FTSE MIB       n= 100 total   +6.8R moy +0.068R
+    Nasdaq 100     n= 124 total  +12.6R moy +0.102R
+    Russell 2000   n= 106 total  +12.7R moy +0.120R
+    S&P 500        n= 122 total  +11.1R moy +0.091R
+    SMI            n= 105 total   +4.3R moy +0.041R
+
+Sorties pires que -1,10R (ouverture au-dela du stop ; le cout seul fait ~-1,02R) : 19 trades, pire -1.60R, surcout total au-dela de -1,02R -5.1R ; pires : DAX 07/04/2025 -1.60, FTSE MIB 26/11/2021 -1.59, DAX 06/02/2018 -1.50, CAC 40 26/11/2021 -1.49, FTSE MIB 02/08/2024 -1.37, FTSE MIB 24/08/2015 -1.34
+  dont sorties un lundi (ecart de week-end) : 9
+CAC cash 05/11 : cloture 8205.4, SMA200 8203.2

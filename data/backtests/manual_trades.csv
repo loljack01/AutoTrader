@@ -1,0 +1,2 @@
+id,interval,side,entry_time,entry,stop,take,note
+2026-10-21-call-5m,5m,call,2026-10-21 07:15:00+00:00,7870.5,7853.071428571428,8110.5,"Sweep EQL 7868 at 09:00 Paris + bullish CHoCH, 2x ATR stop; blocked in the frozen versions (puts-only 5m, SMA20 bearish, 15m no-filter already long). Taken on user request."

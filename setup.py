@@ -30,6 +30,9 @@ ib_dep = [
 yfinance_dep = [
     "yfinance >= 0.1.67",
 ]
+rl_dep = [
+    "gymnasium >= 0.29.0",
+]
 dev_dep = [
     "pytest >= 7.1.1",
     "black >= 22.10.0",
@@ -40,7 +43,7 @@ dev_dep = [
     "sphinx-autobuild >= 2021.3.14",
     "commitizen >= 2.35.0",
 ]
-all_dep = ccxt_dep + oanda_dep + ib_dep + yfinance_dep + dev_dep
+all_dep = ccxt_dep + oanda_dep + ib_dep + yfinance_dep + rl_dep + dev_dep
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -92,6 +95,7 @@ setuptools.setup(
         "oanda": oanda_dep,
         "ib": ib_dep,
         "yfinance": yfinance_dep,
+        "rl": rl_dep,
         "dev": dev_dep,
         "all": all_dep,
     },

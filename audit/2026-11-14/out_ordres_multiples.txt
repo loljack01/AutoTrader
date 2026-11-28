@@ -1,0 +1,95 @@
+Controle de reproduction : 80/80 configurations identiques au moteur -> OK
+
+== 1. Etat des lieux (base, frais 1 pt) ==
+  370 trades ; jours x indice avec au moins un trade : 306 ; avec 1 trade 251, 2 trades 47, 3 ou plus 8 (maximum 4)
+  duree d'un trade clos : mediane 6.8 h, quart 2.2 h, trois quarts 22.0 h, maximum 43.1 jours
+  avant le 28/10 (historique, information) : 299 trades dans la base, 418 sans limite, dont 123 pris pendant qu'un trade du meme sens etait ouvert ; maximum ouverts en meme temps 6
+  depuis le 28/10 (suivi) : 71 trades dans la base, 89 sans limite, dont 18 pris pendant qu'un trade du meme sens etait ouvert ; maximum ouverts en meme temps 3
+
+== 2. Ordres simultanes ==
+  -- principale, frais 1 pt --
+   avant le 28/10 (historique, information)
+     base (1 a la fois)    299 trades, 103 gagnants, net  +97.90R (moy +0.327, t +1.85), plafond 5R  +41.69R, pire jour -7.35R, jours <= -3R 13, pire creux -15.82R
+     S2 (2 max)            359 trades, 124 gagnants, net +123.77R (moy +0.345, t +2.21), plafond 5R  +58.16R, pire jour -8.91R, jours <= -3R 14, pire creux -22.71R
+     S3 (3 max)            396 trades, 137 gagnants, net +129.54R (moy +0.327, t +2.27), plafond 5R  +63.92R, pire jour -8.91R, jours <= -3R 18, pire creux -32.06R
+     Sx (sans limite)      418 trades, 142 gagnants, net +122.85R (moy +0.294, t +2.14), plafond 5R  +57.23R, pire jour -10.76R, jours <= -3R 19, pire creux -37.15R
+   depuis le 28/10 (suivi)
+     base (1 a la fois)     66 trades,  19 gagnants, net   +7.43R (moy +0.113, t +0.45), plafond 5R   +3.34R, pire jour -5.28R, jours <= -3R  3, pire creux -12.78R
+     S2 (2 max)             78 trades,  23 gagnants, net  +11.55R (moy +0.148, t +0.62), plafond 5R   +5.05R, pire jour -4.54R, jours <= -3R  4, pire creux -15.24R
+     S3 (3 max)             82 trades,  23 gagnants, net   +7.41R (moy +0.090, t +0.40), plafond 5R   +0.91R, pire jour -5.57R, jours <= -3R  6, pire creux -17.32R
+     Sx (sans limite)       82 trades,  23 gagnants, net   +7.41R (moy +0.090, t +0.40), plafond 5R   +0.91R, pire jour -5.57R, jours <= -3R  6, pire creux -17.32R
+  -- principale, frais 3 pt --
+   avant le 28/10 (historique, information)
+     base (1 a la fois)    262 trades,  86 gagnants, net  +76.27R (moy +0.291, t +1.46), plafond 5R  +21.09R, pire jour -7.67R, jours <= -3R 12, pire creux -20.25R
+     S2 (2 max)            319 trades, 107 gagnants, net +101.51R (moy +0.318, t +1.83), plafond 5R  +37.15R, pire jour -10.00R, jours <= -3R 14, pire creux -30.51R
+     S3 (3 max)            356 trades, 120 gagnants, net +104.93R (moy +0.295, t +1.86), plafond 5R  +40.57R, pire jour -11.07R, jours <= -3R 17, pire creux -40.56R
+     Sx (sans limite)      374 trades, 124 gagnants, net  +98.09R (moy +0.262, t +1.72), plafond 5R  +33.73R, pire jour -12.63R, jours <= -3R 18, pire creux -46.87R
+   depuis le 28/10 (suivi)
+     base (1 a la fois)     63 trades,  18 gagnants, net   +4.34R (moy +0.069, t +0.26), plafond 5R   +0.43R, pire jour -5.92R, jours <= -3R  3, pire creux -12.32R
+     S2 (2 max)             73 trades,  20 gagnants, net   +4.39R (moy +0.060, t +0.24), plafond 5R   -1.87R, pire jour -7.04R, jours <= -3R  4, pire creux -17.89R
+     S3 (3 max)             77 trades,  20 gagnants, net   -0.03R (moy -0.000, t -0.00), plafond 5R   -6.28R, pire jour -7.04R, jours <= -3R  5, pire creux -20.12R
+     Sx (sans limite)       77 trades,  20 gagnants, net   -0.03R (moy -0.000, t -0.00), plafond 5R   -6.28R, pire jour -7.04R, jours <= -3R  5, pire creux -20.12R
+  -- D, frais 1 pt --
+   avant le 28/10 (historique, information)
+     base (1 a la fois)    346 trades, 150 gagnants, net   +6.52R (moy +0.019, t +0.30), plafond 5R   +5.07R, pire jour -7.21R, jours <= -3R 12, pire creux -27.04R
+     S2 (2 max)            359 trades, 155 gagnants, net   +8.17R (moy +0.023, t +0.37), plafond 5R   +6.72R, pire jour -7.21R, jours <= -3R 12, pire creux -25.02R
+     S3 (3 max)            359 trades, 155 gagnants, net   +8.17R (moy +0.023, t +0.37), plafond 5R   +6.72R, pire jour -7.21R, jours <= -3R 12, pire creux -25.02R
+     Sx (sans limite)      359 trades, 155 gagnants, net   +8.17R (moy +0.023, t +0.37), plafond 5R   +6.72R, pire jour -7.21R, jours <= -3R 12, pire creux -25.02R
+   depuis le 28/10 (suivi)
+     base (1 a la fois)     79 trades,  37 gagnants, net  +19.04R (moy +0.241, t +1.25), plafond 5R  +15.50R, pire jour -4.63R, jours <= -3R  2, pire creux -10.39R
+     S2 (2 max)             79 trades,  37 gagnants, net  +19.04R (moy +0.241, t +1.25), plafond 5R  +15.50R, pire jour -4.63R, jours <= -3R  2, pire creux -10.39R
+     S3 (3 max)             79 trades,  37 gagnants, net  +19.04R (moy +0.241, t +1.25), plafond 5R  +15.50R, pire jour -4.63R, jours <= -3R  2, pire creux -10.39R
+     Sx (sans limite)       79 trades,  37 gagnants, net  +19.04R (moy +0.241, t +1.25), plafond 5R  +15.50R, pire jour -4.63R, jours <= -3R  2, pire creux -10.39R
+  -- D, frais 3 pt --
+   avant le 28/10 (historique, information)
+     base (1 a la fois)    314 trades, 128 gagnants, net  -13.83R (moy -0.044, t -0.65), plafond 5R  -15.15R, pire jour -6.63R, jours <= -3R 12, pire creux -36.68R
+     S2 (2 max)            327 trades, 132 gagnants, net  -12.62R (moy -0.039, t -0.58), plafond 5R  -13.94R, pire jour -7.34R, jours <= -3R 12, pire creux -34.64R
+     S3 (3 max)            327 trades, 132 gagnants, net  -12.62R (moy -0.039, t -0.58), plafond 5R  -13.94R, pire jour -7.34R, jours <= -3R 12, pire creux -34.64R
+     Sx (sans limite)      327 trades, 132 gagnants, net  -12.62R (moy -0.039, t -0.58), plafond 5R  -13.94R, pire jour -7.34R, jours <= -3R 12, pire creux -34.64R
+   depuis le 28/10 (suivi)
+     base (1 a la fois)     74 trades,  32 gagnants, net  +10.90R (moy +0.147, t +0.72), plafond 5R   +7.57R, pire jour -8.08R, jours <= -3R  1, pire creux -14.44R
+     S2 (2 max)             74 trades,  32 gagnants, net  +10.90R (moy +0.147, t +0.72), plafond 5R   +7.57R, pire jour -8.08R, jours <= -3R  1, pire creux -14.44R
+     S3 (3 max)             74 trades,  32 gagnants, net  +10.90R (moy +0.147, t +0.72), plafond 5R   +7.57R, pire jour -8.08R, jours <= -3R  1, pire creux -14.44R
+     Sx (sans limite)       74 trades,  32 gagnants, net  +10.90R (moy +0.147, t +0.72), plafond 5R   +7.57R, pire jour -8.08R, jours <= -3R  1, pire creux -14.44R
+  -- les trades AJOUTES seuls (pris pendant qu'un autre du meme sens etait ouvert, sans limite) --
+   principale 1 pt, avant le 28/10 (historique, information) :  123 trades,  39 gagnants, net  +21.27R (moy +0.173, t +0.93), plafond 5R  +11.87R, pire jour -8.54R, jours <= -3R 10, pire creux -27.15R
+   principale 1 pt, depuis le 28/10 (suivi) :   16 trades,   4 gagnants, net   -0.02R (moy -0.001, t -0.00), plafond 5R   -2.43R, pire jour -4.14R, jours <= -3R  2, pire creux -6.23R
+   principale 3 pt, avant le 28/10 (historique, information) :  115 trades,  38 gagnants, net  +18.92R (moy +0.165, t +0.83), plafond 5R   +9.74R, pire jour -8.50R, jours <= -3R  7, pire creux -30.09R
+   principale 3 pt, depuis le 28/10 (suivi) :   14 trades,   2 gagnants, net   -4.37R (moy -0.312, t -0.50), plafond 5R   -6.71R, pire jour -4.42R, jours <= -3R  2, pire creux -8.93R
+   D          1 pt, avant le 28/10 (historique, information) :   14 trades,   6 gagnants, net   +3.45R (moy +0.246, t +0.88), plafond 5R   +3.45R, pire jour -1.04R, jours <= -3R  0, pire creux -1.99R
+   D          1 pt, depuis le 28/10 (suivi) : 0 trade
+   D          3 pt, avant le 28/10 (historique, information) :   14 trades,   5 gagnants, net   +2.91R (moy +0.208, t +0.77), plafond 5R   +2.91R, pire jour -0.93R, jours <= -3R  0, pire creux -1.11R
+   D          3 pt, depuis le 28/10 (suivi) : 0 trade
+  sort des trades ajoutes (principale, 1 pt, tout l'historique) : stop 96, cible 43 ; par sens : calls   14 trades,   6 gagnants, net   +5.23R (moy +0.373, t +0.76), plafond 5R   +5.23R, pire jour -3.09R, jours <= -3R  1, pire creux -5.19R
+                                                                    puts   125 trades,  37 gagnants, net  +16.03R (moy +0.128, t +0.68), plafond 5R   +4.21R, pire jour -8.54R, jours <= -3R 11, pire creux -27.15R
+
+== 3. Plusieurs ordres par signal (memes entrees que la base) ==
+  -- frais 1 pt --
+   avant le 28/10 (historique, information)
+     base (un ordre)             299 trades, 103 gagnants, net  +97.90R (moy +0.327, t +1.85), plafond 5R  +41.69R, pire jour -7.35R, jours <= -3R 13, pire creux -15.82R
+     P1 sortie partielle a +1R   299 trades, 103 gagnants, net  +56.55R (moy +0.189, t +1.83), plafond 5R  +38.74R, pire jour -7.35R, jours <= -3R  4, pire creux -10.10R
+     P2 renfort a +1R            299 trades, 103 gagnants, net +114.21R (moy +0.382, t +1.72), plafond 5R   +5.46R, pire jour -9.79R, jours <= -3R 20, pire creux -33.96R   (renforts poses : 137)
+   depuis le 28/10 (suivi)
+     base (un ordre)              66 trades,  19 gagnants, net   +7.43R (moy +0.113, t +0.45), plafond 5R   +3.34R, pire jour -5.28R, jours <= -3R  3, pire creux -12.78R
+     P1 sortie partielle a +1R    66 trades,  19 gagnants, net   +1.59R (moy +0.024, t +0.14), plafond 5R   +1.59R, pire jour -5.30R, jours <= -3R  3, pire creux -9.67R
+     P2 renfort a +1R             66 trades,  19 gagnants, net  +18.23R (moy +0.276, t +0.74), plafond 5R   -0.79R, pire jour -4.18R, jours <= -3R  3, pire creux -16.13R   (renforts poses : 24)
+  -- frais 3 pt --
+   avant le 28/10 (historique, information)
+     base (un ordre)             262 trades,  86 gagnants, net  +76.27R (moy +0.291, t +1.46), plafond 5R  +21.09R, pire jour -7.67R, jours <= -3R 12, pire creux -20.25R
+     P1 sortie partielle a +1R   262 trades,  86 gagnants, net  +34.92R (moy +0.133, t +1.15), plafond 5R  +17.59R, pire jour -7.04R, jours <= -3R  5, pire creux -12.26R
+     P2 renfort a +1R            262 trades,  85 gagnants, net  +87.78R (moy +0.335, t +1.33), plafond 5R  -18.35R, pire jour -9.54R, jours <= -3R 21, pire creux -41.95R   (renforts poses : 126)
+   depuis le 28/10 (suivi)
+     base (un ordre)              63 trades,  18 gagnants, net   +4.34R (moy +0.069, t +0.26), plafond 5R   +0.43R, pire jour -5.92R, jours <= -3R  3, pire creux -12.32R
+     P1 sortie partielle a +1R    63 trades,  18 gagnants, net   -2.48R (moy -0.039, t -0.22), plafond 5R   -2.48R, pire jour -5.95R, jours <= -3R  4, pire creux -9.73R
+     P2 renfort a +1R             63 trades,  18 gagnants, net  +13.74R (moy +0.218, t +0.56), plafond 5R   -4.78R, pire jour -5.63R, jours <= -3R  3, pire creux -16.01R   (renforts poses : 24)
+  trades clos ayant atteint +1R avant leur sortie (1 pt) : 196 sur 365 (54%) ; parmi eux, finis au stop : 74, a la cible : 122
+
+== 4. Taille et risque en turbo (base, frais 1 pt) ==
+  distance du stop : quart 0.25 %, mediane 0.34 %, trois quarts 0.43 %
+  ordre de 500 EUR, levier  2.8 : perte au stop quart 3.4 EUR, mediane 4.7 EUR, trois quarts 6.1 EUR
+  ordre de 500 EUR, levier  5.0 : perte au stop quart 6.1 EUR, mediane 8.4 EUR, trois quarts 10.8 EUR
+  ordre de 500 EUR, levier 10.0 : perte au stop quart 12.3 EUR, mediane 16.8 EUR, trois quarts 21.7 EUR
+  mediane par marche : CAC 40 0.34 %, DAX 0.37 %, Dow Jones 0.25 %, Euro Stoxx 50 0.33 %, FTSE 100 0.34 %, FTSE MIB 0.41 %, Nasdaq 100 0.35 %, Russell 2000 0.34 %, S&P 500 0.24 %, SMI 0.35 %
+  frais d'un aller-retour en part du risque : 1 pt = 0.037R (mediane), 3 pt = 0.112R
+
+Detail (frais 1 pt) : ordres_multiples_trades.csv
