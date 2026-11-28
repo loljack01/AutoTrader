@@ -10,6 +10,10 @@ et t ≥ seuil de Bonferroni du registre (≈ 3,25 à la 86e décision) = retenu
 argent ; total > 0 et 2 ≤ t < seuil = prometteuse, décision de l'utilisateur un dimanche ; sinon
 rejetée. Aucun argent réel quel que soit le verdict.
 
+**Choix exprimé par l'utilisateur le samedi 28/11 : « B4 ».** Règle 29 : la décision formelle, le figement de
+la fiche (commit) et le calcul ont lieu le dimanche 6/12, après validation des valeurs (?) de B4 par
+l'utilisateur. B1, B2 et B3 restent en attente pour les mois suivants.
+
 ## B1. Swing « force de la bougie » (IBS), calls
 
 | Élément | Proposition |
