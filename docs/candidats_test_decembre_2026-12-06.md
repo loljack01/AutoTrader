@@ -73,5 +73,5 @@ reste en réel.
 - Connecteur Interactive Brokers : à autoriser dans les réglages des connecteurs de claude.ai (seulement
   utile avec un compte IBKR, en lecture seule).
 - Échéance des contrats à terme le 18/12 : passage au contrat suivant pour la semaine du 14 au 18/12.
-- Symbole du FTSE MIB futur : « FIB1! » fonctionne (EUREX:FIB1! et IDEM:FIB1! refusés le 27/11) ; à
-  corriger dans la routine du bilan du soir.
+- Symbole du FTSE MIB futur : la routine du bilan dit bien « FIB1! » (qui fonctionne) ; le 27/11, j'ai
+  utilisé à tort EUREX:FIB1! et IDEM:FIB1!, refusés. Rien à changer dans la routine.
